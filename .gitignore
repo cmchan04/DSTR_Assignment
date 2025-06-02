@@ -1,0 +1,63 @@
+# === C++ build artifacts ===
+*.o
+*.obj
+*.lo
+*.la
+*.al
+*.a
+*.so
+*.dll
+*.dylib
+*.exe
+*.out
+*.app
+*.class
+
+# === CMake build artifacts ===
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+build/
+cmake-build-*/
+
+# === CLion ===
+.idea/
+*.iml
+
+# === VS Code ===
+.vscode/
+
+# === Code::Blocks ===
+*.depend
+*.layout
+*.cbp
+*.autosave
+
+# === Qt Creator ===
+*.pro.user*
+*.qbs.user*
+*.user
+*.qmlc
+*.jsc
+.qmake.stash
+CMakeLists.txt.user*
+
+# === Mac system files ===
+.DS_Store
+
+# === Windows system files ===
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# === Logs and temporary files ===
+*.log
+*.tmp
+*.swp
+
+# === Backup files ===
+*~
+*.bak
+*.old
+
