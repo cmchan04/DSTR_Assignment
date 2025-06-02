@@ -1,2 +1,2 @@
-# DAS_Assignment
+# DSTR_Assignment
 This is a repo for Data Structure Assignment
