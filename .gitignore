@@ -12,6 +12,7 @@
 *.out
 *.app
 *.class
+*.csv
 
 # === CMake build artifacts ===
 CMakeCache.txt
