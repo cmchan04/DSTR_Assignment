@@ -21,7 +21,7 @@ using namespace std;
  *
  * @return return \code TRUE\endcode if the converted result is "true"
  */
-bool stringToBool(const string &input) {
+bool TransactionReader::stringToBool(const string &input) {
     string lower = input;
     ranges::transform(lower, lower.begin(), ::tolower);
     return lower == "true";
@@ -37,7 +37,7 @@ bool stringToBool(const string &input) {
  *
  * @return ptr to an array storing the csv, can be nullptr when any error occurs
  */
-Transaction* readCSVToArray(const string &filename, int &outSize) {
+Transaction* TransactionReader::readCSVToArray(const string &filename, int &outSize) {
 
     // Retrieve file
     ifstream file(filename);
