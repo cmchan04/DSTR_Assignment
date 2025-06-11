@@ -2,14 +2,17 @@
 // Created by cmchan04 on 6/2/2025.
 //
 
-#include <string>
+// This is used to make sure that the header file loads only once
 #pragma once
 
+// Imports
+#include <string>
 using namespace std;
 
+// The transaction struct (with public attributes)
 struct Transaction {
 
-    //Declaration of variables
+    // Declaration of variables
     string transactionId;
     string timestamp;
     string senderAcc;
@@ -29,5 +32,8 @@ struct Transaction {
     string ipAddress;
     string deviceHash;
 
+    // Constructor declaration
+    Transaction() = default;
+    explicit Transaction(const string* dataArray);
 };
 
