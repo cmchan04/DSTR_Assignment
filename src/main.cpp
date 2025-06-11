@@ -1,34 +1,34 @@
 #include <iostream>
 #include "utilities/TransactionReader.h"
-#include "utilities/channelSeperator.h"
+#include "utilities/ChannelSeperator.h"
 
 using namespace std;
 
 int main(){
 
-    //Your csv should locate in this file path
+    // Load CSV file
     const string FILE_PATH("../src/resources/financial_fraud_detection_dataset.csv");
     int totalRows;
-    Transaction* transactionsArray = TransactionReader::readCSVToArray(FILE_PATH, totalRows);
+    const Transaction* transactionsArray = TransactionReader::readCSVToArray(FILE_PATH, totalRows);
 
-    //Declare new arrays and size
+    // Declare new arrays and size
     Transaction *ach = nullptr, *card = nullptr, *upi = nullptr, *wireTransfer = nullptr;
     int achSize = 0, cardSize = 0, upiSize = 0, wireSize = 0;
 
-    //Distribution of transaction records
-    channelSeperator::splitByChannel(transactionsArray, totalRows,
-                                     ach, achSize,
-                                     card, cardSize,
-                                     upi, upiSize,
-                                     wireTransfer, wireSize);
+    // Distribution of transaction records
+    ChannelSeperator::splitToChannelArray(transactionsArray, totalRows,
+                                          ach, achSize,
+                                          card, cardSize,
+                                          upi, upiSize,
+                                          wireTransfer, wireSize);
 
-    //Ensure all rows are distributed - Check if any missing
+    // Ensure all rows are distributed - Check if any missing
     cout << "ACH Transactions: " << achSize << endl;
     cout << "Card Transactions: " << cardSize << endl;
     cout << "UPI Transactions: " << upiSize << endl;
     cout << "Wire Transfers: " << wireSize << endl;
 
-    //Show total rows read
+    // Show total rows read
     cout << "Total rows: " << totalRows << endl;
 
 //    //To show sample rows
@@ -56,7 +56,7 @@ int main(){
 //        cout << "  Device Hash: " << t.deviceHash << "\n\n";
 //    }
 
-    //Release memory
+    // Release memory
     delete[] transactionsArray;
     delete[] ach;
     delete[] card;
