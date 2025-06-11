@@ -2,7 +2,7 @@
 // Created by cmchan04 on 6/8/2025.
 //
 
-#include "ChannelSeperator.h"
+#include "ChannelSeparator.h"
 #include <iostream>
 #include <string>
 
@@ -17,7 +17,7 @@ using namespace std;
  * @param upi Array for UPI payment channel
  * @param wireTransfer Array for wire_transfer payment channel
  */
-void ChannelSeperator::splitToChannelArray(const Transaction* source, const int sourceSize,
+void ChannelSeparator::splitToChannelArray(const Transaction* source, const int sourceSize,
                                            Transaction* &ach, int &achSize,
                                            Transaction* &card, int &cardSize,
                                            Transaction* &upi, int &upiSize,

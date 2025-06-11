@@ -1,6 +1,6 @@
 #include <iostream>
 #include "utilities/TransactionReader.h"
-#include "utilities/ChannelSeperator.h"
+#include "utilities/ChannelSeparator.h"
 
 using namespace std;
 
@@ -16,7 +16,7 @@ int main(){
     int achSize = 0, cardSize = 0, upiSize = 0, wireSize = 0;
 
     // Distribution of transaction records
-    ChannelSeperator::splitToChannelArray(transactionsArray, totalRows,
+    ChannelSeparator::splitToChannelArray(transactionsArray, totalRows,
                                           ach, achSize,
                                           card, cardSize,
                                           upi, upiSize,
