@@ -1,19 +1,30 @@
 #include <iostream>
 #include "utilities/TransactionReader.h"
 #include "utilities/ChannelSeperator.h"
+#include "utilities/PerformanceTracker.h"
 
 using namespace std;
 
 int main(){
+
+    //Initialize Performance Tracker
+    PerformanceTracker tracker;
 
     // Load CSV file
     const string FILE_PATH("../src/resources/financial_fraud_detection_dataset.csv");
     int totalRows;
     const Transaction* transactionsArray = TransactionReader::readCSVToArray(FILE_PATH, totalRows);
 
+    //Check resources used in loading data into array
+    tracker.stop();
+    tracker.report("Performance for Loading CSV into Array");
+
     // Declare new arrays and size
     Transaction *ach = nullptr, *card = nullptr, *upi = nullptr, *wireTransfer = nullptr;
     int achSize = 0, cardSize = 0, upiSize = 0, wireSize = 0;
+
+    //Performance tracker for payment channel split
+    PerformanceTracker trackerSplit;
 
     // Distribution of transaction records
     ChannelSeperator::splitToChannelArray(transactionsArray, totalRows,
@@ -22,11 +33,16 @@ int main(){
                                           upi, upiSize,
                                           wireTransfer, wireSize);
 
+    trackerSplit.stop();
+
     // Ensure all rows are distributed - Check if any missing
     cout << "ACH Transactions: " << achSize << endl;
     cout << "Card Transactions: " << cardSize << endl;
     cout << "UPI Transactions: " << upiSize << endl;
     cout << "Wire Transfers: " << wireSize << endl;
+
+    //Check resources used in splitting data
+    trackerSplit.report("Performance for Splitting Data based on Payment Channel in Array");
 
     // Show total rows read
     cout << "Total rows: " << totalRows << endl;

@@ -9,4 +9,6 @@ add_executable(Assignment src/main.cpp
         src/utilities/TransactionReader.cpp
         src/utilities/TransactionReader.h
         src/utilities/channelSeperator.cpp
-        src/utilities/channelSeperator.h)
+        src/utilities/channelSeperator.h
+        src/utilities/PerformanceTracker.cpp
+        src/utilities/PerformanceTracker.h)
