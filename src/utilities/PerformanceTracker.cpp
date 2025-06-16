@@ -43,10 +43,6 @@ void PerformanceTracker::updatePeakMemory() {
             // Other OSes not supported yet
             peakMemoryUsage = 0;
     #endif
-//    PROCESS_MEMORY_COUNTERS pmc;
-//    if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
-//        peakMemoryUsage = pmc.PeakWorkingSetSize;
-//    }
 }
 
 /**
