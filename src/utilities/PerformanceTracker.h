@@ -6,11 +6,16 @@
 #include <iostream>
 #include <chrono>
 
-#define byte WindowsByte
-#include <windows.h>
-#include <psapi.h>
-#undef byte
-
+#if defined(_WIN32) || defined(_WIN64)
+    #define OS_WINDOWS
+    #define byte WindowsByte
+    #include <windows.h>
+    #include <psapi.h>
+    #undef byte
+#elif defined(__APPLE__) || defined(__MACH__)
+    #define OS_MAC
+    #include <mach/mach.h>
+#endif
 
 using namespace std;
 using namespace std::chrono;

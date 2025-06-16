@@ -27,10 +27,26 @@ void PerformanceTracker::stop() {
  * @remark This only works for Windows
  */
 void PerformanceTracker::updatePeakMemory() {
-    PROCESS_MEMORY_COUNTERS pmc;
-    if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
-        peakMemoryUsage = pmc.PeakWorkingSetSize;
-    }
+    #ifdef OS_WINDOWS
+        PROCESS_MEMORY_COUNTERS pmc;
+        if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
+            peakMemoryUsage = pmc.PeakWorkingSetSize;
+        }
+    #elif defined(OS_MAC)
+        struct task_basic_info t_info;
+            mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;
+
+            if (task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&t_info, &t_info_count) == KERN_SUCCESS) {
+                peakMemoryUsage = t_info.resident_size;
+            }
+    #else
+            // Other OSes not supported yet
+            peakMemoryUsage = 0;
+    #endif
+//    PROCESS_MEMORY_COUNTERS pmc;
+//    if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
+//        peakMemoryUsage = pmc.PeakWorkingSetSize;
+//    }
 }
 
 /**
