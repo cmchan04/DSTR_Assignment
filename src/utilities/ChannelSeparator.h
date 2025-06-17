@@ -5,7 +5,7 @@
 #include "../entities/Transaction.h"
 #pragma once
 
-struct ChannelSeperator {
+struct ChannelSeparator {
 
     //Declaration of functions
     static void splitToChannelArray(const Transaction* source, int sourceSize,

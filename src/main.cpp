@@ -27,7 +27,7 @@ int main(){
     PerformanceTracker trackerSplit;
 
     // Distribution of transaction records
-    ChannelSeperator::splitToChannelArray(transactionsArray, totalRows,
+    ChannelSeparator::splitToChannelArray(transactionsArray, totalRows,
                                           ach, achSize,
                                           card, cardSize,
                                           upi, upiSize,
