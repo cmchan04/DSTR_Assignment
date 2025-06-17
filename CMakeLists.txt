@@ -8,6 +8,8 @@ add_executable(Assignment src/main.cpp
         src/entities/Transaction.h
         src/utilities/TransactionReader.cpp
         src/utilities/TransactionReader.h
+        src/utilities/PerformanceTracker.cpp
+        src/utilities/PerformanceTracker.h
         src/utilities/ChannelSeparator.cpp
         src/utilities/ChannelSeparator.h
         src/utilities/Sorter.cpp
