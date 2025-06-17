@@ -18,4 +18,6 @@ add_executable(Assignment src/main.cpp
         src/utilities/Searcher.h
         src/utilities/JsonExport.cpp
         src/utilities/JsonExport.h
+        src/entities/DoublyLinkedList.cpp
+        src/entities/DoublyLinkedList.h
 )
