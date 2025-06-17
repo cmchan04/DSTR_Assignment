@@ -58,7 +58,7 @@ void PerformanceTracker::report(const string& label) const {
 }
 
 //A backup function to check the memory in bytes
-SIZE_T PerformanceTracker::getPeakMemoryBytes() const {
+size_t PerformanceTracker::getPeakMemoryBytes() const {
     return peakMemoryUsage;
 }
 

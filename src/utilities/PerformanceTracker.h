@@ -24,7 +24,7 @@ class PerformanceTracker {
 private:
     high_resolution_clock::time_point startTime;
     high_resolution_clock::time_point endTime;
-    SIZE_T peakMemoryUsage;
+    size_t peakMemoryUsage;
 
 public:
     PerformanceTracker();
@@ -34,6 +34,6 @@ public:
     void updatePeakMemory();
     void report(const string& label = "Performance") const;
 
-    SIZE_T getPeakMemoryBytes() const;
+    size_t getPeakMemoryBytes() const;
 };
 
