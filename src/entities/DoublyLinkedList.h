@@ -3,7 +3,6 @@
 //
 
 #pragma once
-#include <utility>
 
 #include "Transaction.h"
 
@@ -17,11 +16,12 @@ class DoublyLinkedList {
 
         // A doubly linked list has three elements: data, pointer of previous and next node
         Transaction transactionObject;
+        int indexInList;
         Node* previousNode;
         Node* nextNode;
 
         // Constructor: Explicit to ensure no implicit conversions take place
-        explicit Node(const Transaction* data);
+        explicit Node(const Transaction* data, int index);
     };
 
     // Member attributes to keep track of the linked list
@@ -43,6 +43,12 @@ public:
 
     // Print contents
     void printContents() const;
+
+    // Swap between nodes
+    void swap(Node* firstNode, Node* secondNode);
+
+    // The swap with Transaction (below) can be removed if not used (bur remained for testing as for now)
+    void swap(const Transaction* firstTransaction, const Transaction* secondTransaction);
 
     // Other utility methods
     void clear();
