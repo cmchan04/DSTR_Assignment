@@ -14,10 +14,10 @@ size_t PerformanceTracker::getCurrentMemoryUsage() {
     #ifdef OS_WINDOWS
 
         // Variable to hold memory information
-        PROCESS_MEMORY_COUNTERS_EX pmc;
+        PROCESS_MEMORY_COUNTERS pmc;
 
         // Retrieve the current memory used
-        GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+        GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
         return pmc.WorkingSetSize / 1024;
 
     #elif defined(OS_MAC)
@@ -138,6 +138,10 @@ void PerformanceTracker::report(const string &label) const {
     cout << "\n=== " << label << " ===\n";
     cout << "Time Taken: " << duration << " ms" << endl;
     cout << "Peak Memory Usage: " << peakMemoryUsage / 1024 << " KB" << endl;
-    cout << "Difference between Beginning and Final Memory Usage: " << finalMemory - beginningMemory << " KB" << endl;
+    cout << "Beginning memory: " << beginningMemory << " KB" << endl;
+    cout << "Final memory: " << finalMemory << " KB" << endl;
+    cout << "Difference between Beginning and Final Memory Usage: " <<
+        (finalMemory > beginningMemory ? finalMemory - beginningMemory : beginningMemory - finalMemory) <<
+            " KB" << endl;
     cout << endl;
 }
