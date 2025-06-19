@@ -84,36 +84,100 @@ Transaction* TransactionReader::readCSVToArray(const string &filename, int &outS
     // Loop for data entry
     while (getline(file, line)) {
 
-        // Save the content for each line
-        stringstream ss(line);
+        // Create a new transaction object and use method to convert line into transactions
+        if (Transaction transaction; parseLineToTransaction(line, transaction)) {
 
-        // Generate an array with 18 columns with an index counter
-        string fields[18];
-        int fieldIndex = 0;
+            // Add the transaction object into the array if created successfully
+            transactionsArray[index] = transaction;
 
-        // Store data into fields array
-        while (getline(ss, fields[fieldIndex], ',') && fieldIndex < 18) {
-            fieldIndex++;
-        }
+        } else {
 
-        // Check for invalid rows (should be none)
-        if (fieldIndex < 18) {
-            cerr << "Skipping malformed row.\n";
-            continue;
-        }
-
-        //Load each row into the transaction array
-        try {
-            transactionsArray[index] = Transaction(fields);
-            index++;
-
-        // If rows cannot be handled
-        } catch (...) {
+            // If the row cannot be converted, prnt error message
             cerr << "Error parsing row: " << line << endl;
         }
+
+        // Go to the next position
+        index++;
     }
 
     // Set the output size of the array and return
     outSize = index;
     return transactionsArray;
+}
+
+/**
+ * This helper method generates the Transaction object from a line of string data.
+ * @param line The string data consisting of Transaction information
+ * @param transactionObject The Transaction object that has to be constructed from string data
+ * @return \code true\endcode if the \code Transaction\endcode object is created successfully, else \code false\endcode
+ */
+bool TransactionReader::parseLineToTransaction(const string& line, Transaction &transactionObject) {
+
+    // Save the content of the line
+    stringstream ss(line);
+
+    // Generate an array with 18 columns with an index counter
+    string fields[18];
+    int fieldIndex = 0;
+
+    // Store data into fields array
+    while (getline(ss, fields[fieldIndex], ',') && fieldIndex < 18) {
+        fieldIndex++;
+    }
+
+    // Check for invalid rows (should be none)
+    if (fieldIndex < 18) {
+        cerr << "Skipping malformed row.\n";
+        return false;
+    }
+
+    // Create the transaction object and exit
+    try {
+        transactionObject = Transaction(fields);
+        return true;
+
+    // If rows cannot be handled
+    } catch (...) {
+
+        // Print error message and return
+        cerr << "Error parsing row: " << line << endl;
+        return false;
+    }
+}
+
+/**
+ * Reads the CSV file right into the linked list
+ * @param filename The name of the CSV file
+ * @param list The doubly linked list that will be modified
+ */
+void TransactionReader::readCSVToList(const string& filename, DoublyLinkedList* list) {
+
+    // Get the file and declare an empty line to store unprocessed information from the file
+    ifstream file(filename);
+    string line;
+
+    // Print error message if the file cannot be opened
+    if (!file.is_open()) {
+        cerr << "Failed to open file: " << filename << endl;
+        return;
+    }
+
+    // Skip header
+    getline(file, line);
+
+    // Loop through each data in the stored stream
+    while (getline(file, line)) {
+
+        // Create a transaction object from string data
+        if (Transaction transaction; parseLineToTransaction(line, transaction)) {
+
+            // The transaction object is copied so that it can still remain for the later iterations
+            const auto* transactionTemp = new Transaction(transaction);
+            list -> insertAtEnd(transactionTemp);
+
+        // Error message printed if unsuccessful
+        } else {
+            cerr << "Skipping malformed row for line: " << line << endl;
+        }
+    }
 }
