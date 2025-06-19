@@ -8,6 +8,8 @@
 // Imports
 #include <string>
 #include "../entities/Transaction.h"
+#include "../entities/DoublyLinkedList.h"
+
 using namespace std;
 
 /**
@@ -15,9 +17,11 @@ using namespace std;
  */
 struct TransactionReader {
 
-    //Declaration of functions
+    // Declaration of functions
     static Transaction* readCSVToArray(const string &filename, int &outSize);
     static bool stringToBool(const string &input);
+    static bool parseLineToTransaction(const string& line, Transaction& transactionObject);
+    static void readCSVToList(const string& filename, DoublyLinkedList* list);
 };
 
 
