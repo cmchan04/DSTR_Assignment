@@ -7,6 +7,7 @@
 
 // Imports
 #include <string>
+#include <iostream>
 using namespace std;
 
 // The transaction struct (with public attributes)
@@ -35,5 +36,11 @@ struct Transaction {
     // Constructor declaration
     Transaction() = default;
     explicit Transaction(const string* dataArray);
+
+    // Print sample contents
+    void printContents(int index = -1) const;
+
+    // Basic swap - will be utilized in sorting
+    void swap(Transaction& first, Transaction& second);
 };
 
