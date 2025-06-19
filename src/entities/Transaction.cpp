@@ -63,7 +63,7 @@ Transaction::Transaction(const string* dataArray) {
   * @param first
   * @param second
   */
- void Transaction::swap(Transaction &first, Transaction &second) {
+void Transaction::swap(Transaction &first, Transaction &second) {
 
      Transaction temp = first;
      first = second;
