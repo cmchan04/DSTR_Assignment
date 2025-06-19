@@ -41,6 +41,6 @@ struct Transaction {
     void printContents(int index = -1) const;
 
     // Basic swap - will be used in sorting
-    static void swap(Transaction& first, Transaction& second);
+    void swap(Transaction& first, Transaction& second);
 };
 
