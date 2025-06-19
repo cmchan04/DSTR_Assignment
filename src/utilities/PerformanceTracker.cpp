@@ -6,13 +6,50 @@
 #include <iostream>
 
 /**
+ * A method to retrieve the current usage of memory in KB size.
+ * @return
+ */
+size_t PerformanceTracker::getCurrentMemoryUsage() {
+
+    #ifdef OS_WINDOWS
+
+        // Variable to hold memory information
+        PROCESS_MEMORY_COUNTERS_EX pmc;
+
+        // Retrieve the current memory used
+        GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+        return pmc.WorkingSetSize / 1024;
+
+    #elif defined(OS_MAC)
+
+        // Declare a struct to store information about memory
+        task_basic_info_data_t info{};
+
+        // Get the number of details to be stored
+        mach_msg_type_number_t size = TASK_BASIC_INFO_COUNT;
+
+        // Retrieve the current memory used. If failed, return 0
+        if (task_info(mach_task_self(), TASK_BASIC_INFO, reinterpret_cast<task_info_t>(&info), &size) != KERN_SUCCESS) {
+            return 0;
+        }
+
+        // Return the retrieved current memory in KB if successful
+        return info.resident_size / 1024;
+
+    // Other OS are not supported as for now
+    #else
+    #endif
+}
+
+/**
  * Marks the start to record time and memory usage
  */
 void PerformanceTracker::start() {
 
-    // Start recording
+    // Start recording and get beginning memory
     startTime = high_resolution_clock::now();
     peakMemoryUsage = 0;
+    beginningMemory = getCurrentMemoryUsage();
 
     // Ensure performance is measured consistently (for Mac) by running updatePeakMemory() every 0.1 seconds
     running = true;
@@ -28,6 +65,9 @@ void PerformanceTracker::start() {
  * Halts the measuring of performance
  */
 void PerformanceTracker::stop() {
+
+    // Retrieve the final memory
+    finalMemory = getCurrentMemoryUsage();
 
     // Stops updatePeakMemory() from running. Also make sure that thread finishes before the main thread ends.
     running = false;
@@ -98,5 +138,6 @@ void PerformanceTracker::report(const string &label) const {
     cout << "\n=== " << label << " ===\n";
     cout << "Time Taken: " << duration << " ms" << endl;
     cout << "Peak Memory Usage: " << peakMemoryUsage / 1024 << " KB" << endl;
+    cout << "Difference between Beginning and Final Memory Usage: " << finalMemory - beginningMemory << " KB" << endl;
     cout << endl;
 }

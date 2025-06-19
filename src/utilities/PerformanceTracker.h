@@ -37,6 +37,8 @@ class PerformanceTracker {
     high_resolution_clock::time_point startTime;
     high_resolution_clock::time_point endTime;
     size_t peakMemoryUsage = 0;
+    size_t beginningMemory = 0;
+    size_t finalMemory = 0;
 
     // A background thread to record performance
     thread performanceTrackingThread;
@@ -48,6 +50,7 @@ public:
     void start();
     void stop();
     void updatePeakMemory();
+    static size_t getCurrentMemoryUsage();
 
     // Constant methods: Methods that does not change the value of data
     void report(const string& label = "Performance") const;
