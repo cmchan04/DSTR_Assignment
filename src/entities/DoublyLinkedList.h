@@ -7,22 +7,24 @@
 #include "Transaction.h"
 
 /**
+ * A struct to represent nodes in the linked list
+ */
+struct Node {
+
+    // A doubly linked list has three elements: data, pointer of previous and next node
+    Transaction transactionObject;
+    int indexInList;
+    Node* previousNode;
+    Node* nextNode;
+
+    // Constructor: Explicit to ensure no implicit conversions take place
+    explicit Node(const Transaction* data, int index);
+};
+
+/**
  * This is the class for representing a doubly linked list.
  */
 class DoublyLinkedList {
-
-    // A private struct to represent nodes in the linked list
-    struct Node {
-
-        // A doubly linked list has three elements: data, pointer of previous and next node
-        Transaction transactionObject;
-        int indexInList;
-        Node* previousNode;
-        Node* nextNode;
-
-        // Constructor: Explicit to ensure no implicit conversions take place
-        explicit Node(const Transaction* data, int index);
-    };
 
     // Member attributes to keep track of the linked list
     Node* headNode;
@@ -36,6 +38,10 @@ public:
     // Constructor and destructor
     DoublyLinkedList();
     ~DoublyLinkedList();
+
+    // Getters
+    [[nodiscard]] Node* getHeadNode() const;
+    [[nodiscard]] Node* getTailNode() const;
 
     // Insertion methods
     void insertAtEnd(const Transaction* data);

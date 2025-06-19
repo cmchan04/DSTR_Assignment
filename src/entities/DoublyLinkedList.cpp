@@ -12,7 +12,7 @@ using namespace std;
  * @param data The pointer to the Transaction object
  * @param index The current size of the linked list. This acts as the index for the node (since no deletion is involved).
  */
-DoublyLinkedList::Node::Node(const Transaction* data, const int index) {
+Node::Node(const Transaction* data, const int index) {
 
     // First check if a valid object is passed into the method
     if (data == nullptr) throw invalid_argument("Data cannot be null.");
@@ -41,6 +41,22 @@ DoublyLinkedList::~DoublyLinkedList() {
 
     // Has the same function as clear()
     clear();
+}
+
+/**
+ * The getter to get the first node of the list.
+ * @return The first node of the list
+ */
+Node* DoublyLinkedList::getHeadNode() const {
+    return this -> headNode;
+}
+
+/**
+ * The getter to get the last node of the list.
+ * @return The last node of the list
+ */
+Node* DoublyLinkedList::getTailNode() const {
+    return this -> tailNode;
 }
 
 /**
