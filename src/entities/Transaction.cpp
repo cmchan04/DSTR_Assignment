@@ -67,6 +67,6 @@ Transaction::Transaction(const string* dataArray) {
 
      Transaction temp = first;
      first = second;
-     second = first;
+     second = temp;
 
  }
