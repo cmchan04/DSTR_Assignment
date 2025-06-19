@@ -10,8 +10,9 @@ using namespace std;
 /**
  * Constructor to initialize a node.
  * @param data The pointer to the Transaction object
+ * @param index The current size of the linked list. This acts as the index for the node (since no deletion is involved).
  */
-DoublyLinkedList::Node::Node(const Transaction* data) {
+DoublyLinkedList::Node::Node(const Transaction* data, const int index) {
 
     // First check if a valid object is passed into the method
     if (data == nullptr) throw invalid_argument("Data cannot be null.");
@@ -20,6 +21,7 @@ DoublyLinkedList::Node::Node(const Transaction* data) {
     this -> transactionObject = *data;
     this -> previousNode = nullptr;
     this -> nextNode = nullptr;
+    this -> indexInList = index;
 }
 
 /**
@@ -48,7 +50,7 @@ DoublyLinkedList::~DoublyLinkedList() {
 void DoublyLinkedList::insertAtEnd(const Transaction* data) {
 
     // First create a node for the data
-    const auto newNode = new Node(data);
+    const auto newNode = new Node(data, ++size);
 
     // Case 1: The list is empty
     if (headNode == nullptr) {
@@ -56,8 +58,7 @@ void DoublyLinkedList::insertAtEnd(const Transaction* data) {
         // The new node automatically becomes both the head and tail node
         headNode = tailNode = newNode;
 
-        // Increment size count and end function here
-        size++;
+        // End function here
         return;
     }
 
@@ -68,9 +69,8 @@ void DoublyLinkedList::insertAtEnd(const Transaction* data) {
     // The new node's previous node will be the initial tail node
     newNode -> previousNode = tailNode;
 
-    // And the new node is now the last node, also increment size count
+    // And the new node is now the last node
     tailNode = newNode;
-    size++;
 }
 
 /**
@@ -80,7 +80,6 @@ void DoublyLinkedList::printContents() const {
 
     // Get the first node
     const Node* currentNode = headNode;
-    int index = 1;
 
     // Print header
     cout << "===== Printing Linked List Contents =====" << endl;
@@ -94,7 +93,7 @@ void DoublyLinkedList::printContents() const {
     while (currentNode != nullptr) {
 
         // Print details
-        cout << "[Node at position " << index << "]" << endl;
+        cout << "[Node at position " << currentNode -> indexInList << "]" << endl;
         cout << "  ID        : " << currentNode -> transactionObject.transactionId << endl;
         cout << "  Amount    : " << currentNode -> transactionObject.amount << endl;
         cout << "  Type      : " << currentNode -> transactionObject.transactionType << endl;
@@ -104,8 +103,111 @@ void DoublyLinkedList::printContents() const {
 
         // Move to the next node
         currentNode = currentNode -> nextNode;
-        index++;
     }
+}
+
+/**
+ * This method swaps two nodes in the linked list. This will be useful for later sorts.
+ * @param firstNode The first node to be swapped
+ * @param secondNode The other node to be swapped
+ */
+void DoublyLinkedList::swap(Node* firstNode, Node* secondNode) {
+
+    // Reject null nodes
+    if (firstNode == nullptr || secondNode == nullptr) throw invalid_argument("Node cannot be null.");
+
+    // Do nothing for similar nodes
+    if (firstNode == secondNode) return;
+
+    // First exchange the index of both nodes
+    const int firstNodeIndex = firstNode -> indexInList;
+    firstNode -> indexInList = secondNode -> indexInList;
+    secondNode -> indexInList = firstNodeIndex;
+
+    // Special case: One of the nodes is the head node
+    if (headNode == firstNode) headNode = secondNode;
+    else if (headNode == secondNode) headNode = firstNode;
+
+    // Special case: One of the nodes is the tail node
+    if (tailNode == firstNode) tailNode = secondNode;
+    else if (tailNode == secondNode) tailNode = firstNode;
+
+    // Handle the special case: The next node of the second node is the first node. We swap both nodes here.
+    if (secondNode -> nextNode == firstNode) {
+        Node* tempNode = firstNode;
+        firstNode = secondNode;
+        secondNode = tempNode;
+    }
+
+    // Now can check for the special case: Adjacent nodes are handled separately
+    if (firstNode -> nextNode == secondNode) {
+
+        // Only need to handle the nodes before the first node and after the second node
+        Node* beforeNode = firstNode -> previousNode;
+        Node* afterNode = secondNode -> nextNode;
+
+        // Change the linking nodes for the two neighboring nodes
+        if (beforeNode) beforeNode -> nextNode = secondNode;
+        if (afterNode) afterNode -> previousNode = firstNode;
+
+        // Modify the current swapping nodes
+        firstNode -> previousNode = secondNode;
+        firstNode -> nextNode = afterNode;
+        secondNode -> previousNode = beforeNode;
+        secondNode -> nextNode = firstNode;
+
+        // End operation here
+        return;
+    }
+
+    // Retrieve the neighbor nodes
+    Node* firstNodePrev = firstNode -> previousNode;
+    Node* firstNodeNext = firstNode -> nextNode;
+    Node* secondNodePrev = secondNode -> previousNode;
+    Node* secondNodeNext = secondNode -> nextNode;
+
+    // Reestablish connection of neighbor nodes to correct nodes
+    if (firstNodePrev != nullptr) firstNodePrev -> nextNode = secondNode;
+    if (firstNodeNext != nullptr) firstNodeNext -> previousNode = secondNode;
+    if (secondNodePrev != nullptr) secondNodePrev -> nextNode = firstNode;
+    if (secondNodeNext != nullptr) secondNodeNext -> previousNode = firstNode;
+
+    // Swap the elements of the swapping node
+    firstNode -> previousNode = secondNode -> previousNode;
+    firstNode -> nextNode = secondNode -> nextNode;
+    secondNode -> previousNode = firstNodePrev;
+    secondNode -> nextNode = firstNodeNext;
+}
+
+/**
+ * This method performs swapping on the Transaction object in the linked list.<br>
+ * This method helps to test the base swap method using Node method.<br>
+ * It can be deleted if not used later.
+ *
+ * @param firstTransaction The first transaction to be swapped
+ * @param secondTransaction The other transaction to be swapped
+ */
+void DoublyLinkedList::swap(const Transaction* firstTransaction, const Transaction* secondTransaction) {
+
+    if (firstTransaction == nullptr || secondTransaction == nullptr) throw invalid_argument("Transaction cannot be null.");
+    if (firstTransaction == secondTransaction) return;
+
+    // Look for nodes associated with the transaction
+    Node* firstNode = nullptr;
+    Node* secondNode = nullptr;
+    Node* currentNode = this -> headNode;
+
+    while (currentNode != nullptr) {
+
+        if (currentNode -> transactionObject.transactionId == firstTransaction -> transactionId) firstNode = currentNode;
+        if (currentNode -> transactionObject.transactionId == secondTransaction -> transactionId) secondNode = currentNode;
+
+        if (firstNode != nullptr && secondNode != nullptr) break;
+        currentNode = currentNode -> nextNode;
+    }
+
+    if (firstNode == nullptr || secondNode == nullptr) throw invalid_argument("Transaction cannot be found.");
+    swap(firstNode, secondNode);
 }
 
 /**
