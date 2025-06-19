@@ -2,6 +2,16 @@
 // Created by Lim Beng Rhui on 11/06/2025.
 //
 
-// Make sure header file is only included once in program
+// Make sure the header file is only included once in the program
 #pragma once
 
+#include "../entities/Transaction.h"
+#include "../entities/DoublyLinkedList.h"
+
+class Searcher {
+
+    public:
+
+    // Linear search
+    static Transaction** linearSearchUsingList(const DoublyLinkedList &list, string &transactionType, int &outputSize);
+};
