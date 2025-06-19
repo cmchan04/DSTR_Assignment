@@ -33,10 +33,9 @@ class DoublyLinkedList {
 
 public:
 
-    // Constructor and destructor, with copy constructor prevented
+    // Constructor and destructor
     DoublyLinkedList();
     ~DoublyLinkedList();
-    DoublyLinkedList(const DoublyLinkedList&) = delete;
 
     // Insertion methods
     void insertAtEnd(const Transaction* data);

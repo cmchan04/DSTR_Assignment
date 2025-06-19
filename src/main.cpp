@@ -20,6 +20,13 @@ int main(){
     loadDataToArrayTracker.stop();
     loadDataToArrayTracker.report("Performance for Loading CSV into Array");
 
+    // Create an empty list to store Transaction data
+    auto* list = new DoublyLinkedList();
+
+    // Load data into a linked list
+    TransactionReader::readCSVToList(FILE_PATH, list);
+    cout << "Size is: " << list -> getSize() << endl;
+
     // Declare new arrays and size
     Transaction *ach = nullptr, *card = nullptr, *upi = nullptr, *wireTransfer = nullptr;
     int achSize = 0, cardSize = 0, upiSize = 0, wireSize = 0;
