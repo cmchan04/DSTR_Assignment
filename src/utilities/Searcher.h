@@ -14,8 +14,16 @@
 
 using namespace std;
 
-// Utility
-string toLowerCase(const string& str);
+struct Searcher{
 
-// Linear Searches
-Transaction* linearSearchWithArray(Transaction* transactions, int size, const string& searchType, int& resultCount);
+    // Utility
+    string toLowerCase(const string& str);
+
+    // Linear Searches
+    Transaction* linearSearchWithArray(Transaction* transactions, int size, const string& searchType, int& resultCount);
+
+
+    //Binary Searches
+
+};
+
