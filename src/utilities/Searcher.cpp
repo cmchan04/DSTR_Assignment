@@ -4,18 +4,6 @@
 
 #include "Searcher.h"
 
-/**
- * A method to convert string to lower case
- * @param str string to be converted to lower case
- * @return lower case input
- */
-string Searcher::toLowerCase(const std::string &str) {
-
-    string lowerStr = str;
-    ranges::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
-    return lowerStr;
-}
-
 
 Transaction* Searcher::linearSearchWithArray(Transaction* transactions, int size, const string& searchType,
                                              int& resultCount) {

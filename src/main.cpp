@@ -73,8 +73,8 @@ int main(){
     delete[] upi;
     delete[] wireTransfer;
 
-    // Create a searcher object for searching
-    Searcher search;
+//    // Create a searcher object for searching
+//    Searcher search;
 
     // Create a performance tracker for tracking linear searching in arrays
     PerformanceTracker linearSearchArrayTracker{};
@@ -84,7 +84,7 @@ int main(){
     // Initialize target type, result counter, and result array
     string searchType = "Payment";
     int matchCount = 0;
-    Transaction* results = search.linearSearchWithArray(transactionsArray, totalRows, searchType, matchCount);
+    Transaction* results = Searcher::linearSearchWithArray(transactionsArray, totalRows, searchType, matchCount);
 
     //Stop the tracker
     linearSearchArrayTracker.stop();
