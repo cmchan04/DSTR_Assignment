@@ -54,7 +54,7 @@ Transaction::Transaction(const string* dataArray) {
     cout << "  Transaction Type: " << transactionType << "\n";
     cout << "  Location: " << location << "\n";
     cout << "  Is Fraud: " << (isFraud ? "Yes" : "No") << "\n";
-    cout << "  Channel: " << paymentChannel << "\n";
+    cout << "  Channel: " << paymentChannel << "\n" << endl;
 
  }
 
