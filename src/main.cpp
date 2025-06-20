@@ -24,8 +24,16 @@ int main(){
     // Create an empty list to store Transaction data
     auto* list = new DoublyLinkedList();
 
+    // Create a performance tracker for tracking loading performance for the linked list
+    PerformanceTracker loadDataToListTracker{};
+    loadDataToListTracker.start();
+
     // Load data into a linked list
     TransactionReader::readCSVToList(FILE_PATH, list);
+
+    // End performance tracking and print results
+    loadDataToListTracker.stop();
+    loadDataToListTracker.report("Performance for Loading CSV into Linked List");
     cout << "Size is: " << list -> getSize() << endl;
 
     // Declare new arrays and size
