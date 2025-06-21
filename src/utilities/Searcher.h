@@ -2,20 +2,28 @@
 // Created by Lim Beng Rhui on 11/06/2025.
 //
 
-// Make sure the header file is only included once in the program
+// Make sure a header file is only included once in the program
 #pragma once
 
+// Imports
 #include "../entities/Transaction.h"
 #include "../entities/DoublyLinkedList.h"
-#include <algorithm>
+#include "StringUtil.h"
+#include <string>
 
-class Searcher {
+using namespace std;
 
-    public:
+struct Searcher{
 
-    // Linear search
+    // Linear Searches
+    static Transaction* linearSearchWithArray(Transaction* transactions, int size, const string& searchType, int& resultCount);
+  
     static Transaction** linearSearchUsingList(const DoublyLinkedList &list, string &transactionType, int &outputSize);
 
+
+    //Binary Searches
+
+  
     // Utility methods
     // Shrinks the size of a list
     inline static void removeUnusedIndex(Transaction** &list, const int &currentListSize, const int &actualListSize);
