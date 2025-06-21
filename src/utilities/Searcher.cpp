@@ -7,18 +7,26 @@
 
 using namespace std;
 
+/**
+ * The method to search for a specific transaction type using linear search.
+ * @param list The overall list of data
+ * @param transactionType The type of transaction (deposit, cash, etc.) to be searched for
+ * @param outputSize The final size of the output
+ * @return The list of Transaction pointers that each points to the Transaction object
+ */
 Transaction** Searcher::linearSearchUsingList(const DoublyLinkedList &list, string &transactionType, int &outputSize) {
 
     // Checking: is the list empty?
     if (list.isEmpty()) {
 
-        // Exit the program immediately
+        // Exit the method immediately
         outputSize = 0;
         return nullptr;
     }
 
     // First declare a new list to store results (with maximum size) with a counter
-    auto** result = new Transaction*[list.getSize()];
+    const int maximumSize = list.getSize();
+    auto** result = new Transaction*[maximumSize];
     int matchCount = 0;
 
     // Convert the string input to lower case
@@ -60,17 +68,38 @@ Transaction** Searcher::linearSearchUsingList(const DoublyLinkedList &list, stri
     }
 
     // Perform shrinking of the resulting array (which will definitely happen)
-    if (matchCount < list.getSize()) {
+    removeUnusedIndex(result, maximumSize, matchCount);
+
+    // Return the output size and search result
+    outputSize = matchCount;
+    return result;
+}
+
+/**
+ * A utility method to clear any unused spaces in a list.
+ * @param list The list with blank spaces
+ * @param currentListSize The current size of the list
+ * @param actualListSize The size that the list should shrink down to
+ */
+inline void Searcher::removeUnusedIndex(Transaction** &list, const int &currentListSize, const int &actualListSize) {
+
+    // Compare the intended size of the list with its actual size
+    if (actualListSize < currentListSize) {
 
         // Create a new temporary list
-        auto** tempList = new Transaction*[matchCount];
+        auto** tempList = new Transaction*[actualListSize];
 
         // Move all search results into the temporary list
-        for (int i = 0; i < matchCount; i++) {
-            tempList[i] = result[i];
+        for (int i = 0; i < actualListSize; i++) {
+            tempList[i] = list[i];
         }
 
         // Now replace the result with the temporary list
+        delete[] list;
+        list = tempList;
+    }
+}
+
         delete[] result;
         result = tempList;
     }

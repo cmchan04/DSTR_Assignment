@@ -14,4 +14,9 @@ class Searcher {
 
     // Linear search
     static Transaction** linearSearchUsingList(const DoublyLinkedList &list, string &transactionType, int &outputSize);
+
+    // Utility methods
+    // Shrinks the size of a list
+    inline static void removeUnusedIndex(Transaction** &list, const int &currentListSize, const int &actualListSize);
+
 };
