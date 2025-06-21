@@ -100,7 +100,14 @@ inline void Searcher::removeUnusedIndex(Transaction** &list, const int &currentL
     }
 }
 
-
+/**
+ * This method searches for a specific transaction type
+ * @param transactions array parsed in to search
+ * @param size size of the parsed array
+ * @param searchType transaction type to search
+ * @param resultCount number of total results
+ * @return
+ */
 Transaction* Searcher::linearSearchWithArray(Transaction* transactions, int size, const string& searchType,
                                              int& resultCount) {
 
