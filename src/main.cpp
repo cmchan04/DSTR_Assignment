@@ -112,6 +112,11 @@ int main(){
     // Start sorting
     Sorter::bubbleSortArray(transactionsArray, totalRows, sortType, true);
 
+    //Print 10 sample records
+    for (int i = 0; i < 10; ++i) {
+        transactionsArray[i].printContents(i);
+    }
+
     // Stop the tracker
     bubbleSearchArrayTracker.stop();
 
