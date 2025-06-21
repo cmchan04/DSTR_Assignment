@@ -64,7 +64,7 @@ void Sorter::insertionSortArray(Transaction* transactions, int size, const std::
 
         // TODO - Remove after tested
         // Progress Counter
-        if (i % 100 == 0) {
+        if (i % 1000 == 0) {
             cout << "Processing row: " << i << endl;
         }
 
@@ -97,4 +97,109 @@ void Sorter::insertionSortArray(Transaction* transactions, int size, const std::
         // Replace the index object with the key object
         transactions[j + 1] = key;
     }
+}
+
+/**
+ * This method is to sort a transaction array based on a location or transaction type with MERGE SORTING algorithm
+ * @param transactions transaction array to be sorted
+ * @param size size of the array
+ * @param column targeted column name
+ * @param ascending sort in ascending or descending \codetrue\endcode indicates ascending, \codefalse\endcode indicates descending
+ */
+void Sorter::mergeSortArray(Transaction *transactions, int size, const std::string &column, bool ascending) {
+    if (size <= 1) return;
+    mergeSortDivider(transactions, 0, size - 1, column, ascending);
+}
+
+/**
+ * This helper method act as a divider to divide and sort each segment
+ * @param transactions array to be sorted
+ * @param left index of left boundary
+ * @param right index of right boundary
+ * @param column targeted column name
+ * @param ascending sort in ascending or descending \codetrue\endcode indicates ascending, \codefalse\endcode indicates descending
+ */
+void Sorter::mergeSortDivider(Transaction *transactions, int left, int right, const std::string &column,
+                              bool ascending) {
+
+    if (left < right) {
+
+        // Locate central point
+        int median = left + (right - left) / 2;
+
+        // Divide into left and right half
+        mergeSortDivider(transactions, left, median, column, ascending);
+        mergeSortDivider(transactions, median + 1, right, column, ascending);
+
+        // Sort and merge
+        merge(transactions, left, median, right, column, ascending);
+
+    } else if (left >= right) {
+
+        // Return when the merge is completed or param parsed incorrectly
+        return;
+    }
+
+}
+
+/**
+ * This method include the comparison and shifting of merge sort
+ * @param transactions array to be sorted
+ * @param left index for left boundary
+ * @param median central index point between left and right boundary
+ * @param right index for right boundary
+ * @param column targeted column name
+ * @param ascending sort in ascending or descending \codetrue\endcode indicates ascending, \codefalse\endcode indicates descending
+ */
+void Sorter::merge(Transaction *transactions, int left, int median, int right, const std::string &column,
+                   bool ascending) {
+
+    // Initialize size of the left and right array
+    int leftSize = median - left + 1;
+    int rightSize = right - median;
+
+    // Create the left and right array
+    Transaction* leftArr = new Transaction[leftSize];
+    Transaction* rightArr = new Transaction[rightSize];
+
+    // Load data into temp arrays
+    for (int i = 0; i < leftSize; ++i)
+        leftArr[i] = transactions[left + i];
+    for (int j = 0; j < rightSize; ++j)
+        rightArr[j] = transactions[median + 1 + j];
+
+    // Initialize index for parsing transactions
+    int leftIndex = 0, rightIndex = 0, transactionIndex = left;
+
+    // Comparison and swapping
+    while (leftIndex < leftSize && rightIndex < rightSize) {
+        bool getFromLeft = false;
+
+        if (column == "type") {
+            getFromLeft = ascending ? leftArr[leftIndex].transactionType <= rightArr[rightIndex].transactionType
+                                    : leftArr[leftIndex].transactionType >= rightArr[rightIndex].transactionType;
+        } else if (column == "location") {
+            getFromLeft = ascending ? leftArr[leftIndex].location <= rightArr[rightIndex].location
+                                    : leftArr[leftIndex].location >= rightArr[rightIndex].location;
+        }
+
+        if (getFromLeft) {
+            transactions[transactionIndex++] = leftArr[leftIndex++];
+        } else {
+            transactions[transactionIndex++] = rightArr[rightIndex++];
+        }
+    }
+
+    // Copy extra records when left and right arrays are not balanced
+    while (leftIndex < leftSize) {
+        transactions[transactionIndex++] = leftArr[leftIndex++];
+    }
+    while (rightIndex < rightSize) {
+        transactions[transactionIndex++] = rightArr[rightIndex++];
+    }
+
+    // Clean up
+    delete[] leftArr;
+    delete[] rightArr;
+
 }
