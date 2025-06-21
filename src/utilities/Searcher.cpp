@@ -108,34 +108,32 @@ inline void Searcher::removeUnusedIndex(Transaction** &list, const int &currentL
  * @param resultCount number of total results
  * @return The pointer to an array with only the transaction type searched
  */
-Transaction* Searcher::linearSearchWithArray(const Transaction* transactions, const int size, const string &searchType,
+Transaction** Searcher::linearSearchWithArray(Transaction* transactions, const int size, const string &searchType,
                                              int &resultCount) {
 
     // Initialize the counter
     resultCount = 0;
 
-    //Convert searchType to lower case
-    string type = toLowerCase(searchType);
+    // Convert the search type to lower case
+    const string type = toLowerCase(searchType);
 
-    // Loop to check the total number of results
-    for (int i = 0; i < size; i++){
-        if (toLowerCase(transactions[i].transactionType) == type){
-            resultCount++;
-        }
-    }
-
-    // Create an array to store results
-    auto* result = new Transaction[resultCount];
+    // Create a large array to store results
+    auto** result = new Transaction*[size];
 
     // Index for data insertion
     int index = 0;
 
-    // Copy matched transactions into the result array
+    // Loop through the transactions
     for (int i = 0; i < size; i++) {
-        if (toLowerCase(transactions[i].transactionType) == type){
-            result[index++] = transactions[i];
-        }
+
+        // Add the matching results into the array
+        if (toLowerCase(transactions[i].transactionType) == type) result[index++] = &transactions[i];
     }
 
+    // Trim the size of the resulting array
+    removeUnusedIndex(result, size, index);
+
+    // Set results count and return the array
+    resultCount = index;
     return result;
 }

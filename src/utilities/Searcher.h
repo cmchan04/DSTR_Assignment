@@ -16,7 +16,7 @@ using namespace std;
 struct Searcher{
 
     // Linear Searches
-    static Transaction* linearSearchWithArray(const Transaction* transactions, int size, const string &searchType, int &resultCount);
+    static Transaction** linearSearchWithArray(Transaction* transactions, int size, const string &searchType, int &resultCount);
     static Transaction** linearSearchUsingList(const DoublyLinkedList &list, string &transactionType, int &outputSize);
 
     //Binary Searches
