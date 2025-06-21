@@ -40,9 +40,11 @@ public:
     ~DoublyLinkedList();
     DoublyLinkedList(const DoublyLinkedList &list);
 
-    // Getters
+    // Getters and setters
     [[nodiscard]] Node* getHeadNode() const;
     [[nodiscard]] Node* getTailNode() const;
+    void setHeadNode(Node* headNode);
+    void setTailNode(Node* tailNode);
 
     // Insertion methods
     void insertBefore(Node* node, const Transaction* data);
