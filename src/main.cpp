@@ -125,6 +125,7 @@ int main(){
 
     // Release memory
     delete[] transactionsArray;
+    delete[] list;
 
     // Program ends!
     return 0;
