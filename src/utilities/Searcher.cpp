@@ -30,7 +30,7 @@ Transaction** Searcher::linearSearchUsingList(const DoublyLinkedList &list, stri
     int matchCount = 0;
 
     // Convert the string input to lower case
-    ranges::transform(transactionType, transactionType.begin(), ::tolower);
+    transactionType = toLowerCase(transactionType);
 
     // Get the head node
     Node* currentNode = list.getHeadNode();
@@ -40,7 +40,7 @@ Transaction** Searcher::linearSearchUsingList(const DoublyLinkedList &list, stri
 
         // Get the lower case version of the transaction type for each node
         string nodeTransactionType = currentNode -> transactionObject.transactionType;
-        ranges::transform(nodeTransactionType, nodeTransactionType.begin(), ::tolower);
+        nodeTransactionType = toLowerCase(nodeTransactionType);
 
         // Check if the current node matches condition
         if (nodeTransactionType == transactionType) {
@@ -100,35 +100,40 @@ inline void Searcher::removeUnusedIndex(Transaction** &list, const int &currentL
     }
 }
 
-
-Transaction* Searcher::linearSearchWithArray(Transaction* transactions, int size, const string& searchType,
-                                             int& resultCount) {
+/**
+ * This method searches for a specific transaction type
+ * @param transactions array parsed in to search
+ * @param size size of the parsed array
+ * @param searchType transaction type to search
+ * @param resultCount number of total results
+ * @return The pointer to an array with only the transaction type searched
+ */
+Transaction** Searcher::linearSearchWithArray(Transaction* transactions, const int size, const string &searchType,
+                                             int &resultCount) {
 
     // Initialize the counter
     resultCount = 0;
 
-    //Convert searchType to lower case
-    string type = toLowerCase(searchType);
+    // Convert the search type to lower case
+    const string type = toLowerCase(searchType);
 
-    // Loop to check the total number of results
-    for (int i = 0; i < size; i++){
-        if (toLowerCase(transactions[i].transactionType) == type){
-            resultCount++;
-        }
-    }
-
-    // Create an array to store results
-    auto* result = new Transaction[resultCount];
+    // Create a large array to store results
+    auto** result = new Transaction*[size];
 
     // Index for data insertion
     int index = 0;
 
-    // Copy matched transactions into the result array
+    // Loop through the transactions
     for (int i = 0; i < size; i++) {
-        if (toLowerCase(transactions[i].transactionType) == type){
-            result[index++] = transactions[i];
-        }
+
+        // Add the matching results into the array
+        if (toLowerCase(transactions[i].transactionType) == type) result[index++] = &transactions[i];
     }
 
+    // Trim the size of the resulting array
+    removeUnusedIndex(result, size, index);
+
+    // Set results count and return the array
+    resultCount = index;
     return result;
 }

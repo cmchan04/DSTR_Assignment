@@ -84,17 +84,17 @@ int main(){
     // Initialize target type, result counter, and result array
     string searchType = "Payment";
     int matchCount = 0;
-    Transaction* results = Searcher::linearSearchWithArray(transactionsArray, totalRows, searchType, matchCount);
+    Transaction** results = Searcher::linearSearchWithArray(transactionsArray, totalRows, searchType, matchCount);
 
-    //Stop the tracker
+    // Stop the tracker
     linearSearchArrayTracker.stop();
 
-    //Short summary
+    // Short summary
     cout << "Found " << matchCount << " transactions with type: " << searchType << "\n" << endl;
 
-    //Print at most 10 sample records
+    // Print at most 10 sample records
     for (int i = 0; i < min(10, matchCount); ++i) {
-        results[i].printContents(i);
+        results[i] -> printContents(i);
     }
 
     linearSearchArrayTracker.report("Performance for Linear Search in Array for \"Payment\" transaction type");
