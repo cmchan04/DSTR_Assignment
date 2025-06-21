@@ -2,6 +2,7 @@
 #include "utilities/TransactionReader.h"
 #include "utilities/ChannelSeparator.h"
 #include "utilities/PerformanceTracker.h"
+#include "utilities/Searcher.h"
 
 using namespace std;
 

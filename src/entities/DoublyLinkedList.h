@@ -7,22 +7,24 @@
 #include "Transaction.h"
 
 /**
+ * A struct to represent nodes in the linked list
+ */
+struct Node {
+
+    // A doubly linked list has three elements: data, pointer of previous and next node
+    Transaction transactionObject;
+    int indexInList;
+    Node* previousNode;
+    Node* nextNode;
+
+    // Constructor: Explicit to ensure no implicit conversions take place
+    explicit Node(const Transaction* data, int index);
+};
+
+/**
  * This is the class for representing a doubly linked list.
  */
 class DoublyLinkedList {
-
-    // A private struct to represent nodes in the linked list
-    struct Node {
-
-        // A doubly linked list has three elements: data, pointer of previous and next node
-        Transaction transactionObject;
-        int indexInList;
-        Node* previousNode;
-        Node* nextNode;
-
-        // Constructor: Explicit to ensure no implicit conversions take place
-        explicit Node(const Transaction* data, int index);
-    };
 
     // Member attributes to keep track of the linked list
     Node* headNode;
@@ -33,11 +35,18 @@ class DoublyLinkedList {
 
 public:
 
-    // Constructor and destructor
+    // Constructor, destructor and copy constructor
     DoublyLinkedList();
     ~DoublyLinkedList();
+    DoublyLinkedList(const DoublyLinkedList &list);
+
+    // Getters
+    [[nodiscard]] Node* getHeadNode() const;
+    [[nodiscard]] Node* getTailNode() const;
 
     // Insertion methods
+    void insertBefore(Node* node, const Transaction* data);
+    void insertBefore(const Transaction* nodeToChange, const Transaction* data); // Remember to remove this!
     void insertAtEnd(const Transaction* data);
 
     // Print contents
@@ -45,9 +54,7 @@ public:
 
     // Swap between nodes
     void swap(Node* firstNode, Node* secondNode);
-
-    // The swap with Transaction (below) can be removed if not used (bur remained for testing as for now)
-    void swap(const Transaction* firstTransaction, const Transaction* secondTransaction);
+    void swap(const Transaction* firstTransaction, const Transaction* secondTransaction);  // Remember to remove this!
 
     // Other utility methods
     void clear();
