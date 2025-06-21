@@ -12,6 +12,11 @@ void Sorter::bubbleSortArray(Transaction *transactions, int size, const std::str
     // Start bubble sorting
     for (int i = 0; i < size; ++i) {
 
+        // Counter
+        if (i % 10000 == 0){
+            cout << i << endl;
+        }
+
         // Avoid unnecessary swapping for completed indexes
         for (int j = 0; j < size - i - 1; ++j) {
 
