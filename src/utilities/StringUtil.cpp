@@ -11,7 +11,10 @@
  */
 string toLowerCase(const std::string &str) {
 
+    // Retrieve the string
     string lowerStr = str;
-    ranges::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
+
+    // Convert to lower case using ranges::transform, then return the string
+    ranges::transform(lowerStr, lowerStr.begin(), ::tolower);
     return lowerStr;
 }

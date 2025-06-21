@@ -4,11 +4,10 @@
 
 // Imports
 #include "TransactionReader.h"
+#include "StringUtil.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <algorithm>
-#include <ranges>
 
 using namespace std;
 
@@ -22,8 +21,7 @@ using namespace std;
  * @return return \code TRUE\endcode if the converted result is "true"
  */
 bool TransactionReader::stringToBool(const string &input) {
-    string lower = input;
-    ranges::transform(lower, lower.begin(), ::tolower);
+    const string lower = toLowerCase(input);
     return lower == "true";
 }
 
@@ -39,7 +37,7 @@ bool TransactionReader::stringToBool(const string &input) {
  */
 Transaction* TransactionReader::readCSVToArray(const string &filename, int &outSize) {
 
-    // Retrieve file
+    // Retrieve the file
     ifstream file(filename);
 
     // Temporary location to store data row (unformatted)

@@ -30,7 +30,7 @@ Transaction** Searcher::linearSearchUsingList(const DoublyLinkedList &list, stri
     int matchCount = 0;
 
     // Convert the string input to lower case
-    ranges::transform(transactionType, transactionType.begin(), ::tolower);
+    transactionType = toLowerCase(transactionType);
 
     // Get the head node
     Node* currentNode = list.getHeadNode();
@@ -40,7 +40,7 @@ Transaction** Searcher::linearSearchUsingList(const DoublyLinkedList &list, stri
 
         // Get the lower case version of the transaction type for each node
         string nodeTransactionType = currentNode -> transactionObject.transactionType;
-        ranges::transform(nodeTransactionType, nodeTransactionType.begin(), ::tolower);
+        nodeTransactionType = toLowerCase(nodeTransactionType);
 
         // Check if the current node matches condition
         if (nodeTransactionType == transactionType) {
@@ -108,8 +108,8 @@ inline void Searcher::removeUnusedIndex(Transaction** &list, const int &currentL
  * @param resultCount number of total results
  * @return The pointer to an array with only the transaction type searched
  */
-Transaction* Searcher::linearSearchWithArray(Transaction* transactions, int size, const string& searchType,
-                                             int& resultCount) {
+Transaction* Searcher::linearSearchWithArray(const Transaction* transactions, const int size, const string &searchType,
+                                             int &resultCount) {
 
     // Initialize the counter
     resultCount = 0;
