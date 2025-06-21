@@ -101,27 +101,27 @@ int main(){
     // Release memory
     delete[] results;
     
-//    // Create a Performance Tracker for Bubble Sort in arrays
-//    PerformanceTracker bubbleSearchArrayTracker{};
-//    bubbleSearchArrayTracker.start();
-//
-//    // Test: Bubble sort in arrays based on location
-//    // Initialize target type
-//    string sortType = "location";
-//
-//    // Start sorting
-//    Sorter::bubbleSortArray(transactionsArray, totalRows, sortType, true);
-//
-//    //Print 10 sample records
-//    for (int i = 0; i < 10; ++i) {
-//        transactionsArray[i].printContents(i);
-//    }
-//
-//    // Stop the tracker
-//    bubbleSearchArrayTracker.stop();
-//
-//    // Print performance summary
-//    bubbleSearchArrayTracker.report("Performance for Bubble Sort in Array for \"Location\"");
+    // Create a Performance Tracker for Bubble Sort in arrays
+    PerformanceTracker bubbleSearchArrayTracker{};
+    bubbleSearchArrayTracker.start();
+
+    // Test: Bubble sort in arrays based on location
+    // Initialize target type
+    string sortType = "location";
+
+    // Start sorting
+    Sorter::bubbleSortArray(transactionsArray, totalRows, sortType, true);
+
+    //Print 10 sample records
+    for (int i = 0; i < 10; ++i) {
+        transactionsArray[i].printContents(i);
+    }
+
+    // Stop the tracker
+    bubbleSearchArrayTracker.stop();
+
+    // Print performance summary
+    bubbleSearchArrayTracker.report("Performance for Bubble Sort in Array for \"Location\"");
 
     // Release memory
     delete[] transactionsArray;

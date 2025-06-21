@@ -18,7 +18,7 @@ struct Sorter{
     static void bubbleSortArray(Transaction* transactions, int size, const string& column = "location", bool ascending = true);
 
     // Insertion sort
-
+    static void insertionSortArray(Transaction* transactions, int size, const std::string& column = "location", bool ascending = true);
 
     // Merge sort
 
