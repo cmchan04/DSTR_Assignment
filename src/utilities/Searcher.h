@@ -9,8 +9,6 @@
 #include "../entities/Transaction.h"
 #include "StringUtil.h"
 #include <string>
-#include <ranges>
-#include <algorithm>
 
 using namespace std;
 

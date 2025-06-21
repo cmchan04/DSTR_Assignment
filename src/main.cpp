@@ -3,6 +3,7 @@
 #include "utilities/ChannelSeparator.h"
 #include "utilities/PerformanceTracker.h"
 #include "utilities/Searcher.h"
+#include "utilities/Sorter.h"
 
 using namespace std;
 
@@ -73,9 +74,6 @@ int main(){
     delete[] upi;
     delete[] wireTransfer;
 
-//    // Create a searcher object for searching
-//    Searcher search;
-
     // Create a performance tracker for tracking linear searching in arrays
     PerformanceTracker linearSearchArrayTracker{};
     linearSearchArrayTracker.start();
@@ -97,11 +95,31 @@ int main(){
         results[i].printContents(i);
     }
 
+    // Print performance summary
     linearSearchArrayTracker.report("Performance for Linear Search in Array for \"Payment\" transaction type");
 
     // Release memory
-    delete[] transactionsArray;
     delete[] results;
+
+    // Create a Performance Tracker for Bubble Sort in arrays
+    PerformanceTracker bubbleSearchArrayTracker{};
+    bubbleSearchArrayTracker.start();
+
+    // Test: Bubble sort in arrays based on location
+    // Initialize target type
+    string sortType = "location";
+
+    // Start sorting
+    Sorter::bubbleSortArray(transactionsArray, totalRows, sortType, true);
+
+    // Stop the tracker
+    bubbleSearchArrayTracker.stop();
+
+    // Print performance summary
+    bubbleSearchArrayTracker.report("Performance for Bubble Sort in Array for \"Location\"");
+
+    // Release memory
+    delete[] transactionsArray;
 
     // Program ends!
     return 0;
