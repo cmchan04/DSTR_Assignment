@@ -35,15 +35,18 @@ class DoublyLinkedList {
 
 public:
 
-    // Constructor and destructor
+    // Constructor, destructor and copy constructor
     DoublyLinkedList();
     ~DoublyLinkedList();
+    DoublyLinkedList(const DoublyLinkedList &list);
 
     // Getters
     [[nodiscard]] Node* getHeadNode() const;
     [[nodiscard]] Node* getTailNode() const;
 
     // Insertion methods
+    void insertBefore(Node* node, const Transaction* data);
+    void insertBefore(const Transaction* nodeToChange, const Transaction* data); // Remember to remove this!
     void insertAtEnd(const Transaction* data);
 
     // Print contents
@@ -51,9 +54,7 @@ public:
 
     // Swap between nodes
     void swap(Node* firstNode, Node* secondNode);
-
-    // The swap with Transaction (below) can be removed if not used (bur remained for testing as for now)
-    void swap(const Transaction* firstTransaction, const Transaction* secondTransaction);
+    void swap(const Transaction* firstTransaction, const Transaction* secondTransaction);  // Remember to remove this!
 
     // Other utility methods
     void clear();

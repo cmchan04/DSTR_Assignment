@@ -44,6 +44,24 @@ DoublyLinkedList::~DoublyLinkedList() {
 }
 
 /**
+ * This method copies a new linked list without any overlapping components.
+ * @param list The original linked list
+ */
+DoublyLinkedList::DoublyLinkedList(const DoublyLinkedList& list): headNode(nullptr), tailNode(nullptr) {
+
+    // Get the head node as the first node
+    const Node* current = list.headNode;
+
+    // Loop through each node
+    while (current != nullptr) {
+
+        // Add each transaction to the end of the list
+        this -> insertAtEnd(&current -> transactionObject);
+        current = current->nextNode;
+    }
+}
+
+/**
  * The getter to get the first node of the list.
  * @return The first node of the list
  */
@@ -60,6 +78,69 @@ Node* DoublyLinkedList::getTailNode() const {
 }
 
 /**
+ * A method that adds a Transaction before a specified node.
+ * @param node The node that will be placed after the new node
+ * @param data The Transaction object
+ */
+void DoublyLinkedList::insertBefore(Node* node, const Transaction* data) {
+
+    // Overall idea: Three nodes have to be set up. The specified node, the previous node of the specified node, and the new node.
+
+    // First reject empty nodes or empty data
+    if (node == nullptr || data == nullptr) throw invalid_argument("Input cannot be null.");
+
+    // Retrieve the index of the specified node
+    const int index = node -> indexInList;
+
+    // Create a new node for the new Transaction object
+    auto* newNode = new Node(data, index);
+
+    // Set up the new node
+    newNode -> nextNode = node;
+    newNode -> previousNode = node -> previousNode;
+
+    // Handle the node before the specified node. Special case if the node is head node
+    if (node -> previousNode == nullptr) headNode = newNode;
+
+    // If not, reassign the pointer of the previous node
+    else node -> previousNode -> nextNode = newNode;
+
+    // Handle the specified node. Only the previous node is changed to the new node
+    node -> previousNode = newNode;
+
+    // Update the index of the later nodes
+    for (Node* updateNodes = node; updateNodes != nullptr; updateNodes = updateNodes -> nextNode) {
+        updateNodes -> indexInList++;
+    }
+
+    // Lastly, update the size of the linked list
+    size++;
+}
+
+// This method shall be deleted once everything works well.
+void DoublyLinkedList::insertBefore(const Transaction* nodeToChange, const Transaction* data) {
+
+    if (nodeToChange == nullptr || data == nullptr) throw invalid_argument("Transaction cannot be null.");
+
+    // Look for nodes associated with the transaction
+    Node* transactionNode = nullptr;
+    Node* currentNode = this -> headNode;
+
+    while (currentNode != nullptr) {
+
+        if (currentNode -> transactionObject.transactionId == nodeToChange -> transactionId) {
+            transactionNode = currentNode;
+            break;
+        }
+
+        currentNode = currentNode -> nextNode;
+    }
+
+    if (transactionNode == nullptr) throw invalid_argument("Transaction cannot be found.");
+    insertBefore(transactionNode, data);
+}
+
+/**
  * The method to insert the Transaction object into the end of linked list.
  * @param data The Transaction object to be added.
  */
@@ -69,7 +150,7 @@ void DoublyLinkedList::insertAtEnd(const Transaction* data) {
     const auto newNode = new Node(data, ++size);
 
     // Case 1: The list is empty
-    if (headNode == nullptr) {
+    if (headNode == nullptr || tailNode == nullptr) {
 
         // The new node automatically becomes both the head and tail node
         headNode = tailNode = newNode;
