@@ -67,41 +67,12 @@ int main(){
     // Show total rows read
     cout << "Total rows: " << totalRows << endl;
 
-    //Release memory for splitting data
+    // Release memory
+    delete[] transactionsArray;
     delete[] ach;
     delete[] card;
     delete[] upi;
     delete[] wireTransfer;
-
-//    // Create a searcher object for searching
-//    Searcher search;
-
-    // Create a performance tracker for tracking linear searching in arrays
-    PerformanceTracker linearSearchArrayTracker{};
-    linearSearchArrayTracker.start();
-
-    // Test: linear search for arrays
-    // Initialize target type, result counter, and result array
-    string searchType = "Payment";
-    int matchCount = 0;
-    Transaction* results = Searcher::linearSearchWithArray(transactionsArray, totalRows, searchType, matchCount);
-
-    //Stop the tracker
-    linearSearchArrayTracker.stop();
-
-    //Short summary
-    cout << "Found " << matchCount << " transactions with type: " << searchType << "\n" << endl;
-
-    //Print at most 10 sample records
-    for (int i = 0; i < min(10, matchCount); ++i) {
-        results[i].printContents(i);
-    }
-
-    linearSearchArrayTracker.report("Performance for Linear Search in Array for \"Payment\" transaction type");
-
-    // Release memory
-    delete[] transactionsArray;
-    delete[] results;
 
     // Program ends!
     return 0;
