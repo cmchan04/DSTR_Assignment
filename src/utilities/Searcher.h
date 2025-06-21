@@ -7,6 +7,7 @@
 
 #include "../entities/Transaction.h"
 #include "../entities/DoublyLinkedList.h"
+#include <algorithm>
 
 class Searcher {
 

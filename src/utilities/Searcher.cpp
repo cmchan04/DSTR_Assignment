@@ -100,11 +100,3 @@ inline void Searcher::removeUnusedIndex(Transaction** &list, const int &currentL
     }
 }
 
-        delete[] result;
-        result = tempList;
-    }
-
-    // Return the output size and search result
-    outputSize = matchCount;
-    return result;
-}
