@@ -21,10 +21,7 @@ struct Sorter{
     static void insertionSortInArray(Transaction* transactions, int size, const string &column = "location", bool ascending = true);
 
     // Merge sort
-    static void mergeSortArray(Transaction* transactions, int size, const string& column = "location", bool ascending = true);
-
-    // Helper Functions
+    static void mergeSortInArray(Transaction* transactions, int size, const string& column = "location", bool ascending = true);
     static void mergeSortDivider(Transaction* transactions, int left, int right, const string& column = "location", bool ascending = true);
-    static void merge(Transaction* transactions, int left, int median, int right, const string& column = "location", bool ascending = true);
-
+    static void mergeForArrayElements(Transaction* transactions, int left, int median, int right, const string& column = "location", bool ascending = true);
 };
