@@ -6,6 +6,63 @@
 #include "StringUtil.h"
 
 /**
+ * This method is to sort a transaction array based on location or transaction type with BUBBLE SORTING algorithm
+ * @param transactions transaction array to be sorted
+ * @param size size of the array
+ * @param column targeted column name
+ * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
+ */
+void Sorter::bubbleSortInArray(Transaction* transactions, const int size, const string &column, const bool ascending) {
+
+    // Convert the sort field to lower case
+    const string col = toLowerCase(column);
+
+    // Start bubble sorting
+    for (int i = 0; i < size; ++i) {
+
+        // Declare a variable to check if any swapping takes place in this traversal
+        bool swapped = false;
+
+        // Avoid unnecessary swapping for completed indexes
+        for (int j = 0; j < size - i - 1; ++j) {
+
+            // A flag that indicates should swap or not
+            bool shouldSwap = false;
+
+            // Get details for the left and right transactions
+            const string leftID = transactions[j].transactionId;
+            const string leftType = toLowerCase(transactions[j].transactionType);
+            const string leftLocation = toLowerCase(transactions[j].location);
+
+            const string rightID = transactions[j + 1].transactionId;
+            const string rightType = toLowerCase(transactions[j + 1].transactionType);
+            const string rightLocation = toLowerCase(transactions[j + 1].location);
+
+            // Swapping based on the transaction type
+            if (col == "type")
+                shouldSwap = ascending ?
+                    leftType > rightType || (leftType == rightType && leftID > rightID) :
+                    leftType < rightType || (leftType == rightType && leftID < rightID);
+
+            // Swapping based on the location
+            else if (col == "location")
+                shouldSwap = ascending ?
+                    leftLocation > rightLocation || (leftLocation == rightLocation && leftID > rightID) :
+                    leftLocation < rightLocation || (leftLocation == rightLocation && leftID < rightID);
+
+            // Perform swapping if swapping condition is fulfilled
+            if (shouldSwap) {
+                Transaction::swap(transactions[j], transactions[j + 1]);
+                swapped = true;
+            }
+        }
+
+        // If no swapping takes place, then everything ends early
+        if (!swapped) break;
+    }
+}
+
+/**
  * This method sorts a linked list based on the transaction type in ascending order.
  * @param list The list to be sorted
  */
@@ -74,6 +131,66 @@ DoublyLinkedList Sorter::bubbleSortInList(const DoublyLinkedList &list) {
 
     // After done, return the list
     return sortedList;
+}
+
+/**
+ * This method is to sort a transaction array based on a location or transaction type with INSERTION SORTING algorithm
+ * @param transactions transaction array to be sorted
+ * @param size size of the array
+ * @param column targeted column name
+ * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
+ */
+void Sorter::insertionSortInArray(Transaction* transactions, const int size, const string &column, const bool ascending) {
+
+    // Convert column name to lowercase
+    const string col = toLowerCase(column);
+
+    // The overall traversal throughout the array
+    for (int i = 1; i < size; ++i) {
+
+        // Create the key object to be compared in each iteration and retrieve its information
+        Transaction key = transactions[i];
+        string keyID = key.transactionId;
+        string keyType = toLowerCase(key.transactionType);
+        string keyLocation = toLowerCase(key.location);
+
+        // Start looping from the location before the key (backward traversal)
+        int j = i - 1;
+        while (j >= 0) {
+
+            // Retrieve the information of the node being looped
+            string previousID = transactions[j].transactionId;
+            string previousType = toLowerCase(transactions[j].transactionType);
+            string previousLocation = toLowerCase(transactions[j].location);
+
+            // Declare a boolean to determine if insertion should take place
+            bool shouldInsert = false;
+
+            // Check target column
+            if (col == "type")
+                shouldInsert = ascending ?
+                    keyType > previousType || (keyType == previousType && keyID > previousID) :
+                    keyType < previousType || (keyType == previousType && keyID < previousID);
+
+            // Swapping based on the location
+            else if (col == "location")
+                shouldInsert = ascending ?
+                    keyLocation > previousLocation || (keyLocation == previousLocation && keyID > previousID) :
+                    keyLocation < previousLocation || (keyLocation == previousLocation && keyID < previousID);
+
+            // Break when it reached the correct index (is larger / smaller than the previous index)
+            if (shouldInsert) break;
+
+            // Move the object one step back
+            transactions[j + 1] = transactions[j];
+
+            // Decrement to compare with the object at the following index
+            --j;
+        }
+
+        // Replace the index object with the key object
+        transactions[j + 1] = key;
+    }
 }
 
 /**
@@ -155,6 +272,140 @@ DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list) {
 }
 
 /**
+ * This method is to sort a transaction array based on a location or transaction type with MERGE SORTING algorithm
+ * @param transactions transaction array to be sorted
+ * @param size size of the array
+ * @param column targeted column name
+ * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
+ */
+void Sorter::mergeSortInArray(Transaction *transactions, const int size, const string &column, const bool ascending) {
+
+    // If the transaction is empty, return error
+    if (transactions == nullptr) throw invalid_argument("Transaction array cannot be null.");
+
+    // Do nothing if array size is too small
+    if (size <= 1) return;
+
+    // Perform recursive sorting otherwise
+    mergeSortDividerInArray(transactions, 0, size - 1, column, ascending);
+}
+
+/**
+ * This helper method act as a divider to divide and sort each segment
+ * @param transactions array to be sorted
+ * @param left index of left boundary
+ * @param right index of right boundary
+ * @param column targeted column name
+ * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
+ */
+void Sorter::mergeSortDividerInArray(Transaction *transactions, const int left, const int right,
+                              const string &column, const bool ascending) {
+
+    // Divide the array into two if input is valid
+    if (left < right) {
+
+        // Locate the central point
+        const int median = (left + right) / 2;
+
+        // Divide into left and right half
+        mergeSortDividerInArray(transactions, left, median, column, ascending);
+        mergeSortDividerInArray(transactions, median + 1, right, column, ascending);
+
+        // Sort and merge
+        mergeForArrayElements(transactions, left, median, right, column, ascending);
+    }
+
+    // Return or do nothing when the merge is completed, or the parameters are passed incorrectly
+}
+
+/**
+ * This method includes the comparison and shifting of merge sort
+ * @param transactions array to be sorted
+ * @param left index for left boundary
+ * @param median central index point between left and right boundary
+ * @param right index for right boundary
+ * @param column targeted column name
+ * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
+ */
+void Sorter::mergeForArrayElements(Transaction *transactions, const int left, const int median, const int right,
+                                   const string &column, const bool ascending) {
+
+    // Initialize size of the left and right array
+    const int leftSize = median - left + 1;
+    const int rightSize = right - median;
+
+    // Create the left and right array
+    auto* leftArr = new Transaction[leftSize];
+    auto* rightArr = new Transaction[rightSize];
+
+    // Load data into temporary arrays: Left array
+    for (int i = 0; i < leftSize; ++i)
+        leftArr[i] = transactions[left + i];
+
+    // Right array
+    for (int j = 0; j < rightSize; ++j)
+        rightArr[j] = transactions[median + 1 + j];
+
+    // Initialize index for parsing transactions
+    int leftIndex = 0, rightIndex = 0, transactionIndex = left;
+
+    // Perform comparison and swapping when there are still elements in both arrays
+    while (leftIndex < leftSize && rightIndex < rightSize) {
+
+        // Declare a boolean to determine if the element shall be obtained from the left array or the right array
+        bool getFromLeft = false;
+
+        // Get information from the left and right array
+        string leftID = leftArr[leftIndex].transactionId;
+        string leftType = toLowerCase(leftArr[leftIndex].transactionType);
+        string leftLocation = toLowerCase(leftArr[leftIndex].location);
+
+        string rightID = rightArr[rightIndex].transactionId;
+        string rightType = toLowerCase(rightArr[rightIndex].transactionType);
+        string rightLocation = toLowerCase(rightArr[rightIndex].location);
+
+        // Sorting based on transaction type
+        if (column == "type") {
+            getFromLeft = ascending ?
+                leftType < rightType || (leftType == rightType && leftID < rightID) :
+                leftType > rightType || (leftType == rightType && leftID > rightID);
+
+        // Sorting based on location
+        } else if (column == "location") {
+            getFromLeft = ascending ?
+                leftLocation < rightLocation || (leftLocation == rightLocation && leftID < rightID) :
+                leftLocation > rightLocation || (leftLocation == rightLocation && leftID > rightID);
+        }
+
+        // If the element has to be obtained from the left
+        if (getFromLeft) {
+
+            // Add to the transaction list and increase index
+            transactions[transactionIndex++] = leftArr[leftIndex++];
+
+        // Add elements from the right list into the sorted array and increment index
+        } else {
+            transactions[transactionIndex++] = rightArr[rightIndex++];
+        }
+    }
+
+    // Copy extra records when either the left or right array does not have elements anymore
+    // When the left array still has elements, copy them
+    while (leftIndex < leftSize) {
+        transactions[transactionIndex++] = leftArr[leftIndex++];
+    }
+
+    // The same goes for the right
+    while (rightIndex < rightSize) {
+        transactions[transactionIndex++] = rightArr[rightIndex++];
+    }
+
+    // Clean up to free memory
+    delete[] leftArr;
+    delete[] rightArr;
+}
+
+/**
  * This method sorts a list based on the merge sort algorithm.
  * @param list The list to be sorted
  * @return A list sorted using the merge sort algorithm
@@ -171,7 +422,7 @@ DoublyLinkedList Sorter::mergeSortInList(const DoublyLinkedList &list) {
     Node* headNode = sortedList.getHeadNode();
 
     // Perform a recursive split and sort based on the head node
-    headNode = recursiveSplitAndSort(headNode);
+    headNode = recursiveSplitAndSortInList(headNode);
 
     // Reassign the tail node by traversing through the entire linked list
     Node* tailNode = headNode;
@@ -192,13 +443,13 @@ DoublyLinkedList Sorter::mergeSortInList(const DoublyLinkedList &list) {
  * @param headNode The head node for the linked list
  * @return The head node of a new linked list that is sorted
  */
-Node* Sorter::recursiveSplitAndSort(Node* headNode) {
+Node* Sorter::recursiveSplitAndSortInList(Node* headNode) {
 
     // The base case: The head node cannot be split anymore
     if (headNode == nullptr || headNode -> nextNode == nullptr) return headNode;
 
     // First, find the middle node. The next node after the middle node marks the start of the second half part.
-    Node* middle = getMiddleNode(headNode);
+    Node* middle = getMiddleNodeForList(headNode);
     Node* secondHalfStart = middle -> nextNode;
 
     // Next, split the list into two halves by setting null pointers
@@ -206,11 +457,11 @@ Node* Sorter::recursiveSplitAndSort(Node* headNode) {
     secondHalfStart -> previousNode = nullptr;         // Second half
 
     // Both halves are split again recursively
-    Node* leftHalf = recursiveSplitAndSort(headNode);
-    Node* rightHalf = recursiveSplitAndSort(secondHalfStart);
+    Node* leftHalf = recursiveSplitAndSortInList(headNode);
+    Node* rightHalf = recursiveSplitAndSortInList(secondHalfStart);
 
     // Merge both halves
-    return mergeNodes(leftHalf, rightHalf);
+    return mergeNodesForList(leftHalf, rightHalf);
 }
 
 /**
@@ -218,7 +469,7 @@ Node* Sorter::recursiveSplitAndSort(Node* headNode) {
  * @param headNode The head node of the linked list
  * @return The node located at the center of the list
  */
-Node* Sorter::getMiddleNode(Node* headNode) {
+Node* Sorter::getMiddleNodeForList(Node* headNode) {
 
     // If the list has no node or only one node, end the recursion
     if (headNode == nullptr || headNode->nextNode == nullptr) return headNode;
@@ -245,7 +496,7 @@ Node* Sorter::getMiddleNode(Node* headNode) {
  * @param nodeInRight The head node in the second list
  * @return The head node in the combined and sorted linked list
  */
-Node* Sorter::mergeNodes(Node* nodeInLeft, Node* nodeInRight) {
+Node* Sorter::mergeNodesForList(Node* nodeInLeft, Node* nodeInRight) {
 
     // Show warning if the input is null
     if (nodeInLeft == nullptr && nodeInRight == nullptr) throw invalid_argument("Inputs cannot be null");
@@ -368,7 +619,7 @@ DoublyLinkedList Sorter::quickSortInList(const DoublyLinkedList& list) {
     Node* tailNode = list.getTailNode();
 
     // Perform recursive action on quick sort. This returns the head node of the sorted list.
-    Node* sortedNode = quickSortRecursive(headNode, tailNode);
+    Node* sortedNode = quickSortRecursiveForList(headNode, tailNode);
 
     // Create a new linked list
     DoublyLinkedList sortedList;
@@ -408,7 +659,7 @@ DoublyLinkedList Sorter::quickSortInList(const DoublyLinkedList& list) {
  * @param tail The tail node of a list
  * @return The head node of the sorted list
  */
-Node* Sorter::quickSortRecursive(Node* head, Node* tail) {
+Node* Sorter::quickSortRecursiveForList(Node* head, Node* tail) {
 
     // For empty inputs, or if the list cannot be partitioned anymore, return the node
     if (head == nullptr || head == tail) return head;
@@ -418,7 +669,7 @@ Node* Sorter::quickSortRecursive(Node* head, Node* tail) {
     Node* rightNodes = nullptr;
 
     // Partition the list into two based on the last node, returning three information: pivot node, the head of the left and tail of the right
-    Node* pivot = partition(head, tail, &leftNodes, &rightNodes);
+    Node* pivot = quickSortPartitionForList(head, tail, &leftNodes, &rightNodes);
 
     // We'll assume the pivot belongs to the right part
     // If the left part exist
@@ -432,7 +683,7 @@ Node* Sorter::quickSortRecursive(Node* head, Node* tail) {
         pivot -> previousNode = nullptr;
 
         // Recursively continue the recursive sort
-        leftNodes = quickSortRecursive(leftNodes, leftFinalNode);
+        leftNodes = quickSortRecursiveForList(leftNodes, leftFinalNode);
 
         // Find the tail of the new sorted left part
         Node* leftEndingNode = leftNodes;
@@ -444,7 +695,7 @@ Node* Sorter::quickSortRecursive(Node* head, Node* tail) {
     }
 
     // Taking care of the right part
-    pivot -> nextNode = quickSortRecursive(pivot -> nextNode, rightNodes);
+    pivot -> nextNode = quickSortRecursiveForList(pivot -> nextNode, rightNodes);
 
     // If the pivot has a next node, reestablish the connection
     if (pivot -> nextNode) pivot -> nextNode -> previousNode = pivot;
@@ -461,13 +712,13 @@ Node* Sorter::quickSortRecursive(Node* head, Node* tail) {
  * @param rightNodes The new tail node of the right portion
  * @return The pivot assigned throughout the sorting process.
  */
-Node* Sorter::partition(Node* head, Node* tail, Node** leftNodes, Node** rightNodes) {
+Node* Sorter::quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes, Node** rightNodes) {
 
     // First, let the tail node be the pivot
     Node* pivot = tail;
 
     // We use median-of-three value strategy here. We first retrieve the middle node
-    Node* middleNode = getMiddleNode(head);
+    Node* middleNode = getMiddleNodeForList(head);
 
     // We compare the values from the head, middle and tail nodes
     string headType = toLowerCase(head->transactionObject.transactionType);
@@ -585,255 +836,4 @@ Node* Sorter::partition(Node* head, Node* tail, Node** leftNodes, Node** rightNo
     // Set the right tail and return the pivot
     *rightNodes = rightTail;
     return pivot;
-}
-
-/**
- * This method is to sort a transaction array based on location or transaction type with BUBBLE SORTING algorithm
- * @param transactions transaction array to be sorted
- * @param size size of the array
- * @param column targeted column name
- * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
- */
-void Sorter::bubbleSortInArray(Transaction* transactions, const int size, const string &column, const bool ascending) {
-
-    // Convert the sort field to lower case
-    const string col = toLowerCase(column);
-
-    // Start bubble sorting
-    for (int i = 0; i < size; ++i) {
-
-        // Declare a variable to check if any swapping takes place in this traversal
-        bool swapped = false;
-
-        // Avoid unnecessary swapping for completed indexes
-        for (int j = 0; j < size - i - 1; ++j) {
-
-            // A flag that indicates should swap or not
-            bool shouldSwap = false;
-
-            // Get details for the left and right transactions
-            const string leftID = transactions[j].transactionId;
-            const string leftType = toLowerCase(transactions[j].transactionType);
-            const string leftLocation = toLowerCase(transactions[j].location);
-
-            const string rightID = transactions[j + 1].transactionId;
-            const string rightType = toLowerCase(transactions[j + 1].transactionType);
-            const string rightLocation = toLowerCase(transactions[j + 1].location);
-
-            // Swapping based on the transaction type
-            if (col == "type")
-                shouldSwap = ascending ?
-                    leftType > rightType || (leftType == rightType && leftID > rightID) :
-                    leftType < rightType || (leftType == rightType && leftID < rightID);
-
-            // Swapping based on the location
-            else if (col == "location")
-                shouldSwap = ascending ?
-                    leftLocation > rightLocation || (leftLocation == rightLocation && leftID > rightID) :
-                    leftLocation < rightLocation || (leftLocation == rightLocation && leftID < rightID);
-
-            // Perform swapping if swapping condition is fulfilled
-            if (shouldSwap) {
-                Transaction::swap(transactions[j], transactions[j + 1]);
-                swapped = true;
-            }
-        }
-
-        // If no swapping takes place, then everything ends early
-        if (!swapped) break;
-    }
-}
-
-/**
- * This method is to sort a transaction array based on a location or transaction type with INSERTION SORTING algorithm
- * @param transactions transaction array to be sorted
- * @param size size of the array
- * @param column targeted column name
- * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
- */
-void Sorter::insertionSortInArray(Transaction* transactions, const int size, const string &column, const bool ascending) {
-
-    // Convert column name to lowercase
-    const string col = toLowerCase(column);
-
-    // The overall traversal throughout the array
-    for (int i = 1; i < size; ++i) {
-
-        // Create the key object to be compared in each iteration and retrieve its information
-        Transaction key = transactions[i];
-        string keyID = key.transactionId;
-        string keyType = toLowerCase(key.transactionType);
-        string keyLocation = toLowerCase(key.location);
-
-        // Start looping from the location before the key (backward traversal)
-        int j = i - 1;
-        while (j >= 0) {
-
-            // Retrieve the information of the node being looped
-            string previousID = transactions[j].transactionId;
-            string previousType = toLowerCase(transactions[j].transactionType);
-            string previousLocation = toLowerCase(transactions[j].location);
-
-            // Declare a boolean to determine if insertion should take place
-            bool shouldInsert = false;
-
-            // Check target column
-            if (col == "type")
-                shouldInsert = ascending ?
-                    keyType > previousType || (keyType == previousType && keyID > previousID) :
-                    keyType < previousType || (keyType == previousType && keyID < previousID);
-
-            // Swapping based on the location
-            else if (col == "location")
-                shouldInsert = ascending ?
-                    keyLocation > previousLocation || (keyLocation == previousLocation && keyID > previousID) :
-                    keyLocation < previousLocation || (keyLocation == previousLocation && keyID < previousID);
-
-            // Break when it reached the correct index (is larger / smaller than the previous index)
-            if (shouldInsert) break;
-
-            // Move the object one step back
-            transactions[j + 1] = transactions[j];
-
-            // Decrement to compare with the object at the following index
-            --j;
-        }
-
-        // Replace the index object with the key object
-        transactions[j + 1] = key;
-    }
-}
-
-/**
- * This method is to sort a transaction array based on a location or transaction type with MERGE SORTING algorithm
- * @param transactions transaction array to be sorted
- * @param size size of the array
- * @param column targeted column name
- * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
- */
-void Sorter::mergeSortInArray(Transaction *transactions, const int size, const string &column, const bool ascending) {
-
-    // If the transaction is empty, return error
-    if (transactions == nullptr) throw invalid_argument("Transaction array cannot be null.");
-
-    // Do nothing if array size is too small
-    if (size <= 1) return;
-
-    // Perform recursive sorting otherwise
-    mergeSortDivider(transactions, 0, size - 1, column, ascending);
-}
-
-/**
- * This helper method act as a divider to divide and sort each segment
- * @param transactions array to be sorted
- * @param left index of left boundary
- * @param right index of right boundary
- * @param column targeted column name
- * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
- */
-void Sorter::mergeSortDivider(Transaction *transactions, const int left, const int right,
-                              const string &column, const bool ascending) {
-
-    // Divide the array into two if input is valid
-    if (left < right) {
-
-        // Locate the central point
-        const int median = (left + right) / 2;
-
-        // Divide into left and right half
-        mergeSortDivider(transactions, left, median, column, ascending);
-        mergeSortDivider(transactions, median + 1, right, column, ascending);
-
-        // Sort and merge
-        mergeForArrayElements(transactions, left, median, right, column, ascending);
-    }
-
-    // Return or do nothing when the merge is completed, or the parameters are passed incorrectly
-}
-
-/**
- * This method includes the comparison and shifting of merge sort
- * @param transactions array to be sorted
- * @param left index for left boundary
- * @param median central index point between left and right boundary
- * @param right index for right boundary
- * @param column targeted column name
- * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
- */
-void Sorter::mergeForArrayElements(Transaction *transactions, const int left, const int median, const int right,
-                                   const string &column, const bool ascending) {
-
-    // Initialize size of the left and right array
-    const int leftSize = median - left + 1;
-    const int rightSize = right - median;
-
-    // Create the left and right array
-    auto* leftArr = new Transaction[leftSize];
-    auto* rightArr = new Transaction[rightSize];
-
-    // Load data into temporary arrays: Left array
-    for (int i = 0; i < leftSize; ++i)
-        leftArr[i] = transactions[left + i];
-
-    // Right array
-    for (int j = 0; j < rightSize; ++j)
-        rightArr[j] = transactions[median + 1 + j];
-
-    // Initialize index for parsing transactions
-    int leftIndex = 0, rightIndex = 0, transactionIndex = left;
-
-    // Perform comparison and swapping when there are still elements in both arrays
-    while (leftIndex < leftSize && rightIndex < rightSize) {
-
-        // Declare a boolean to determine if the element shall be obtained from the left array or the right array
-        bool getFromLeft = false;
-
-        // Get information from the left and right array
-        string leftID = leftArr[leftIndex].transactionId;
-        string leftType = toLowerCase(leftArr[leftIndex].transactionType);
-        string leftLocation = toLowerCase(leftArr[leftIndex].location);
-
-        string rightID = rightArr[rightIndex].transactionId;
-        string rightType = toLowerCase(rightArr[rightIndex].transactionType);
-        string rightLocation = toLowerCase(rightArr[rightIndex].location);
-
-        // Sorting based on transaction type
-        if (column == "type") {
-            getFromLeft = ascending ?
-                leftType < rightType || (leftType == rightType && leftID < rightID) :
-                leftType > rightType || (leftType == rightType && leftID > rightID);
-
-        // Sorting based on location
-        } else if (column == "location") {
-            getFromLeft = ascending ?
-                leftLocation < rightLocation || (leftLocation == rightLocation && leftID < rightID) :
-                leftLocation > rightLocation || (leftLocation == rightLocation && leftID > rightID);
-        }
-
-        // If the element has to be obtained from the left
-        if (getFromLeft) {
-
-            // Add to the transaction list and increase index
-            transactions[transactionIndex++] = leftArr[leftIndex++];
-
-        // Add elements from the right list into the sorted array and increment index
-        } else {
-            transactions[transactionIndex++] = rightArr[rightIndex++];
-        }
-    }
-
-    // Copy extra records when either the left or right array does not have elements anymore
-    // When the left array still has elements, copy them
-    while (leftIndex < leftSize) {
-        transactions[transactionIndex++] = leftArr[leftIndex++];
-    }
-
-    // The same goes for the right
-    while (rightIndex < rightSize) {
-        transactions[transactionIndex++] = rightArr[rightIndex++];
-    }
-
-    // Clean up to free memory
-    delete[] leftArr;
-    delete[] rightArr;
 }

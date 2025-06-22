@@ -16,11 +16,11 @@ using namespace std;
 struct Searcher{
 
     // Linear search
-    static Transaction** linearSearchUsingArray(Transaction* transactions, const int size, const string &searchType, int &resultCount);
+    static Transaction** linearSearchUsingArray(Transaction* transactions, int size, const string &searchType, int &resultCount);
     static Transaction** linearSearchUsingList(const DoublyLinkedList &list, string &transactionType, int &outputSize);
 
     // Binary search
-    static Transaction** binarySearchUsingArray(Transaction* transactions, const int size, const string &searchType, int &resultCount);
+    static Transaction** binarySearchUsingArray(Transaction* transactions, int size, const string &searchType, int &resultCount);
     static Transaction** binarySearchUsingList(const DoublyLinkedList &list, string &transactionType, int &outputSize);
 
     // Utility methods

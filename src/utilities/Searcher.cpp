@@ -9,6 +9,44 @@
 using namespace std;
 
 /**
+ * This method searches for a specific transaction type
+ * @param transactions array parsed in to search
+ * @param size size of the parsed array
+ * @param searchType transaction type to search
+ * @param resultCount number of total results
+ * @return The pointer to an array with only the transaction type searched
+ */
+Transaction** Searcher::linearSearchUsingArray(Transaction* transactions, const int size, const string &searchType,
+                                              int &resultCount) {
+
+    // Initialize the counter
+    resultCount = 0;
+
+    // Convert the search type to lower case
+    const string type = toLowerCase(searchType);
+
+    // Create a large array to store results
+    auto** result = new Transaction*[size];
+
+    // Index for data insertion
+    int index = 0;
+
+    // Loop through the transactions
+    for (int i = 0; i < size; i++) {
+
+        // Add the matching results into the array
+        if (toLowerCase(transactions[i].transactionType) == type) result[index++] = &transactions[i];
+    }
+
+    // Trim the size of the resulting array
+    removeUnusedIndex(result, size, index);
+
+    // Set results count and return the array
+    resultCount = index;
+    return result;
+}
+
+/**
  * The method to search for a specific transaction type using linear search.
  * @param list The overall list of data
  * @param transactionType The type of transaction (deposit, cash, etc.) to be searched for
@@ -77,69 +115,6 @@ Transaction** Searcher::linearSearchUsingList(const DoublyLinkedList &list, stri
 }
 
 /**
- * A utility method to clear any unused spaces in a list.
- * @param list The list with blank spaces
- * @param currentListSize The current size of the list
- * @param actualListSize The size that the list should shrink down to
- */
-inline void Searcher::removeUnusedIndex(Transaction** &list, const int &currentListSize, const int &actualListSize) {
-
-    // Compare the intended size of the list with its actual size
-    if (actualListSize < currentListSize) {
-
-        // Create a new temporary list
-        auto** tempList = new Transaction*[actualListSize];
-
-        // Move all search results into the temporary list
-        for (int i = 0; i < actualListSize; i++) {
-            tempList[i] = list[i];
-        }
-
-        // Now replace the result with the temporary list
-        delete[] list;
-        list = tempList;
-    }
-}
-
-/**
- * This method searches for a specific transaction type
- * @param transactions array parsed in to search
- * @param size size of the parsed array
- * @param searchType transaction type to search
- * @param resultCount number of total results
- * @return The pointer to an array with only the transaction type searched
- */
-Transaction** Searcher::linearSearchUsingArray(Transaction* transactions, const int size, const string &searchType,
-                                              int &resultCount) {
-
-    // Initialize the counter
-    resultCount = 0;
-
-    // Convert the search type to lower case
-    const string type = toLowerCase(searchType);
-
-    // Create a large array to store results
-    auto** result = new Transaction*[size];
-
-    // Index for data insertion
-    int index = 0;
-
-    // Loop through the transactions
-    for (int i = 0; i < size; i++) {
-
-        // Add the matching results into the array
-        if (toLowerCase(transactions[i].transactionType) == type) result[index++] = &transactions[i];
-    }
-
-    // Trim the size of the resulting array
-    removeUnusedIndex(result, size, index);
-
-    // Set results count and return the array
-    resultCount = index;
-    return result;
-}
-
-/**
  * A method that performs search for a specific transaction by using binary search.
  * @param transactions The array of transactions involved
  * @param size The total size of the array
@@ -167,7 +142,7 @@ Transaction** Searcher::binarySearchUsingArray(Transaction* transactions, const 
         // Get the middle index
         const int median = (leftBoundary + rightBoundary) / 2;
 
-        // Extract the transaction type associated to the middle index
+        // Extract the transaction type associated with the middle index
         string midType = toLowerCase(transactions[median].transactionType);
 
         // If the type matches
@@ -376,6 +351,31 @@ Transaction** Searcher::binarySearchUsingList(const DoublyLinkedList &list, stri
 
     // Return the final result
     return result;
+}
+
+/**
+ * A utility method to clear any unused spaces in a list.
+ * @param list The list with blank spaces
+ * @param currentListSize The current size of the list
+ * @param actualListSize The size that the list should shrink down to
+ */
+inline void Searcher::removeUnusedIndex(Transaction** &list, const int &currentListSize, const int &actualListSize) {
+
+    // Compare the intended size of the list with its actual size
+    if (actualListSize < currentListSize) {
+
+        // Create a new temporary list
+        auto** tempList = new Transaction*[actualListSize];
+
+        // Move all search results into the temporary list
+        for (int i = 0; i < actualListSize; i++) {
+            tempList[i] = list[i];
+        }
+
+        // Now replace the result with the temporary list
+        delete[] list;
+        list = tempList;
+    }
 }
 
 /**

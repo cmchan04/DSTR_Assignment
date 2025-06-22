@@ -24,16 +24,16 @@ struct Sorter{
 
     // Merge sort
     static void mergeSortInArray(Transaction* transactions, int size, const string& column = "location", bool ascending = true);
-    static void mergeSortDivider(Transaction* transactions, int left, int right, const string& column = "location", bool ascending = true);
+    static void mergeSortDividerInArray(Transaction* transactions, int left, int right, const string& column = "location", bool ascending = true);
     static void mergeForArrayElements(Transaction* transactions, int left, int median, int right, const string& column = "location", bool ascending = true);
 
     static DoublyLinkedList mergeSortInList(const DoublyLinkedList &list);
-    static Node* recursiveSplitAndSort(Node* headNode);
-    static Node* getMiddleNode(Node* headNode);
-    static Node* mergeNodes(Node* nodeInLeft, Node* nodeInRight);
+    static Node* recursiveSplitAndSortInList(Node* headNode);
+    static Node* getMiddleNodeForList(Node* headNode);
+    static Node* mergeNodesForList(Node* nodeInLeft, Node* nodeInRight);
 
     // Quick sort with utility functions
     static DoublyLinkedList quickSortInList(const DoublyLinkedList& list);
-    static Node* quickSortRecursive(Node* head, Node* tail);
-    static Node* partition(Node* head, Node* tail, Node** leftNodes, Node** rightNodes);
+    static Node* quickSortRecursiveForList(Node* head, Node* tail);
+    static Node* quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes, Node** rightNodes);
 };
