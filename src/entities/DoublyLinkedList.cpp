@@ -351,6 +351,13 @@ void DoublyLinkedList::clear() {
 }
 
 /**
+ * A method to increment the recorded size of a linked list.
+ */
+void DoublyLinkedList::incrementSize() {
+    this -> size++;
+}
+
+/**
  * A method that returns the size of the linked list
  * @return The size of the linked list in \code int\endcode.
  */

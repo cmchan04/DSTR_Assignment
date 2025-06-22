@@ -60,6 +60,7 @@ public:
 
     // Other utility methods
     void clear();
+    void incrementSize();
     [[nodiscard]] int getSize() const;
     [[nodiscard]] bool isEmpty() const;
 };
