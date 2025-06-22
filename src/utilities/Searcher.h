@@ -16,15 +16,12 @@ using namespace std;
 struct Searcher{
 
     // Linear Searches
-    static Transaction* linearSearchWithArray(Transaction* transactions, int size, const string& searchType, int& resultCount);
-  
+    static Transaction** linearSearchWithArray(Transaction* transactions, const int size, const string &searchType, int &resultCount);
     static Transaction** linearSearchUsingList(const DoublyLinkedList &list, string &transactionType, int &outputSize);
 
-
     //Binary Searches
-    static Transaction** binarySearchWithArray(Transaction* transactions, int size, const string& searchType, int& resultCount);
+    static Transaction** binarySearchWithArray(Transaction* transactions, const int size, const string &searchType, int &resultCount);
 
-  
     // Utility methods
     // Shrinks the size of a list
     inline static void removeUnusedIndex(Transaction** &list, const int &currentListSize, const int &actualListSize);

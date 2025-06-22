@@ -30,7 +30,7 @@ Transaction** Searcher::linearSearchUsingList(const DoublyLinkedList &list, stri
     int matchCount = 0;
 
     // Convert the string input to lower case
-    ranges::transform(transactionType, transactionType.begin(), ::tolower);
+    transactionType = toLowerCase(transactionType);
 
     // Get the head node
     Node* currentNode = list.getHeadNode();
@@ -40,7 +40,7 @@ Transaction** Searcher::linearSearchUsingList(const DoublyLinkedList &list, stri
 
         // Get the lower case version of the transaction type for each node
         string nodeTransactionType = currentNode -> transactionObject.transactionType;
-        ranges::transform(nodeTransactionType, nodeTransactionType.begin(), ::tolower);
+        nodeTransactionType = toLowerCase(nodeTransactionType);
 
         // Check if the current node matches condition
         if (nodeTransactionType == transactionType) {
@@ -100,35 +100,110 @@ inline void Searcher::removeUnusedIndex(Transaction** &list, const int &currentL
     }
 }
 
-
-Transaction* Searcher::linearSearchWithArray(Transaction* transactions, int size, const string& searchType,
-                                             int& resultCount) {
+/**
+ * This method searches for a specific transaction type
+ * @param transactions array parsed in to search
+ * @param size size of the parsed array
+ * @param searchType transaction type to search
+ * @param resultCount number of total results
+ * @return The pointer to an array with only the transaction type searched
+ */
+Transaction** Searcher::linearSearchWithArray(Transaction* transactions, const int size, const string &searchType,
+                                              int &resultCount) {
 
     // Initialize the counter
     resultCount = 0;
 
-    //Convert searchType to lower case
-    string type = toLowerCase(searchType);
+    // Convert the search type to lower case
+    const string type = toLowerCase(searchType);
 
-    // Loop to check the total number of results
-    for (int i = 0; i < size; i++){
-        if (toLowerCase(transactions[i].transactionType) == type){
-            resultCount++;
-        }
-    }
-
-    // Create an array to store results
-    auto* result = new Transaction[resultCount];
+    // Create a large array to store results
+    auto** result = new Transaction*[size];
 
     // Index for data insertion
     int index = 0;
 
-    // Copy matched transactions into the result array
+    // Loop through the transactions
     for (int i = 0; i < size; i++) {
-        if (toLowerCase(transactions[i].transactionType) == type){
-            result[index++] = transactions[i];
+
+        // Add the matching results into the array
+        if (toLowerCase(transactions[i].transactionType) == type) result[index++] = &transactions[i];
+    }
+
+    // Trim the size of the resulting array
+    removeUnusedIndex(result, size, index);
+
+    // Set results count and return the array
+    resultCount = index;
+    return result;
+}
+
+Transaction** Searcher::binarySearchWithArray(Transaction* transactions, const int size, const string &searchType,
+                                              int &resultCount){
+    // Initialize the counter
+    resultCount = 0;
+
+    // Convert search type input to lowercase
+    const string type = toLowerCase(searchType);
+
+    // Declare an array with maximum size to store results
+    auto** result = new Transaction*[size];
+    int sortIndex = 0;
+
+    // Declare boundary index and target found index
+    int leftBoundary = 0, rightBoundary = size - 1, foundIndex = -1;
+
+    // Locate the transaction object at median
+    while (leftBoundary <= rightBoundary) {
+        int median = leftBoundary + (rightBoundary - leftBoundary) / 2;
+
+        // Extract the transaction type
+        string midType = toLowerCase(transactions[median].transactionType);
+
+        // Binary Search
+        if (midType == type) {
+            foundIndex = median;
+            break;
+        } else if (midType < type) { // if the target transaction type is larger (later alphabet), move to the right half
+            leftBoundary = median + 1;
+        } else if (midType > type){ // if the target transaction type is smaller (earlier alphabet), move to the left half
+            rightBoundary = median - 1;
         }
     }
 
+    // If no record matches, return null
+    if (foundIndex == -1) {
+        cout << "No records are found with transaction type (" << searchType << "). \n" << endl;
+        return nullptr;
+    }
+
+    // Expand leftBoundary
+    // Declare the starting index of matching results
+    int start = foundIndex;
+
+    // Decrement the start index until all matching transactions are included
+    while (start > 0 && toLowerCase(transactions[start - 1].transactionType) == type) {
+        --start;
+    }
+
+    // Expand rightBoundary
+    // Declare the ending index of matching results
+    int end = foundIndex;
+
+    // Increment the end index until all matching transactions are included
+    while (end < size - 1 && toLowerCase(transactions[end + 1].transactionType) == type) {
+        ++end;
+    }
+
+    // Store array of pointers to matched results
+    for (int i = start; i <= end; ++i) {
+        result[sortIndex++] = &transactions[i];
+    }
+
+    // Trim the size of result array
+    removeUnusedIndex(result, size, sortIndex);
+
+    // Set result count and return it
+    resultCount = sortIndex;
     return result;
 }
