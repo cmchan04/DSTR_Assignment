@@ -22,6 +22,7 @@ struct Searcher{
 
 
     //Binary Searches
+    static Transaction** binarySearchWithArray(Transaction* transactions, int size, const string& searchType, int& resultCount);
 
   
     // Utility methods
