@@ -3,6 +3,7 @@
 #include "utilities/ChannelSeparator.h"
 #include "utilities/PerformanceTracker.h"
 #include "utilities/Searcher.h"
+#include "utilities/Sorter.h"
 
 using namespace std;
 
@@ -73,16 +74,13 @@ int main(){
     delete[] upi;
     delete[] wireTransfer;
 
-//    // Create a searcher object for searching
-//    Searcher search;
-
     // Create a performance tracker for tracking linear searching in arrays
     PerformanceTracker linearSearchArrayTracker{};
     linearSearchArrayTracker.start();
 
     // Test: linear search for arrays
     // Initialize target type, result counter, and result array
-    string searchType = "Payment";
+    string searchType = "Deposit";
     int matchCount = 0;
     Transaction** results = Searcher::linearSearchWithArray(transactionsArray, totalRows, searchType, matchCount);
 
@@ -97,11 +95,61 @@ int main(){
         results[i] -> printContents(i);
     }
 
-    linearSearchArrayTracker.report("Performance for Linear Search in Array for \"Payment\" transaction type");
+    linearSearchArrayTracker.report("Performance for Linear Search in Array for \"Deposit\" transaction type");
+
+    // Release memory
+    delete[] results;
+    
+    // Create a Performance Tracker for Merge Sort in arrays
+    PerformanceTracker mergeSortTracker{};
+    mergeSortTracker.start();
+
+    // Test: Merge sort in arrays based on transaction type
+    // Initialize target type
+    string sortType = "type";
+
+    // Start sorting
+    Sorter::mergeSortArray(transactionsArray, totalRows, sortType, true);
+
+    // Stop the tracker
+    mergeSortTracker.stop();
+
+    //Print 30 sample records
+    for (int i = 0; i < 30; ++i) {
+        transactionsArray[i].printContents(i);
+    }
+
+    // Print performance summary
+    mergeSortTracker.report("Performance for Merge Sort in Array for \"Transaction Type\"");
+
+    // Create a performance tracker for tracking binary searching in arrays
+    PerformanceTracker binarySearchArrayTracker{};
+    binarySearchArrayTracker.start();
+
+    // Reinitialize search type and result array for binary search
+    searchType = "Deposit";
+    results = Searcher::binarySearchWithArray(transactionsArray, totalRows, searchType, matchCount);
+
+    // Stop the tracker
+    binarySearchArrayTracker.stop();
+
+    // Short summary
+    cout << "Found " << matchCount << " transactions with type: " << searchType << "\n" << endl;
+
+    // Print at most 10 sample records
+    for (int i = 0; i < min(10, matchCount); ++i) {
+        results[i] -> printContents(i);
+    }
+
+    // Print performance summary
+    binarySearchArrayTracker.report("Performance for Binary Search in Array for \"Deposit\" transaction type");
+
+    // Release memory
+    delete[] results;
 
     // Release memory
     delete[] transactionsArray;
-    delete[] results;
+    delete[] list;
 
     // Program ends!
     return 0;

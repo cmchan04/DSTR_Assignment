@@ -5,18 +5,22 @@
 // Make sure the header file is only included once in the program
 #pragma once
 
+// Imports
 #include "../entities/Transaction.h"
 #include "../entities/DoublyLinkedList.h"
+#include "StringUtil.h"
+#include <string>
 
-class Searcher {
+using namespace std;
 
-    public:
+struct Searcher{
 
     // Linear search
-    static Transaction* linearSearchWithArray(Transaction* transactions, int size, const string& searchType, int& resultCount);
+    static Transaction** linearSearchUsingArray(Transaction* transactions, const int size, const string &searchType, int &resultCount);
     static Transaction** linearSearchUsingList(const DoublyLinkedList &list, string &transactionType, int &outputSize);
 
     // Binary search
+    static Transaction** binarySearchUsingArray(Transaction* transactions, const int size, const string &searchType, int &resultCount);
     static Transaction** binarySearchUsingList(const DoublyLinkedList &list, string &transactionType, int &outputSize);
 
     // Utility methods
