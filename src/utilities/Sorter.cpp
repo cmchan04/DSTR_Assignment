@@ -9,9 +9,9 @@
  * @param transactions transaction array to be sorted
  * @param size size of the array
  * @param column targeted column name
- * @param ascending sort in ascending or descending \codetrue\endcode indicates ascending, \codefalse\endcode indicates descending
+ * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
  */
-void Sorter::bubbleSortArray(Transaction* transactions, const int size, const string &column, const bool ascending) {
+void Sorter::bubbleSortInArray(Transaction* transactions, const int size, const string &column, const bool ascending) {
 
     // Convert the sort field to lower case
     const string col = toLowerCase(column);
@@ -66,42 +66,50 @@ void Sorter::bubbleSortArray(Transaction* transactions, const int size, const st
  * @param transactions transaction array to be sorted
  * @param size size of the array
  * @param column targeted column name
- * @param ascending sort in ascending or descending \codetrue\endcode indicates ascending, \codefalse\endcode indicates descending
+ * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
  */
-void Sorter::insertionSortArray(Transaction* transactions, int size, const std::string& column, bool ascending) {
+void Sorter::insertionSortInArray(Transaction* transactions, const int size, const string &column, const bool ascending) {
 
     // Convert column name to lowercase
-    string col = toLowerCase(column);
+    const string col = toLowerCase(column);
 
-    // Start insertion sort
+    // The overall traversal throughout the array
     for (int i = 1; i < size; ++i) {
 
-        // TODO - Remove after tested
-        // Progress Counter
-        if (i % 100 == 0) {
-            cout << "Processing row: " << i << endl;
-        }
-
-        // Create the key object to be compared in each iteration
+        // Create the key object to be compared in each iteration and retrieve its information
         Transaction key = transactions[i];
-        int j = i - 1;
+        string keyID = key.transactionId;
+        string keyType = toLowerCase(key.transactionType);
+        string keyLocation = toLowerCase(key.location);
 
-        // Loop through previous sorted elements
+        // Start looping from the location before the key (backward traversal)
+        int j = i - 1;
         while (j >= 0) {
-            bool shouldSwap = false;
+
+            // Retrieve the information of the node being looped
+            string previousID = transactions[j].transactionId;
+            string previousType = toLowerCase(transactions[j].transactionType);
+            string previousLocation = toLowerCase(transactions[j].location);
+
+            // Declare a boolean to determine if insertion should take place
+            bool shouldInsert = false;
 
             // Check target column
             if (col == "type")
-                shouldSwap = ascending ? key.transactionType < transactions[j].transactionType
-                                       : key.transactionType > transactions[j].transactionType;
+                shouldInsert = ascending ?
+                    keyType > previousType || (keyType == previousType && keyID > previousID) :
+                    keyType < previousType || (keyType == previousType && keyID < previousID);
+
+            // Swapping based on the location
             else if (col == "location")
-                shouldSwap = ascending ? key.location < transactions[j].location
-                                       : key.location > transactions[j].location;
+                shouldInsert = ascending ?
+                    keyLocation > previousLocation || (keyLocation == previousLocation && keyID > previousID) :
+                    keyLocation < previousLocation || (keyLocation == previousLocation && keyID < previousID);
 
             // Break when it reached the correct index (is larger / smaller than the previous index)
-            if (!shouldSwap) break;
+            if (shouldInsert) break;
 
-            // Swap with the previous object
+            // Move the object one step back
             transactions[j + 1] = transactions[j];
 
             // Decrement to compare with the object at the following index
