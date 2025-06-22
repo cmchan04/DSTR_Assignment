@@ -5,8 +5,6 @@
 #include "Sorter.h"
 #include "StringUtil.h"
 
-#include <iostream>
-
 /**
  * This method sorts a linked list based on the transaction type in ascending order.
  * @param list The list to be sorted
@@ -44,13 +42,9 @@ DoublyLinkedList Sorter::bubbleSortInList(const DoublyLinkedList &list) {
 
             // Get the information from the two nodes
             const string leftID = leftNode -> transactionObject.transactionId;
-            string leftTransactionType = leftNode -> transactionObject.transactionType;
+            string leftTransactionType = toLowerCase(leftNode -> transactionObject.transactionType);
             const string rightID = rightNode -> transactionObject.transactionId;
-            string rightTransactionType = rightNode -> transactionObject.transactionType;
-
-            // Clean the strings
-            ranges::transform(leftTransactionType, leftTransactionType.begin(), ::tolower);
-            ranges::transform(rightTransactionType, rightTransactionType.begin(), ::tolower);
+            string rightTransactionType = toLowerCase(rightNode -> transactionObject.transactionType);
 
             // Compare the information. If the criteria is not met, swapping is performed
             if (leftTransactionType > rightTransactionType ||
@@ -96,14 +90,13 @@ DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list) {
     auto* sortedList = new DoublyLinkedList();
 
     // Retrieve the first node and start the loop
-    Node* currentNode = list.getHeadNode();
+    const Node* currentNode = list.getHeadNode();
     while (currentNode != nullptr) {
 
         // Retrieve the transaction ID and type of the object for the current node
         Transaction currentObject = currentNode -> transactionObject;
         string currentID = currentObject.transactionId;
-        string currentType = currentObject.transactionType;
-        ranges::transform(currentType, currentType.begin(), ::tolower);
+        string currentType = toLowerCase(currentObject.transactionType);
 
         // If the sorted list is empty
         if (sortedList -> isEmpty()) {
@@ -118,33 +111,40 @@ DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list) {
         bool inserted = false;
 
         // If the list is not empty, we have to go through the sorted list linearly.
-        Node* currentSortedNode = sortedList -> getHeadNode();
+        // Start from tail and go backward (matching array insertion sort)
+        const Node* currentSortedNode = sortedList -> getTailNode();
         while (currentSortedNode != nullptr) {
 
-            // Retrieve the information of the node
-            string currentSortedID = currentSortedNode -> transactionObject.transactionId;
-            string currentSortedType = currentSortedNode -> transactionObject.transactionType;
-            currentSortedType = toLowerCase(currentSortedType);
+            // Retrieve the information of the current node in the sorted list
+            string currentSortedType = toLowerCase(currentSortedNode->transactionObject.transactionType);
+            string currentSortedID = currentSortedNode->transactionObject.transactionId;
 
-            // Perform comparison. If the values are greater than the current node, do nothing
+            // Compare. Insertion shall take place if the node has a value greater than the sorted one
             if (currentType > currentSortedType ||
                 (currentType == currentSortedType && currentID > currentSortedID)) {
 
-                // Traverse to the next node
-                currentSortedNode = currentSortedNode -> nextNode;
-                continue;
+                // Insert the node after this sorted node, i.e., before the next sorted node if there is a next
+                if (currentSortedNode -> nextNode != nullptr) {
+                    sortedList -> insertBefore(currentSortedNode -> nextNode, &currentObject);
+
+                // If the sorted node is no next, the node is a tail
+                } else {
+
+                    // Add the node as a tail
+                    sortedList -> insertAtEnd(&currentObject);
+                }
+
+                // Mark that an insertion has taken place, hence loop exits
+                inserted = true;
+                break;
             }
 
-            // If the value is smaller (have to place at the front), insertion takes place.
-            sortedList -> insertBefore(currentSortedNode, &currentObject);
-
-            // Mark that insertion has taken place and end the loop
-            inserted = true;
-            break;
+            // Move to the next previous node
+            currentSortedNode = currentSortedNode->previousNode;
         }
 
-        // If the node is not inserted at all, it is located at the last
-        if (!inserted) sortedList -> insertAtEnd(&currentObject);
+        // If the node is not inserted, insert at the beginning
+        if (!inserted) sortedList->insertBefore(sortedList -> getHeadNode(), &currentObject);
 
         // Move to the next node
         currentNode = currentNode -> nextNode;
@@ -380,7 +380,7 @@ DoublyLinkedList Sorter::quickSortInList(const DoublyLinkedList& list) {
         int index = 1;
         sortedNode -> indexInList = index++;
 
-        // Set the head node for the new linked list and increase size recod
+        // Set the head node for the new linked list and increase size record
         sortedList.setHeadNode(sortedNode);
         sortedList.incrementSize();
 
