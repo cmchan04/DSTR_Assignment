@@ -15,16 +15,13 @@ using namespace std;
 struct Sorter{
 
     // Bubble sort
-    static void bubbleSortArray(Transaction* transactions, int size, const string& column = "location", bool ascending = true);
+    static void bubbleSortInArray(Transaction* transactions, int size, const string &column = "location", bool ascending = true);
 
     // Insertion sort
-    static void insertionSortArray(Transaction* transactions, int size, const std::string& column = "location", bool ascending = true);
+    static void insertionSortInArray(Transaction* transactions, int size, const string &column = "location", bool ascending = true);
 
     // Merge sort
-    static void mergeSortArray(Transaction* transactions, int size, const string& column = "location", bool ascending = true);
-
-    // Helper Functions
+    static void mergeSortInArray(Transaction* transactions, int size, const string& column = "location", bool ascending = true);
     static void mergeSortDivider(Transaction* transactions, int left, int right, const string& column = "location", bool ascending = true);
-    static void merge(Transaction* transactions, int left, int median, int right, const string& column = "location", bool ascending = true);
-
+    static void mergeForArrayElements(Transaction* transactions, int left, int median, int right, const string& column = "location", bool ascending = true);
 };
