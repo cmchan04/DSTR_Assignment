@@ -11,19 +11,16 @@
  * @param column targeted column name
  * @param ascending sort in ascending or descending \codetrue\endcode indicates ascending, \codefalse\endcode indicates descending
  */
-void Sorter::bubbleSortArray(Transaction *transactions, int size, const std::string &column, bool ascending) {
+void Sorter::bubbleSortArray(Transaction* transactions, const int size, const string &column, const bool ascending) {
 
     // Convert the sort field to lower case
-    string col = toLowerCase(column);
+    const string col = toLowerCase(column);
 
     // Start bubble sorting
     for (int i = 0; i < size; ++i) {
 
-        // TODO - Remove after tested
-        // Progress Counter
-        if (i % 100 == 0){
-            cout << "Processing row: " << i << endl;
-        }
+        // Declare a variable to check if any swapping takes place in this traversal
+        bool swapped = false;
 
         // Avoid unnecessary swapping for completed indexes
         for (int j = 0; j < size - i - 1; ++j) {
@@ -31,19 +28,36 @@ void Sorter::bubbleSortArray(Transaction *transactions, int size, const std::str
             // A flag that indicates should swap or not
             bool shouldSwap = false;
 
-            // String Comparison
+            // Get details for the left and right transactions
+            const string leftID = transactions[j].transactionId;
+            const string leftType = toLowerCase(transactions[j].transactionType);
+            const string leftLocation = toLowerCase(transactions[j].location);
+
+            const string rightID = transactions[j + 1].transactionId;
+            const string rightType = toLowerCase(transactions[j + 1].transactionType);
+            const string rightLocation = toLowerCase(transactions[j + 1].location);
+
+            // Swapping based on the transaction type
             if (col == "type")
-                shouldSwap = ascending ? transactions[j].transactionType >transactions[j + 1].transactionType
-                                       : transactions[j].transactionType < transactions[j + 1].transactionType;
+                shouldSwap = ascending ?
+                    leftType > rightType || (leftType == rightType && leftID > rightID) :
+                    leftType < rightType || (leftType == rightType && leftID < rightID);
+
+            // Swapping based on the location
             else if (col == "location")
-                shouldSwap = ascending ? transactions[j].location > transactions[j + 1].location
-                                       : transactions[j].location < transactions[j + 1].location;
+                shouldSwap = ascending ?
+                    leftLocation > rightLocation || (leftLocation == rightLocation && leftID > rightID) :
+                    leftLocation < rightLocation || (leftLocation == rightLocation && leftID < rightID);
 
+            // Perform swapping if swapping condition is fulfilled
             if (shouldSwap) {
-                transactions->swap(transactions[j], transactions[j + 1]);
+                Transaction::swap(transactions[j], transactions[j + 1]);
+                swapped = true;
             }
-
         }
+
+        // If no swapping takes place, then everything ends early
+        if (!swapped) break;
     }
 }
 

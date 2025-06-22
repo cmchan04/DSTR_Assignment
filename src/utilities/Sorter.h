@@ -15,10 +15,10 @@ using namespace std;
 struct Sorter{
 
     // Bubble sort
-    static void bubbleSortArray(Transaction* transactions, int size, const string& column = "location", bool ascending = true);
+    static void bubbleSortArray(Transaction* transactions, int size, const string &column = "location", bool ascending = true);
 
     // Insertion sort
-    static void insertionSortArray(Transaction* transactions, int size, const std::string& column = "location", bool ascending = true);
+    static void insertionSortArray(Transaction* transactions, int size, const string &column = "location", bool ascending = true);
 
     // Merge sort
 
