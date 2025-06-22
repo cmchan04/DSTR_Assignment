@@ -40,7 +40,7 @@ struct Transaction {
     // Print sample contents
     void printContents(int index = -1) const;
 
-    // Basic swap - will be used in sorting
-    void swap(Transaction& first, Transaction& second);
+    // Basic swap - will be used in array sorting
+    static void swap(Transaction &first, Transaction &second) noexcept;
 };
 
