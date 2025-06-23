@@ -20,7 +20,7 @@ struct Sorter{
 
     // Insertion sort
     static void insertionSortInArray(Transaction* transactions, int size, const string &column = "location", bool ascending = true);
-    static DoublyLinkedList insertionSortInList(const DoublyLinkedList &list);
+    static DoublyLinkedList insertionSortInList(const DoublyLinkedList &list, const string &sortVariable = "location");
 
     // Merge sort
     static void mergeSortInArray(Transaction* transactions, int size, const string& column = "location", bool ascending = true);

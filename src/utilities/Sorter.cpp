@@ -214,9 +214,13 @@ void Sorter::insertionSortInArray(Transaction* transactions, const int size, con
 /**
  * This method performs an insertion sort on Transaction objects based on their transaction types.
  * @param list The list to be sorted
+ * @param sortVariable The variables to be sorted based on
  * @return The sorted list without modifying the original list
  */
-DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list) {
+DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list, const string &sortVariable) {
+
+    // Convert the sort variable to lowercase
+    const string sortingVar = toLowerCase(sortVariable);
 
     // If the list does not contain anything or only has one node, do nothing
     if (list.getSize() <= 1) return list;
@@ -231,7 +235,20 @@ DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list) {
         // Retrieve the transaction ID and type of the object for the current node
         Transaction currentObject = currentNode -> transactionObject;
         string currentID = currentObject.transactionId;
-        string currentType = toLowerCase(currentObject.transactionType);
+        string currentData;
+
+        // If sort is performed based on the location
+        if (sortingVar == "location") {
+            currentData = toLowerCase(currentObject.location);
+
+        // If sort is performed based on the transaction type
+        } else if (sortingVar == "type") {
+            currentData = toLowerCase(currentObject.transactionType);
+
+        // Other cases
+        } else {
+            throw invalid_argument("Sort variable can only be location or type.");
+        }
 
         // If the sorted list is empty
         if (sortedList -> isEmpty()) {
@@ -251,12 +268,25 @@ DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list) {
         while (currentSortedNode != nullptr) {
 
             // Retrieve the information of the current node in the sorted list
-            string currentSortedType = toLowerCase(currentSortedNode->transactionObject.transactionType);
-            string currentSortedID = currentSortedNode->transactionObject.transactionId;
+            string currentSortedID = currentSortedNode -> transactionObject.transactionId;
+            string currentSortedData;
+
+            // If sort is performed based on the location
+            if (sortingVar == "location") {
+                currentSortedData = toLowerCase(currentSortedNode -> transactionObject.location);
+
+            // If sort is performed based on the transaction type
+            } else if (sortingVar == "type") {
+                currentSortedData = toLowerCase(currentSortedNode -> transactionObject.transactionType);
+
+            // Other cases
+            } else {
+                throw invalid_argument("Sort variable can only be location or type.");
+            }
 
             // Compare. Insertion shall take place if the node has a value greater than the sorted one
-            if (currentType > currentSortedType ||
-                (currentType == currentSortedType && currentID > currentSortedID)) {
+            if (currentData > currentSortedData ||
+                (currentData == currentSortedData && currentID > currentSortedID)) {
 
                 // Insert the node after this sorted node, i.e., before the next sorted node if there is a next
                 if (currentSortedNode -> nextNode != nullptr) {
