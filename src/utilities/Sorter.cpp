@@ -837,3 +837,31 @@ Node* Sorter::quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes
     *rightNodes = rightTail;
     return pivot;
 }
+
+/**
+ * This method get the pivot index by determining the median of three
+ * @param transactions array to be sorted
+ * @param leftIndex starting index of partition
+ * @param rightIndex ending index of partition
+ * @param column column name to be sorted on (location or transaction type (type))
+ * @return returns the pivot index
+ */
+int getMedianIndex(Transaction* transactions, int leftIndex, int rightIndex, const string &column) {
+
+    // Get the current median index (pivot index)
+    int medianIndex = leftIndex + (rightIndex - leftIndex) / 2;
+
+    // Retrieve location or transaction type based on column
+    string left = toLowerCase(column == "type" ? transactions[leftIndex].transactionType : transactions[leftIndex].location);
+    string median = toLowerCase(column == "type" ? transactions[medianIndex].transactionType : transactions[medianIndex].location);
+    string right = toLowerCase(column == "type" ? transactions[rightIndex].transactionType : transactions[rightIndex].location);
+
+    // Check which is the median of three objects and return as pivot
+    if ((left <= median && median <= right) || (right <= median && median <= left))
+        return medianIndex;
+    else if ((median <= left && left <= right) || (right <= left && left <= median))
+        return leftIndex;
+    else
+        return rightIndex;
+}
+

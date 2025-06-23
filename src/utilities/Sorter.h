@@ -32,8 +32,13 @@ struct Sorter{
     static Node* getMiddleNodeForList(Node* headNode);
     static Node* mergeNodesForList(Node* nodeInLeft, Node* nodeInRight);
 
-    // Quick sort with utility functions
+    // Quick sort with utility functions (Linked List)
     static DoublyLinkedList quickSortInList(const DoublyLinkedList& list);
     static Node* quickSortRecursiveForList(Node* head, Node* tail);
     static Node* quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes, Node** rightNodes);
+
+    // Quick sort with utility functions (Array)
+    static void quickSortArray(Transaction* arr, int left, int right, const string &column = "location", bool ascending = true);
+    static int partitionArray(Transaction* arr, int left, int right, const string &column = "location", bool ascending = true);
+    static int getMedianIndex(Transaction* arr, int left, int right, const string &column);
 };
