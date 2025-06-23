@@ -133,29 +133,6 @@ void DoublyLinkedList::insertBefore(Node* node, const Transaction* data) {
     size++;
 }
 
-// This method shall be deleted once everything works well.
-void DoublyLinkedList::insertBefore(const Transaction* nodeToChange, const Transaction* data) {
-
-    if (nodeToChange == nullptr || data == nullptr) throw invalid_argument("Transaction cannot be null.");
-
-    // Look for nodes associated with the transaction
-    Node* transactionNode = nullptr;
-    Node* currentNode = this -> headNode;
-
-    while (currentNode != nullptr) {
-
-        if (currentNode -> transactionObject.transactionId == nodeToChange -> transactionId) {
-            transactionNode = currentNode;
-            break;
-        }
-
-        currentNode = currentNode -> nextNode;
-    }
-
-    if (transactionNode == nullptr) throw invalid_argument("Transaction cannot be found.");
-    insertBefore(transactionNode, data);
-}
-
 /**
  * The method to insert the Transaction object into the end of linked list.
  * @param data The Transaction object to be added.
@@ -290,37 +267,6 @@ void DoublyLinkedList::swap(Node* firstNode, Node* secondNode) {
     firstNode -> nextNode = secondNode -> nextNode;
     secondNode -> previousNode = firstNodePrev;
     secondNode -> nextNode = firstNodeNext;
-}
-
-/**
- * This method performs swapping on the Transaction object in the linked list.<br>
- * This method helps to test the base swap method using Node method.<br>
- * It can be deleted if not used later.
- *
- * @param firstTransaction The first transaction to be swapped
- * @param secondTransaction The other transaction to be swapped
- */
-void DoublyLinkedList::swap(const Transaction* firstTransaction, const Transaction* secondTransaction) {
-
-    if (firstTransaction == nullptr || secondTransaction == nullptr) throw invalid_argument("Transaction cannot be null.");
-    if (firstTransaction == secondTransaction) return;
-
-    // Look for nodes associated with the transaction
-    Node* firstNode = nullptr;
-    Node* secondNode = nullptr;
-    Node* currentNode = this -> headNode;
-
-    while (currentNode != nullptr) {
-
-        if (currentNode -> transactionObject.transactionId == firstTransaction -> transactionId) firstNode = currentNode;
-        if (currentNode -> transactionObject.transactionId == secondTransaction -> transactionId) secondNode = currentNode;
-
-        if (firstNode != nullptr && secondNode != nullptr) break;
-        currentNode = currentNode -> nextNode;
-    }
-
-    if (firstNode == nullptr || secondNode == nullptr) throw invalid_argument("Transaction cannot be found.");
-    swap(firstNode, secondNode);
 }
 
 /**

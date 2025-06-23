@@ -48,7 +48,6 @@ public:
 
     // Insertion methods
     void insertBefore(Node* node, const Transaction* data);
-    void insertBefore(const Transaction* nodeToChange, const Transaction* data); // Remember to remove this!
     void insertAtEnd(const Transaction* data);
 
     // Print contents
@@ -56,7 +55,6 @@ public:
 
     // Swap between nodes
     void swap(Node* firstNode, Node* secondNode);
-    void swap(const Transaction* firstTransaction, const Transaction* secondTransaction);  // Remember to remove this!
 
     // Other utility methods
     void clear();
