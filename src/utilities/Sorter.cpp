@@ -857,11 +857,88 @@ int getMedianIndex(Transaction* transactions, int leftIndex, int rightIndex, con
     string right = toLowerCase(column == "type" ? transactions[rightIndex].transactionType : transactions[rightIndex].location);
 
     // Check which is the median of three objects and return as pivot
+    // When left < median < right or right < median < left
     if ((left <= median && median <= right) || (right <= median && median <= left))
         return medianIndex;
+    // When median < left < right or right < left < median
     else if ((median <= left && left <= right) || (right <= left && left <= median))
         return leftIndex;
+    // When median < right < left or left < right < median
     else
         return rightIndex;
 }
+
+/**
+ * This function rearrange the order of elements based on pivot
+ * @param transactions the array to be sorted
+ * @param startIndex starting index of current partition
+ * @param endIndex ending index of current partition
+ * @param column column name to be sorted based on
+ * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
+ * @return pivot index
+ */
+int quickSortPartitionForArray(Transaction* transactions, int startIndex, int endIndex, const string &column, bool ascending) {
+
+    // Get the index of selected pivot
+    int pivotIndex = getMedianIndex(transactions, startIndex, endIndex, column);
+
+    // Swap pivot to the end
+    Transaction::swap(transactions[pivotIndex], transactions[endIndex]);
+
+    // Initialize pivot object
+    Transaction pivot = transactions[endIndex];
+
+    // Get the type or location of pivot for comparison
+    string pivotKey = toLowerCase(column == "type" ? pivot.transactionType : pivot.location);
+
+    // Initialize the start of index for elements smaller than the pivot Key
+    int lessPivot = startIndex - 1;
+
+    // Rearrange the transaction records
+    for (int currentIndex = startIndex; currentIndex < endIndex; ++currentIndex) {
+
+        // Get the current element's location or transaction type
+        string currentKey = toLowerCase(column == "type" ? transactions[currentIndex].transactionType : transactions[currentIndex].location);
+
+        // Check if the current element is larger or smaller than the pivot
+        bool condition = ascending ? (currentKey < pivotKey) : (currentKey > pivotKey);
+
+        // Swap to "lesser than pivot" area if smaller
+        if (condition) {
+            ++lessPivot;
+            Transaction::swap(transactions[lessPivot], transactions[currentIndex]);
+        }
+    }
+
+    // Shift the pivot to the central point of the array
+    Transaction::swap(transactions[lessPivot + 1], transactions[endIndex]);
+
+    // Return pivot index
+    return lessPivot + 1;
+}
+
+/**
+ * This function rearrange the array recursively with quick sort
+ * @param transactions transaction array to be sorted
+ * @param left starting index
+ * @param right ending index
+ * @param column column name to be sorted based on
+ * @param ascending sort in ascending or descending \code true\endcode indicates ascending, \code false\endcode indicates descending
+ */
+void quickSortInArray(Transaction* transactions, int left, int right, const string &column, bool ascending) {
+
+    // Recursive sort until all arranged
+    if (left < right) {
+
+        // First time sort to get pivot index
+        int pivotIndex = quickSortPartitionForArray(transactions, left, right, column, ascending);
+
+        // Recursive for left part
+        quickSortInArray(transactions, left, pivotIndex - 1, column, ascending);
+
+        // Recursive for right part
+        quickSortInArray(transactions, pivotIndex + 1, right, column, ascending);
+    }
+}
+
 

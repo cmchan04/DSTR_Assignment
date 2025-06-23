@@ -38,7 +38,7 @@ struct Sorter{
     static Node* quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes, Node** rightNodes);
 
     // Quick sort with utility functions (Array)
-    static void quickSortArray(Transaction* arr, int left, int right, const string &column = "location", bool ascending = true);
-    static int partitionArray(Transaction* arr, int left, int right, const string &column = "location", bool ascending = true);
     static int getMedianIndex(Transaction* arr, int left, int right, const string &column);
+    static int quickSortPartitionForArray(Transaction* arr, int left, int right, const string &column = "location", bool ascending = true);
+    static void quickSortInArray(Transaction* arr, int left, int right, const string &column = "location", bool ascending = true);
 };
