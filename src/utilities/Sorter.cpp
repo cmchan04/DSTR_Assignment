@@ -65,8 +65,12 @@ void Sorter::bubbleSortInArray(Transaction* transactions, const int size, const 
 /**
  * This method sorts a linked list based on the transaction type in ascending order.
  * @param list The list to be sorted
+ * @param sortVariable The type of variables to be sorted, either location or transaction type
  */
-DoublyLinkedList Sorter::bubbleSortInList(const DoublyLinkedList &list) {
+DoublyLinkedList Sorter::bubbleSortInList(const DoublyLinkedList &list, const string &sortVariable) {
+
+    // Make sure the variable to be sorted is cleaned
+    const string sortingVar = toLowerCase(sortVariable);
 
     // If the list has only one node or is empty, no sorting is required
     if (list.getSize() <= 1) return list;
@@ -99,13 +103,27 @@ DoublyLinkedList Sorter::bubbleSortInList(const DoublyLinkedList &list) {
 
             // Get the information from the two nodes
             const string leftID = leftNode -> transactionObject.transactionId;
-            string leftTransactionType = toLowerCase(leftNode -> transactionObject.transactionType);
             const string rightID = rightNode -> transactionObject.transactionId;
-            string rightTransactionType = toLowerCase(rightNode -> transactionObject.transactionType);
+            string leftData, rightData;
+
+            // If sort is performed based on the location
+            if (sortingVar == "location") {
+                leftData = toLowerCase(leftNode -> transactionObject.location);
+                rightData = toLowerCase(rightNode -> transactionObject.location);
+
+            // If sort is performed based on the transaction type
+            } else if (sortingVar == "type") {
+                leftData = toLowerCase(leftNode -> transactionObject.transactionType);
+                rightData = toLowerCase(rightNode -> transactionObject.transactionType);
+
+            // Other cases
+            } else {
+                throw invalid_argument("Sort variable can only be location or type.");
+            }
 
             // Compare the information. If the criteria is not met, swapping is performed
-            if (leftTransactionType > rightTransactionType ||
-                (leftTransactionType == rightTransactionType && leftID > rightID)) {
+            if (leftData > rightData ||
+                (leftData == rightData && leftID > rightID)) {
 
                 // Swapping occurs
                 sortedList.swap(leftNode, rightNode);
