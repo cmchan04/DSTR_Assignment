@@ -12,8 +12,11 @@
  */
 Transaction::Transaction(const string* dataArray) {
 
+    // Have to clean the ID (some has 7 digits, some has 8 digits)
+    string uncleanedID = dataArray[0];
+
     // Add data to the Transaction object
-    this -> transactionId = dataArray[0];
+    this -> transactionId = uncleanedID.length() == 7 ? uncleanedID.insert(1, 1, '0') : uncleanedID;
     this -> timestamp = dataArray[1];
     this -> senderAcc = dataArray[2];
     this -> receiverAcc = dataArray[3];
@@ -32,7 +35,6 @@ Transaction::Transaction(const string* dataArray) {
     this -> ipAddress = dataArray[16];
     this -> deviceHash = dataArray[17];
 }
-
 
 /**
  * This function prints sample rows of the array
