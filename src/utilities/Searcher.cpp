@@ -213,5 +213,6 @@ Transaction** Searcher::binarySearchUsingArray(Transaction* transactions, const 
 
     // Set result count and return it
     resultCount = sortIndex;
+
     return result;
 }
