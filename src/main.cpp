@@ -82,7 +82,7 @@ int main(){
     // Initialize target type, result counter, and result array
     string searchType = "Deposit";
     int matchCount = 0;
-    Transaction** results = Searcher::linearSearchWithArray(transactionsArray, totalRows, searchType, matchCount);
+    Transaction** results = Searcher::linearSearchUsingArray(transactionsArray, totalRows, searchType, matchCount);
 
     // Stop the tracker
     linearSearchArrayTracker.stop();
@@ -109,7 +109,7 @@ int main(){
     string sortType = "type";
 
     // Start sorting
-    Sorter::mergeSortArray(transactionsArray, totalRows, sortType, true);
+    Sorter::mergeSortInArray(transactionsArray, totalRows, sortType, true);
 
     // Stop the tracker
     mergeSortTracker.stop();
@@ -128,7 +128,7 @@ int main(){
 
     // Reinitialize search type and result array for binary search
     searchType = "Deposit";
-    results = Searcher::binarySearchWithArray(transactionsArray, totalRows, searchType, matchCount);
+    results = Searcher::binarySearchUsingArray(transactionsArray, totalRows, searchType, matchCount);
 
     // Stop the tracker
     binarySearchArrayTracker.stop();

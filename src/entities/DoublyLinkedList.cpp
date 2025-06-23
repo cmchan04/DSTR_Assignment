@@ -78,6 +78,22 @@ Node* DoublyLinkedList::getTailNode() const {
 }
 
 /**
+ * The setter to set the new head node for the linked list
+ * @param headNode The new head node of the linked list
+ */
+void DoublyLinkedList::setHeadNode(Node* headNode) {
+    this -> headNode = headNode;
+}
+
+/**
+ * The setter to set the new tail node for the linked list
+ * @param tailNode The new tail node of the linked list
+ */
+void DoublyLinkedList::setTailNode(Node* tailNode) {
+    this -> tailNode = tailNode;
+}
+
+/**
  * A method that adds a Transaction before a specified node.
  * @param node The node that will be placed after the new node
  * @param data The Transaction object
@@ -332,6 +348,13 @@ void DoublyLinkedList::clear() {
     headNode = nullptr;
     tailNode = nullptr;
     size = 0;
+}
+
+/**
+ * A method to increment the recorded size of a linked list.
+ */
+void DoublyLinkedList::incrementSize() {
+    this -> size++;
 }
 
 /**
