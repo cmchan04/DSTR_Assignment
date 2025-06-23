@@ -33,7 +33,7 @@ struct Sorter{
     static Node* mergeNodesForList(Node* nodeInLeft, Node* nodeInRight, const string &sortingVar);
 
     // Quick sort with utility functions
-    static DoublyLinkedList quickSortInList(const DoublyLinkedList& list);
-    static Node* quickSortRecursiveForList(Node* head, Node* tail);
-    static Node* quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes, Node** rightNodes);
+    static DoublyLinkedList quickSortInList(const DoublyLinkedList& list, const string &sortingVar);
+    static Node* quickSortRecursiveForList(Node* head, Node* tail, const string &sortingVar);
+    static Node* quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes, Node** rightNodes, const string &sortingVar);
 };

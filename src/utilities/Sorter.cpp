@@ -675,18 +675,20 @@ Node* Sorter::mergeNodesForList(Node* nodeInLeft, Node* nodeInRight, const strin
 /**
  * This method sorts a list using the quick sort algorithm based on the transaction type.
  * @param list The list to be sorted
+ * @param sortingVar The variable to be sorted based on
  * @return The sorted list based on the transaction type
  */
-DoublyLinkedList Sorter::quickSortInList(const DoublyLinkedList& list) {
+DoublyLinkedList Sorter::quickSortInList(const DoublyLinkedList& list, const string &sortingVar) {
 
     // Overall idea: Pick a pivot, partition based on pivot, and sort recursively
+    const string sortVar = toLowerCase(sortingVar);
 
     // First retrieve the head and tail node of the list
     Node* headNode = list.getHeadNode();
     Node* tailNode = list.getTailNode();
 
     // Perform recursive action on quick sort. This returns the head node of the sorted list.
-    Node* sortedNode = quickSortRecursiveForList(headNode, tailNode);
+    Node* sortedNode = quickSortRecursiveForList(headNode, tailNode, sortVar);
 
     // Create a new linked list
     DoublyLinkedList sortedList;
@@ -724,9 +726,10 @@ DoublyLinkedList Sorter::quickSortInList(const DoublyLinkedList& list) {
  * This method performs recursive actions to partition the list and perform sorting.
  * @param head The head node of a list
  * @param tail The tail node of a list
+ * @param sortingVar The variable to be sorted based on
  * @return The head node of the sorted list
  */
-Node* Sorter::quickSortRecursiveForList(Node* head, Node* tail) {
+Node* Sorter::quickSortRecursiveForList(Node* head, Node* tail, const string &sortingVar) {
 
     // For empty inputs, or if the list cannot be partitioned anymore, return the node
     if (head == nullptr || head == tail) return head;
@@ -736,7 +739,7 @@ Node* Sorter::quickSortRecursiveForList(Node* head, Node* tail) {
     Node* rightNodes = nullptr;
 
     // Partition the list into two based on the last node, returning three information: pivot node, the head of the left and tail of the right
-    Node* pivot = quickSortPartitionForList(head, tail, &leftNodes, &rightNodes);
+    Node* pivot = quickSortPartitionForList(head, tail, &leftNodes, &rightNodes, sortingVar);
 
     // We'll assume the pivot belongs to the right part
     // If the left part exist
@@ -750,7 +753,7 @@ Node* Sorter::quickSortRecursiveForList(Node* head, Node* tail) {
         pivot -> previousNode = nullptr;
 
         // Recursively continue the recursive sort
-        leftNodes = quickSortRecursiveForList(leftNodes, leftFinalNode);
+        leftNodes = quickSortRecursiveForList(leftNodes, leftFinalNode, sortingVar);
 
         // Find the tail of the new sorted left part
         Node* leftEndingNode = leftNodes;
@@ -762,7 +765,7 @@ Node* Sorter::quickSortRecursiveForList(Node* head, Node* tail) {
     }
 
     // Taking care of the right part
-    pivot -> nextNode = quickSortRecursiveForList(pivot -> nextNode, rightNodes);
+    pivot -> nextNode = quickSortRecursiveForList(pivot -> nextNode, rightNodes, sortingVar);
 
     // If the pivot has a next node, reestablish the connection
     if (pivot -> nextNode) pivot -> nextNode -> previousNode = pivot;
@@ -777,9 +780,10 @@ Node* Sorter::quickSortRecursiveForList(Node* head, Node* tail) {
  * @param tail The initial tail node of the linked list
  * @param leftNodes The new head node of the left portion
  * @param rightNodes The new tail node of the right portion
+ * @param sortingVar The variable to be sorted based on
  * @return The pivot assigned throughout the sorting process.
  */
-Node* Sorter::quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes, Node** rightNodes) {
+Node* Sorter::quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes, Node** rightNodes, const string &sortingVar) {
 
     // First, let the tail node be the pivot
     Node* pivot = tail;
@@ -787,20 +791,35 @@ Node* Sorter::quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes
     // We use median-of-three value strategy here. We first retrieve the middle node
     Node* middleNode = getMiddleNodeForList(head);
 
+    // First retrieve the transaction data to compare
+    string headData, middleData, tailData;
+
+    // If sort is performed based on the location
+    if (sortingVar == "location") {
+        headData = toLowerCase(head -> transactionObject.location);
+        middleData = toLowerCase(middleNode -> transactionObject.location);
+        tailData = toLowerCase(tail -> transactionObject.location);
+
+    // If sort is performed based on the transaction type
+    } else if (sortingVar == "type") {
+        headData = toLowerCase(head -> transactionObject.transactionType);
+        middleData = toLowerCase(middleNode -> transactionObject.transactionType);
+        tailData = toLowerCase(tail -> transactionObject.transactionType);
+
+    // Other cases
+    } else {
+        throw invalid_argument("Sort variable can only be location or type.");
+    }
+
     // We compare the values from the head, middle and tail nodes
-    string headType = toLowerCase(head->transactionObject.transactionType);
-    string headID = head->transactionObject.transactionId;
-
-    string middleType = toLowerCase(middleNode->transactionObject.transactionType);
-    string middleID = middleNode->transactionObject.transactionId;
-
-    string tailType = toLowerCase(tail->transactionObject.transactionType);
-    string tailID = tail->transactionObject.transactionId;
+    string headID = head -> transactionObject.transactionId;
+    string middleID = middleNode -> transactionObject.transactionId;
+    string tailID = tail -> transactionObject.transactionId;
 
     // Perform comparison between different nodes
-    bool headLessMiddle = (headType < middleType) || (headType == middleType && headID < middleID);
-    bool middleLessTail = (middleType < tailType) || (middleType == tailType && middleID < tailID);
-    bool headLessTail = (headType < tailType) || (headType == tailType && headID < tailID);
+    bool headLessMiddle = (headData < middleData) || (headData == middleData && headID < middleID);
+    bool middleLessTail = (middleData < tailData) || (middleData == tailData && middleID < tailID);
+    bool headLessTail = (headData < tailData) || (headData == tailData && headID < tailID);
 
     // Declare a median node
     Node* medianNode;
