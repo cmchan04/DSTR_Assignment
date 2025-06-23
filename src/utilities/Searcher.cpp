@@ -217,7 +217,7 @@ Transaction** Searcher::binarySearchUsingList(const DoublyLinkedList &list, stri
     auto** result = new Transaction*[maximumSize];
 
     // Preprocess the transaction type string to lower case
-    ranges::transform(transactionType, transactionType.begin(), ::tolower);
+    toLowerCase(transactionType);
 
     // Retrieve the starting and ending node of the linked list
     Node* leftNode = list.getHeadNode();
@@ -232,12 +232,12 @@ Transaction** Searcher::binarySearchUsingList(const DoublyLinkedList &list, stri
             // First retrieve the strings and convert them to lower case
             string leftNodeTransactionType = leftNode -> transactionObject.transactionType;
             string rightNodeTransactionType;
-            ranges::transform(leftNodeTransactionType, leftNodeTransactionType.begin(), ::tolower);
+            toLowerCase(leftNodeTransactionType);
 
             // Don't repeat the same process if two nodes are the same
             if (leftNode != rightNode) {
                 rightNodeTransactionType = rightNode -> transactionObject.transactionType;
-                ranges::transform(rightNodeTransactionType, rightNodeTransactionType.begin(), ::tolower);
+                toLowerCase(rightNodeTransactionType);
             }
 
             // Declare a boolean to mark that index 0 is taken, and mark the output size
@@ -277,7 +277,7 @@ Transaction** Searcher::binarySearchUsingList(const DoublyLinkedList &list, stri
         string retrievedType = middleNode -> transactionObject.transactionType;
 
         // Now convert the associated transaction type to lower case
-        ranges::transform(retrievedType, retrievedType.begin(), ::tolower);
+        toLowerCase(retrievedType);
 
         // Compare the types: If the correct node is at the right of the middle
         if (retrievedType < transactionType) {
