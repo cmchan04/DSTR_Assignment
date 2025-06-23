@@ -39,7 +39,7 @@ Transaction::Transaction(const string* dataArray) {
  * @param index number of rows to be shown
  * @note Use for loops to print samples
  */
- void Transaction::printContents(int index) const {
+void Transaction::printContents(const int index) const {
 
     // Show header
     cout << "=== Printing Array Contents ===" << endl;
@@ -55,18 +55,19 @@ Transaction::Transaction(const string* dataArray) {
     cout << "  Location: " << location << "\n";
     cout << "  Is Fraud: " << (isFraud ? "Yes" : "No") << "\n";
     cout << "  Channel: " << paymentChannel << "\n" << endl;
+}
 
- }
+/**
+ * This function is to swap two transaction indices in the array
+ * @param first The first element to be swapped
+ * @param second The second element to be swapped
+ */
+void Transaction::swap(Transaction &first, Transaction &second) noexcept {
 
- /**
-  * This function is to swap two transactions index in the array
-  * @param first
-  * @param second
-  */
-void Transaction::swap(Transaction &first, Transaction &second) {
+    // Store the value of the first transaction
+    const Transaction temp = first;
 
-     Transaction temp = first;
-     first = second;
-     second = temp;
-
- }
+    // Perform swapping
+    first = second;
+    second = temp;
+}
