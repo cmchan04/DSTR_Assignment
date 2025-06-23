@@ -108,8 +108,8 @@ inline void Searcher::removeUnusedIndex(Transaction** &list, const int &currentL
  * @param resultCount number of total results
  * @return The pointer to an array with only the transaction type searched
  */
-Transaction** Searcher::linearSearchWithArray(Transaction* transactions, const int size, const string &searchType,
-                                             int &resultCount) {
+Transaction** Searcher::linearSearchUsingArray(Transaction* transactions, const int size, const string &searchType,
+                                              int &resultCount) {
 
     // Initialize the counter
     resultCount = 0;
@@ -135,5 +135,84 @@ Transaction** Searcher::linearSearchWithArray(Transaction* transactions, const i
 
     // Set results count and return the array
     resultCount = index;
+    return result;
+}
+
+/**
+ * A method that performs search for a specific transaction by using binary search.
+ * @param transactions The array of transactions involved
+ * @param size The total size of the array
+ * @param searchType The transaction type to be searched
+ * @param resultCount The final size of the result
+ * @return A transaction list consisting of the filtered results
+ */
+Transaction** Searcher::binarySearchUsingArray(Transaction* transactions, const int size, const string &searchType,
+                                              int &resultCount){
+    // Initialize the counter
+    resultCount = 0;
+
+    // Convert search type input to lowercase
+    const string type = toLowerCase(searchType);
+
+    // Declare an array with maximum size to store results
+    auto** result = new Transaction*[size];
+
+    // Declare different indices to track the traversal process
+    int sortIndex = 0, leftBoundary = 0, rightBoundary = size - 1, foundIndex = -1;
+
+    // Continue the splitting process as long as the indices are still valid
+    while (leftBoundary <= rightBoundary) {
+
+        // Get the middle index
+        const int median = (leftBoundary + rightBoundary) / 2;
+
+        // Extract the transaction type associated to the middle index
+        string midType = toLowerCase(transactions[median].transactionType);
+
+        // If the type matches
+        if (midType == type) {
+
+            // The index where the result is found is recorded, and the loop ends
+            foundIndex = median;
+            break;
+        }
+
+        // If the type does not match (type is located at the right), move to the right section
+        if (midType < type) leftBoundary = median + 1;
+
+        // Otherwise, move to the left
+        else if (midType > type) rightBoundary = median - 1;
+    }
+
+    // If no record matches, return null
+    if (foundIndex == -1) {
+        cout << "No records are found with transaction type (" << searchType << "). \n" << endl;
+        return nullptr;
+    }
+
+    // Declare the starting index of matching results
+    int leftStart = foundIndex, rightStart = foundIndex;
+
+    // Decrement the start index until all matching transactions on the right are included
+    while (leftStart > 0 && toLowerCase(transactions[leftStart - 1].transactionType) == type) {
+        --leftStart;
+    }
+
+    // Increment the starting index until all matching transactions on the right are included
+    while (rightStart < size - 1 && toLowerCase(transactions[rightStart + 1].transactionType) == type) {
+        ++rightStart;
+    }
+
+    // Store array of pointers to matched results
+    for (int i = leftStart; i <= rightStart; ++i) {
+        result[sortIndex++] = &transactions[i];
+    }
+
+    // Trim the size of result array
+    removeUnusedIndex(result, size, sortIndex);
+
+    // Set result count and return it
+    resultCount = sortIndex;
+
     return result;
 }
