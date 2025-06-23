@@ -101,27 +101,27 @@ int main(){
     // Release memory
     delete[] results;
     
-    // Create a Performance Tracker for Bubble Sort in arrays
-    PerformanceTracker bubbleSearchArrayTracker{};
-    bubbleSearchArrayTracker.start();
+    // Create a Performance Tracker for Merge Sort in arrays
+    PerformanceTracker mergeSortTracker{};
+    mergeSortTracker.start();
 
-    // Test: Bubble sort in arrays based on location
+    // Test: Merge sort in arrays based on location
     // Initialize target type
     string sortType = "location";
 
     // Start sorting
-    Sorter::bubbleSortArray(transactionsArray, totalRows, sortType, true);
+    Sorter::mergeSortArray(transactionsArray, totalRows, sortType, true);
 
-    //Print 10 sample records
-    for (int i = 0; i < 10; ++i) {
+    //Print 30 sample records
+    for (int i = 0; i < 30; ++i) {
         transactionsArray[i].printContents(i);
     }
 
     // Stop the tracker
-    bubbleSearchArrayTracker.stop();
+    mergeSortTracker.stop();
 
     // Print performance summary
-    bubbleSearchArrayTracker.report("Performance for Bubble Sort in Array for \"Location\"");
+    mergeSortTracker.report("Performance for Merge Sort in Array for \"Location\"");
 
     // Release memory
     delete[] transactionsArray;
