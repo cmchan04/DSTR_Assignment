@@ -27,10 +27,10 @@ struct Sorter{
     static void mergeSortDividerInArray(Transaction* transactions, int left, int right, const string& column = "location", bool ascending = true);
     static void mergeForArrayElements(Transaction* transactions, int left, int median, int right, const string& column = "location", bool ascending = true);
 
-    static DoublyLinkedList mergeSortInList(const DoublyLinkedList &list);
-    static Node* recursiveSplitAndSortInList(Node* headNode);
+    static DoublyLinkedList mergeSortInList(const DoublyLinkedList &list, const string &sortingVar);
+    static Node* recursiveSplitAndSortInList(Node* headNode, const string &sortingVar);
     static Node* getMiddleNodeForList(Node* headNode);
-    static Node* mergeNodesForList(Node* nodeInLeft, Node* nodeInRight);
+    static Node* mergeNodesForList(Node* nodeInLeft, Node* nodeInRight, const string &sortingVar);
 
     // Quick sort with utility functions
     static DoublyLinkedList quickSortInList(const DoublyLinkedList& list);

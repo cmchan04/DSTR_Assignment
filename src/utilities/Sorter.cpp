@@ -456,11 +456,14 @@ void Sorter::mergeForArrayElements(Transaction *transactions, const int left, co
 /**
  * This method sorts a list based on the merge sort algorithm.
  * @param list The list to be sorted
+ * @param sortingVar The variable to be sorted based on
  * @return A list sorted using the merge sort algorithm
  */
-DoublyLinkedList Sorter::mergeSortInList(const DoublyLinkedList &list) {
+DoublyLinkedList Sorter::mergeSortInList(const DoublyLinkedList &list, const string &sortingVar) {
 
     // Overall idea: Split each element individually, then sort while merge.
+    // Clean the sorting variable
+    const string sortVar = toLowerCase(sortingVar);
 
     // Do nothing if the list has one node or less
     if (list.getSize() <= 1) return list;
@@ -470,7 +473,7 @@ DoublyLinkedList Sorter::mergeSortInList(const DoublyLinkedList &list) {
     Node* headNode = sortedList.getHeadNode();
 
     // Perform a recursive split and sort based on the head node
-    headNode = recursiveSplitAndSortInList(headNode);
+    headNode = recursiveSplitAndSortInList(headNode, sortVar);
 
     // Reassign the tail node by traversing through the entire linked list
     Node* tailNode = headNode;
@@ -489,9 +492,10 @@ DoublyLinkedList Sorter::mergeSortInList(const DoublyLinkedList &list) {
 /**
  * This is a recursive method that splits the linked list into individual nodes before sorting and combining them again.
  * @param headNode The head node for the linked list
+ * @param sortingVar The variable to be sorted based on
  * @return The head node of a new linked list that is sorted
  */
-Node* Sorter::recursiveSplitAndSortInList(Node* headNode) {
+Node* Sorter::recursiveSplitAndSortInList(Node* headNode, const string &sortingVar) {
 
     // The base case: The head node cannot be split anymore
     if (headNode == nullptr || headNode -> nextNode == nullptr) return headNode;
@@ -505,11 +509,11 @@ Node* Sorter::recursiveSplitAndSortInList(Node* headNode) {
     secondHalfStart -> previousNode = nullptr;         // Second half
 
     // Both halves are split again recursively
-    Node* leftHalf = recursiveSplitAndSortInList(headNode);
-    Node* rightHalf = recursiveSplitAndSortInList(secondHalfStart);
+    Node* leftHalf = recursiveSplitAndSortInList(headNode, sortingVar);
+    Node* rightHalf = recursiveSplitAndSortInList(secondHalfStart, sortingVar);
 
     // Merge both halves
-    return mergeNodesForList(leftHalf, rightHalf);
+    return mergeNodesForList(leftHalf, rightHalf, sortingVar);
 }
 
 /**
@@ -542,9 +546,10 @@ Node* Sorter::getMiddleNodeForList(Node* headNode) {
  * This method combines two linked lists and returns the head node of the sorted linked list
  * @param nodeInLeft The head node in the first linked list
  * @param nodeInRight The head node in the second list
+ * @param sortingVar The variable to be sorted based on
  * @return The head node in the combined and sorted linked list
  */
-Node* Sorter::mergeNodesForList(Node* nodeInLeft, Node* nodeInRight) {
+Node* Sorter::mergeNodesForList(Node* nodeInLeft, Node* nodeInRight, const string &sortingVar) {
 
     // Show warning if the input is null
     if (nodeInLeft == nullptr && nodeInRight == nullptr) throw invalid_argument("Inputs cannot be null");
@@ -567,16 +572,30 @@ Node* Sorter::mergeNodesForList(Node* nodeInLeft, Node* nodeInRight) {
         // Declare a boolean to mark our choice
         bool chooseLeft = false;
 
-        // First retrieve the transaction type to compare
-        const string leftType = toLowerCase(leftObject.transactionType);
-        const string rightType = toLowerCase(rightObject.transactionType);
+        // First retrieve the transaction data to compare
+        string leftData, rightData;
+
+        // If sort is performed based on the location
+        if (sortingVar == "location") {
+            leftData = toLowerCase(leftObject.location);
+            rightData = toLowerCase(rightObject.location);
+
+        // If sort is performed based on the transaction type
+        } else if (sortingVar == "type") {
+            leftData = toLowerCase(leftObject.transactionType);
+            rightData = toLowerCase(rightObject.transactionType);
+
+        // Other cases
+        } else {
+            throw invalid_argument("Sort variable can only be location or type.");
+        }
 
         // If the type on the left is smaller than the right ("a" < "b"), choose the left
-        if (leftType < rightType) {
+        if (leftData < rightData) {
             chooseLeft = true;
 
         // Another scenario, if both types match
-        } else if (leftType == rightType) {
+        } else if (leftData == rightData) {
 
             // We compare ID. Choose left if the left ID is smaller
             chooseLeft = leftObject.transactionId < rightObject.transactionId;
