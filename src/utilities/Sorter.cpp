@@ -673,6 +673,131 @@ Node* Sorter::mergeNodesForList(Node* nodeInLeft, Node* nodeInRight, const strin
 }
 
 /**
+ * This function rearranges the array recursively using the quick sort algorithm.
+ * @param transactions The transaction array to be sorted
+ * @param left The starting index
+ * @param right The ending index
+ * @param column The column name to be sorted based on
+ * @param ascending To sort in ascending or descending, \code true\endcode indicates ascending, \code false\endcode indicates descending
+ */
+void Sorter::quickSortInArray(Transaction* transactions, const int left, const int right, const string &column, const bool ascending) {
+
+    // Recursively break down the transaction array
+    if (left < right) {
+
+        // Perform partition on the array and return the pivot index
+        const int pivotIndex = quickSortPartitionForArray(transactions, left, right, column, ascending);
+
+        // Perform recursive sorting for the left part
+        quickSortInArray(transactions, left, pivotIndex - 1, column, ascending);
+
+        // Recursive sorting for the right part
+        quickSortInArray(transactions, pivotIndex + 1, right, column, ascending);
+    }
+}
+
+/**
+ * This function rearranges the order of elements based on pivot.
+ * @param transactions The array to be sorted
+ * @param startIndex The starting index of current partition
+ * @param endIndex The ending index of current partition
+ * @param column The column name to be sorted based on
+ * @param ascending To sort in ascending or descending, \code true\endcode indicates ascending, \code false\endcode indicates descending
+ * @return The pivot index
+ */
+int Sorter::quickSortPartitionForArray(Transaction* transactions, const int startIndex, const int endIndex,
+                                       const string &column, const bool ascending) {
+
+    // Get the index of selected pivot
+    const int pivotIndex = getMedianIndex(transactions, startIndex, endIndex, column);
+
+    // Swap pivot to the end
+    Transaction::swap(transactions[pivotIndex], transactions[endIndex]);
+
+    // Initialize pivot object
+    const Transaction pivot = transactions[endIndex];
+
+    // Get the type or location of pivot for comparison
+    const string pivotID = pivot.transactionId;
+    const string pivotDetail = toLowerCase(column == "type" ? pivot.transactionType : pivot.location);
+    const string pivotKey = pivotDetail + pivotID;
+
+    // Initialize the start of index for elements smaller than the pivot key
+    int lessPivot = startIndex - 1;
+
+    // Rearrange the transaction records
+    for (int currentIndex = startIndex; currentIndex < endIndex; ++currentIndex) {
+
+        // Get the current element's location or transaction type, with ID
+        const string currentID = transactions[currentIndex].transactionId;
+        const string currentDetail = toLowerCase(column == "type" ? transactions[currentIndex].transactionType : transactions[currentIndex].location);
+        const string currentKey = currentDetail + currentID;
+
+        // Check if the current element is larger or smaller than the pivot
+        bool condition = ascending ? (currentKey < pivotKey) : (currentKey > pivotKey);
+
+        // Swap the smaller ones to the left. Less pivot is used to mark the location where the small shall be inserted
+        if (condition) {
+            ++lessPivot;
+            Transaction::swap(transactions[lessPivot], transactions[currentIndex]);
+        }
+    }
+
+    // Shift the pivot to the central point of the array
+    Transaction::swap(transactions[lessPivot + 1], transactions[endIndex]);
+
+    // Return pivot index
+    return lessPivot + 1;
+}
+
+/**
+ * This method gets the pivot index by determining the median of three
+ * @param transactions array to be sorted
+ * @param leftIndex starting index of partition
+ * @param rightIndex ending index of partition
+ * @param column column name to be sorted on (location or transaction type (type))
+ * @return returns the pivot index
+ */
+int Sorter::getMedianIndex(const Transaction* transactions, int leftIndex, int rightIndex, const string &column) {
+
+    // Get the current median index (pivot index)
+    const int medianIndex = (leftIndex + rightIndex) / 2;
+
+    // Retrieve location or transaction type based on column with ID
+    const string leftID = transactions[leftIndex].transactionId;
+    const string leftKey = toLowerCase(column == "type" ? transactions[leftIndex].transactionType : transactions[leftIndex].location);
+
+    const string medianID = transactions[medianIndex].transactionId;
+    const string medianKey = toLowerCase(column == "type" ? transactions[medianIndex].transactionType : transactions[medianIndex].location);
+
+    const string rightID = transactions[rightIndex].transactionId;
+    const string rightKey = toLowerCase(column == "type" ? transactions[rightIndex].transactionType : transactions[rightIndex].location);
+
+    // Create a new comparison key. Let's say if we have atm + 001 vs. atm + 002, we can concatenate the strings together for easier comparison
+    const string leftCombined = leftKey + leftID;
+    const string medianCombined = medianKey + medianID;
+    const string rightCombined = rightKey + rightID;
+
+    // Check which is the median of three objects and return as pivot
+    // When left < median < right or right < median < left
+    if ((leftCombined <= medianCombined && medianCombined <= rightCombined) ||
+        (rightCombined <= medianCombined && medianCombined <= leftCombined))
+
+        // Return the middle as the pivot
+        return medianIndex;
+
+    // When median < left < right or right < left < median
+    if ((medianCombined <= leftCombined && leftCombined <= rightCombined) ||
+        (rightCombined <= leftCombined && leftCombined <= medianCombined))
+
+        // Return the left as the pivot
+        return leftIndex;
+
+    // When median < right < left or left < right < median, return right as the pivot
+    return rightIndex;
+}
+
+/**
  * This method sorts a list using the quick sort algorithm based on the transaction type.
  * @param list The list to be sorted
  * @param sortingVar The variable to be sorted based on

@@ -12,7 +12,7 @@
 
 using namespace std;
 
-struct Sorter{
+struct Sorter {
 
     // Bubble sort
     static void bubbleSortInArray(Transaction* transactions, int size, const string &column = "location", bool ascending = true);
@@ -32,6 +32,11 @@ struct Sorter{
     static Node* getMiddleNodeForList(Node* headNode);
     static Node* mergeNodesForList(Node* nodeInLeft, Node* nodeInRight, const string &sortingVar);
 
+    // Quick sort with utility functions (Array)
+    static void quickSortInArray(Transaction* transactions, int left, int right, const string &column, bool ascending);
+    static int quickSortPartitionForArray(Transaction* transactions, int startIndex, int endIndex, const string &column, bool ascending);
+    static int getMedianIndex(const Transaction* arr, int left, int right, const string &column);
+  
     // Quick sort with utility functions
     static DoublyLinkedList quickSortInList(const DoublyLinkedList& list, const string &sortingVar);
     static Node* quickSortRecursiveForList(Node* head, Node* tail, const string &sortingVar);
