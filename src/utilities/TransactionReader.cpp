@@ -150,6 +150,9 @@ bool TransactionReader::parseLineToTransaction(const string& line, Transaction &
  */
 void TransactionReader::readCSVToList(const string& filename, DoublyLinkedList* list) {
 
+    // If the linked list is null, create one
+    if (list == nullptr) list = new DoublyLinkedList();
+
     // Get the file and declare an empty line to store unprocessed information from the file
     ifstream file(filename);
     string line;
