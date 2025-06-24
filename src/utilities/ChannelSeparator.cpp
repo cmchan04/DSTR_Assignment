@@ -3,19 +3,20 @@
 //
 
 #include "ChannelSeparator.h"
-#include <iostream>
 #include <string>
+
+#include "StringUtil.h"
 
 using namespace std;
 
 /**
- * This function rearranges and stores transactions records based on payment channel
- * @param source The main array / linked list that store all transactions
+ * This function rearranges and stores transaction records based on the payment channel
+ * @param source The main array or linked list that stores all transactions
  * @param sourceSize Size of main Array
- * @param ach Array for ACH payment channel
- * @param card Array for card payment channel
- * @param upi Array for UPI payment channel
- * @param wireTransfer Array for wire_transfer payment channel
+ * @param ach Array for the ACH payment channel                     @param achSize new size of the ACH array
+ * @param card Array for the card payment channel                   @param cardSize new size of the card array
+ * @param upi Array for the UPI payment channel                     @param upiSize new size of the UPI array
+ * @param wireTransfer Array for the wire_transfer payment channel  @param wireSize new size of the wire transfer array
  */
 void ChannelSeparator::splitToChannelArray(const Transaction* source, const int sourceSize,
                                            Transaction* &ach, int &achSize,
@@ -61,5 +62,48 @@ void ChannelSeparator::splitToChannelArray(const Transaction* source, const int 
         } else if (channel == "wire_transfer") {
             wireTransfer[wireSize++] = transaction;
         }
+    }
+}
+
+/**
+ * This method categorizes each transaction into their respective channels.
+ * @param list The original list consisting of all transaction data
+ * @param achList The new list consisting ACH
+ * @param cardList The new list consisting card
+ * @param upiArray The new list consisting UPI
+ * @param wireList The new list consisting wire transfer
+ */
+void ChannelSeparator::splitToChannelList(const DoublyLinkedList* list,
+                                          DoublyLinkedList* &achList,
+                                          DoublyLinkedList* &cardList,
+                                          DoublyLinkedList* &upiArray,
+                                          DoublyLinkedList* &wireList) {
+
+    // Reset the lists
+    if (achList != nullptr) achList -> clear();
+    else achList = new DoublyLinkedList();
+
+    if (cardList != nullptr) cardList -> clear();
+    else cardList = new DoublyLinkedList();
+
+    if (upiArray != nullptr) upiArray -> clear();
+    else upiArray = new DoublyLinkedList();
+
+    if (wireList != nullptr) wireList -> clear();
+    else wireList = new DoublyLinkedList();
+
+    // Loop through each node
+    const Node* currentNode = list -> getHeadNode();
+    while (currentNode != nullptr) {
+
+        // Retrieve the payment channel
+        Transaction currentObject = currentNode -> transactionObject;
+
+        // Check the transaction type and add to the new list
+        if (string currentPayment = toLowerCase(currentObject.paymentChannel);
+            currentPayment == "ach")                achList  -> insertAtEnd(&currentObject);
+        else if (currentPayment == "card")          cardList -> insertAtEnd(&currentObject);
+        else if (currentPayment == "upi")           upiArray -> insertAtEnd(&currentObject);
+        else if (currentPayment == "wire_transfer") wireList -> insertAtEnd(&currentObject);
     }
 }
