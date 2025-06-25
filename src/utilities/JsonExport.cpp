@@ -175,5 +175,5 @@ void JsonExport::generateJsonFile(const json &jsonObject, const string &filename
 
     // File written successfully and closed.
     file.close();
-    cout << "File " << filename << " is exported to the \"exported_json\" folder successfully." << endl;
+    cout << "File '" << filename << "' is exported to the \"exported_json\" folder successfully." << endl;
 }
