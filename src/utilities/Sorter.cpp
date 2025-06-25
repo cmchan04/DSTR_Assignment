@@ -988,7 +988,11 @@ Node* Sorter::quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes
 
     // Median-of-three done. Now, get values from the pivot / tail
     const string pivotID = pivot -> transactionObject.transactionId;
-    const string pivotType = toLowerCase(pivot -> transactionObject.transactionType);
+
+    string pivotData;
+    if (sortingVar == "location") pivotData = toLowerCase(pivot -> transactionObject.location);
+    else if (sortingVar == "type") pivotData = toLowerCase(pivot -> transactionObject.transactionType);
+    else throw invalid_argument("Sort variable can only be location or type.");
 
     // Reset the variables to contain left and right nodes
     *leftNodes = nullptr;
@@ -1006,11 +1010,15 @@ Node* Sorter::quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes
 
         // Retrieve the information associated
         const string currentID = currentNode -> transactionObject.transactionId;
-        const string currentType = toLowerCase(currentNode -> transactionObject.transactionType);
+
+        string currentData;
+        if (sortingVar == "location") currentData = toLowerCase(currentNode -> transactionObject.location);
+        else if (sortingVar == "type") currentData = toLowerCase(currentNode -> transactionObject.transactionType);
+        else throw invalid_argument("Sort variable can only be location or type.");
 
         // Make comparisons on the transaction type
-        if (currentType > pivotType ||
-            (currentType == pivotType && currentID > pivotID)) {
+        if (currentData > pivotData ||
+            (currentData == pivotData && currentID > pivotID)) {
 
             // Remove current node from its current position
             if (currentNode -> previousNode) {
