@@ -20,7 +20,7 @@ struct ChannelSeparator {
     static void splitToChannelList(const DoublyLinkedList* list,
                                    DoublyLinkedList* &achList,
                                    DoublyLinkedList* &cardList,
-                                   DoublyLinkedList* &upiArray,
+                                   DoublyLinkedList* &upiList,
                                    DoublyLinkedList* &wireList);
 };
 

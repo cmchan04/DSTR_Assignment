@@ -70,13 +70,13 @@ void ChannelSeparator::splitToChannelArray(const Transaction* source, const int 
  * @param list The original list consisting of all transaction data
  * @param achList The new list consisting ACH
  * @param cardList The new list consisting card
- * @param upiArray The new list consisting UPI
+ * @param upiList The new list consisting UPI
  * @param wireList The new list consisting wire transfer
  */
 void ChannelSeparator::splitToChannelList(const DoublyLinkedList* list,
                                           DoublyLinkedList* &achList,
                                           DoublyLinkedList* &cardList,
-                                          DoublyLinkedList* &upiArray,
+                                          DoublyLinkedList* &upiList,
                                           DoublyLinkedList* &wireList) {
 
     // Reset the lists
@@ -86,8 +86,8 @@ void ChannelSeparator::splitToChannelList(const DoublyLinkedList* list,
     if (cardList != nullptr) cardList -> clear();
     else cardList = new DoublyLinkedList();
 
-    if (upiArray != nullptr) upiArray -> clear();
-    else upiArray = new DoublyLinkedList();
+    if (upiList != nullptr) upiList -> clear();
+    else upiList = new DoublyLinkedList();
 
     if (wireList != nullptr) wireList -> clear();
     else wireList = new DoublyLinkedList();
@@ -101,9 +101,12 @@ void ChannelSeparator::splitToChannelList(const DoublyLinkedList* list,
 
         // Check the transaction type and add to the new list
         if (string currentPayment = toLowerCase(currentObject.paymentChannel);
-            currentPayment == "ach")                achList  -> insertAtEnd(&currentObject);
-        else if (currentPayment == "card")          cardList -> insertAtEnd(&currentObject);
-        else if (currentPayment == "upi")           upiArray -> insertAtEnd(&currentObject);
-        else if (currentPayment == "wire_transfer") wireList -> insertAtEnd(&currentObject);
+            currentPayment == "ach")                    achList  -> insertAtEnd(&currentObject);
+        else if (currentPayment == "card")              cardList -> insertAtEnd(&currentObject);
+        else if (currentPayment == "upi")               upiList  -> insertAtEnd(&currentObject);
+        else if (currentPayment == "wire_transfer")     wireList -> insertAtEnd(&currentObject);
+
+        // Move on to the next node
+        currentNode = currentNode -> nextNode;
     }
 }
