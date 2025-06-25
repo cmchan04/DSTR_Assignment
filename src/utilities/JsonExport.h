@@ -20,8 +20,7 @@ struct JsonExport {
     static void convertToJson(Transaction* array, int arraySize, const string &filename = "export.json");
     static void convertToJson(const DoublyLinkedList* list, const string &filename = "export.json");
 
-    // Utility method to be used within the JsonExport class
+    // Utility methods to be used within the JsonExport class
     static string cleanString(const string &input);
-    static void generateJsonFile(const nlohmann::json &jsonObject, const string &filename);
 };
 
