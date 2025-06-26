@@ -69,18 +69,20 @@ int main() {
     delete tracker;
 
     // Check performance for JSON
+    cout << "Exporting array results to JSON ... " << endl;
     tracker = storeArrayToJson(overallTransactionArray, totalArrayRow);
     tracker -> report("Performance for loading array to JSON");
     delete tracker;
 
+    cout << "Exporting linked list results to JSON ... " << endl;
     tracker = storeLinkedListToJson(overallTransactionList);
-    tracker -> report("Performance for loading array to JSON");
+    tracker -> report("Performance for loading linked list to JSON");
     delete tracker;
 
     // ---------------------------------------------------------------------------------------------------------
     // Task 1: Separate data based on different channels.
     // Goal: Compare performance of normal read and write between arrays and linked lists
-    cout << endl << "--------Task 1: Separate data into different channels--------" << endl;
+    cout << "--------Task 1: Separate data into different channels--------" << endl;
     cout << endl << "Separating data from the overall array ... " << endl;
 
     // Array
@@ -92,6 +94,7 @@ int main() {
     tracker -> report("Performance for Splitting Data based on Payment Channel in Array");
     delete tracker;
 
+    cout << "Exporting results to JSON ... " << endl;
     JsonExport::convertToJson(achArray,           achSize,  "ACH_Payment_Array.json");
     JsonExport::convertToJson(cardArray,          cardSize, "Card_Payment_Array.json");
     JsonExport::convertToJson(upiArray,           upiSize,  "UPI_Payment_Array.json");
@@ -112,6 +115,7 @@ int main() {
     tracker -> report("Performance for splitting data in linked list");
     delete tracker;
 
+    cout << "Exporting results to JSON ... " << endl;
     JsonExport::convertToJson(achList,  "ACH_Payment_Linked_List.json");
     JsonExport::convertToJson(cardList, "Card_Payment_Linked_List.json");
     JsonExport::convertToJson(upiList,  "UPI_Payment_Linked_List.json");
@@ -151,6 +155,7 @@ int main() {
     tracker -> report("Performance for Quick Sort in Array");
     delete tracker;
 
+    cout << "Exporting results to JSON ... " << endl;
     JsonExport::convertToJson(locationMergeSortArray, mergeSortSize,  "Merge_Sort_Full_Array.json");
     JsonExport::convertToJson(locationQuickSortArray, quickSortSize,  "Quick_Sort_Full_Array.json");
 
@@ -172,6 +177,7 @@ int main() {
     tracker -> report("Performance for Quick Sort in Linked List");
     delete tracker;
 
+    cout << "Exporting results to JSON ... " << endl;
     JsonExport::convertToJson(mergeSortList, "Merge_Sort_Full_Linked_List.json");
     JsonExport::convertToJson(quickSortList, "Quick_Sort_Full_Linked_List.json");
 
@@ -220,6 +226,7 @@ int main() {
     tracker -> report("Performance of Quick Sort for Sampled Array");
     delete tracker;
 
+    cout << "Exporting results to JSON ... " << endl;
     JsonExport::convertToJson(sampledBubbleSortArray,    sampledBubbleSortSize,     "Bubble_Sort_Sampled_Array.json");
     JsonExport::convertToJson(sampledInsertionSortArray, sampledInsertionSortSize,  "Insertion_Sort_Sampled_Array.json");
     JsonExport::convertToJson(sampledMergeSortArray,     sampledMergeSortSize,      "Merge_Sort_Sampled_Array.json");
@@ -252,6 +259,7 @@ int main() {
     tracker -> report("Performance of Quick Sort for Sampled Linked List");
     delete tracker;
 
+    cout << "Exporting results to JSON ... " << endl;
     JsonExport::convertToJson(sampledBubbleSortList,    "Bubble_Sort_Sampled_Linked_List.json");
     JsonExport::convertToJson(sampledInsertionSortList, "Insertion_Sampled_Full_Linked_List.json");
     JsonExport::convertToJson(sampledMergeSortList,     "Merge_Sort_Sampled_Linked_List.json");
@@ -271,7 +279,7 @@ int main() {
     quickSortSize = totalArrayRow;
 
     // First perform the fastest sort to sort based on the transaction type
-    cout << endl << "First sort the data based on location (for bubble sort) ... " << endl;
+    cout << endl << "First sort the data based on location (for binary search) ... " << endl;
     Transaction* typeSortedArray = nullptr;
     copyArray(overallTransactionArray, totalArrayRow, typeSortedArray);
 
@@ -297,6 +305,7 @@ int main() {
     tracker -> report("Performance of Linear Search for Linked List");
     delete tracker;
 
+    cout << "Exporting results to JSON ... " << endl;
     JsonExport::convertToJson(linearSearchArray, linearSearchArrayCount,"Linear_Search_Array.json");
     JsonExport::convertToJson(linearSearchList, linearSearchListCount, "Linear_Search_List.json");
 
@@ -319,6 +328,7 @@ int main() {
     tracker -> report("Performance of Binary Search for Linked List");
     delete tracker;
 
+    cout << "Exporting results to JSON ... " << endl;
     JsonExport::convertToJson(binarySearchArray, binarySearchArrayCount, "Binary_Search_Array.json");
     JsonExport::convertToJson(binarySearchList, binarySearchListCount, "Binary_Search_Linked_List.json");
 
