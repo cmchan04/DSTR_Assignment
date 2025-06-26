@@ -923,7 +923,7 @@ PerformanceTracker* listBinarySearch(const DoublyLinkedList &list, Transaction**
     tracker -> start();
 
     // Perform binary search
-    outputList = Searcher::linearSearchUsingList(list, searchType, outputSize);
+    outputList = Searcher::binarySearchUsingList(list, searchType, outputSize);
 
     // Stop and return the tracker
     tracker -> stop();
