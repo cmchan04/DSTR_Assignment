@@ -275,13 +275,13 @@ void DoublyLinkedList::swap(Node* firstNode, Node* secondNode) {
 void DoublyLinkedList::clear() {
 
     // Starting with head node
-    const Node* currentNode = headNode;
+    Node* currentNode = headNode;
 
     // Travel through all later nodes until it reaches nullptr
     while (currentNode != nullptr) {
 
         // Get the location of the next node
-        const Node* nextNode = currentNode -> nextNode;
+        Node* nextNode = currentNode -> nextNode;
 
         // Remove everything in the current node
         delete currentNode;
