@@ -220,6 +220,7 @@ int main() {
     cout << "Sorting sampled data from array using merge sort ... " << endl;
     tracker = arrayMergeSort(sampledMergeSortArray, sampledMergeSortSize, locationSortKey, true);
     tracker -> report("Performance of Merge Sort for Sampled Array");
+    delete tracker;
 
     cout << "Sorting sampled data from array using quick sort ... " << endl;
     tracker = arrayQuickSort(sampledQuickSortArray, sampledQuickSortSize, locationSortKey, true);
@@ -335,6 +336,12 @@ int main() {
     // Delete memory
     delete[] binarySearchArray;
     delete binarySearchList;
+
+    // Final cleanup
+    delete[] overallTransactionArray;
+    delete overallTransactionList;
+    delete[] typeSortedArray;
+    delete typeSortedList;
 
     // Program ends!
     cout << endl << "Done! Our program ends here." << endl;
