@@ -81,7 +81,7 @@ int main() {
 
     // ---------------------------------------------------------------------------------------------------------
     // Task 1: Separate data based on different channels.
-    // Goal: Compare performance of normal read and write between arrays and linked lists
+    // Goal: Compare performance of the normal read and write between arrays and linked lists
     cout << "--------Task 1: Separate data into different channels--------" << endl;
     cout << endl << "Separating data from the overall array ... " << endl;
 
@@ -312,7 +312,7 @@ int main() {
 
     // Release memory
     delete[] linearSearchArray;
-    delete linearSearchList;
+    delete[] linearSearchList;
 
     // Binary search
     cout << endl << "Begin binary search for array ... " << endl;
@@ -335,7 +335,7 @@ int main() {
 
     // Delete memory
     delete[] binarySearchArray;
-    delete binarySearchList;
+    delete[] binarySearchList;
 
     // Final cleanup
     delete[] overallTransactionArray;
@@ -499,13 +499,10 @@ PerformanceTracker* arrayBubbleSort(Transaction* &array, int &size, const string
     // Copy sorted data back to the original array if sampling takes place
     if (shouldCopyBack) {
 
-        // Copy the sample data into the array
-        array = new Transaction[workingSize];
-        for (int i = 0; i < workingSize; i++) array[i] = workingArray[i];
-
-        // Set the size and remove the temporary array
+        // Clean the original array and return the working array
+        delete[] array;
+        array = workingArray;
         size = workingSize;
-        delete[] workingArray;
     }
 
     // Lastly, return the performance tracker
@@ -549,13 +546,10 @@ PerformanceTracker* arrayInsertionSort(Transaction* &array, int &size, const str
     // Copy sorted data back to the original array if sampling takes place
     if (shouldCopyBack) {
 
-        // Copy the sample data into the array
-        array = new Transaction[workingSize];
-        for (int i = 0; i < workingSize; i++) array[i] = workingArray[i];
-
-        // Set the size and remove the temporary array
+        // Clean the original array and return the working array
+        delete[] array;
+        array = workingArray;
         size = workingSize;
-        delete[] workingArray;
     }
 
     // Lastly, return the performance tracker
@@ -599,13 +593,10 @@ PerformanceTracker* arrayMergeSort(Transaction* &array, int &size, const string 
     // Copy sorted data back to the original array if sampling takes place
     if (shouldCopyBack) {
 
-        // Copy the sample data into the array
-        array = new Transaction[workingSize];
-        for (int i = 0; i < workingSize; i++) array[i] = workingArray[i];
-
-        // Set the size and remove the temporary array
+        // Clean the original array and return the working array
+        delete[] array;
+        array = workingArray;
         size = workingSize;
-        delete[] workingArray;
     }
 
     // Lastly, return the performance tracker
@@ -649,13 +640,10 @@ PerformanceTracker* arrayQuickSort(Transaction* &array, int &size, const string 
     // Copy sorted data back to the original array if sampling takes place
     if (shouldCopyBack) {
 
-        // Copy the sample data into the array
-        array = new Transaction[workingSize];
-        for (int i = 0; i < workingSize; i++) array[i] = workingArray[i];
-
-        // Set the size and remove the temporary array
+        // Clean the original array and return the working array
+        delete[] array;
+        array = workingArray;
         size = workingSize;
-        delete[] workingArray;
     }
 
     // Lastly, return the performance tracker
@@ -666,12 +654,13 @@ PerformanceTracker* listBubbleSort(DoublyLinkedList &list, const string &searchT
 
     // Declare a variable to store the list to be sorted
     const DoublyLinkedList* sortingList = &list;
+    DoublyLinkedList* tempList = nullptr;
 
     // If sampling is required, create a new list
     if (sample) {
 
         // The temporary list created to store nodes
-        auto* tempList = new DoublyLinkedList();
+        tempList = new DoublyLinkedList();
 
         // Initializing variables
         int i = 0;
@@ -685,7 +674,7 @@ PerformanceTracker* listBubbleSort(DoublyLinkedList &list, const string &searchT
             tempList -> insertAtEnd(&transactionObject);
 
             // Traverse to the next node
-            node = node->nextNode;
+            node = node -> nextNode;
             i++;
         }
 
@@ -711,6 +700,10 @@ PerformanceTracker* listBubbleSort(DoublyLinkedList &list, const string &searchT
         currentNode = currentNode -> nextNode;
     }
 
+    // Clean up the temporary list
+    if (tempList != nullptr) tempList -> clear();
+    delete tempList;
+
     // Return the tracker
     return tracker;
 }
@@ -719,12 +712,13 @@ PerformanceTracker* listInsertionSort(DoublyLinkedList &list, const string &sear
 
     // Declare a variable to store the list to be sorted
     const DoublyLinkedList* sortingList = &list;
+    DoublyLinkedList* tempList = nullptr;
 
     // If sampling is required, create a new list
     if (sample) {
 
         // The temporary list created to store nodes
-        auto* tempList = new DoublyLinkedList();
+        tempList = new DoublyLinkedList();
 
         // Initializing variables
         int i = 0;
@@ -738,7 +732,7 @@ PerformanceTracker* listInsertionSort(DoublyLinkedList &list, const string &sear
             tempList -> insertAtEnd(&transactionObject);
 
             // Traverse to the next node
-            node = node->nextNode;
+            node = node -> nextNode;
             i++;
         }
 
@@ -764,6 +758,10 @@ PerformanceTracker* listInsertionSort(DoublyLinkedList &list, const string &sear
         currentNode = currentNode -> nextNode;
     }
 
+    // Delete the temporary list created
+    if (tempList != nullptr) tempList -> clear();
+    delete tempList;
+
     // Return the tracker
     return tracker;
 }
@@ -772,12 +770,13 @@ PerformanceTracker* listMergeSort(DoublyLinkedList &list, const string &searchTy
 
     // Declare a variable to store the list to be sorted
     const DoublyLinkedList* sortingList = &list;
+    DoublyLinkedList* tempList = nullptr;
 
     // If sampling is required, create a new list
     if (sample) {
 
         // The temporary list created to store nodes
-        auto* tempList = new DoublyLinkedList();
+        tempList = new DoublyLinkedList();
 
         // Initializing variables
         int i = 0;
@@ -791,7 +790,7 @@ PerformanceTracker* listMergeSort(DoublyLinkedList &list, const string &searchTy
             tempList -> insertAtEnd(&transactionObject);
 
             // Traverse to the next node
-            node = node->nextNode;
+            node = node -> nextNode;
             i++;
         }
 
@@ -817,6 +816,10 @@ PerformanceTracker* listMergeSort(DoublyLinkedList &list, const string &searchTy
         currentNode = currentNode -> nextNode;
     }
 
+    // Delete the temporary list
+    if (tempList != nullptr) tempList -> clear();
+    delete tempList;
+
     // Return the tracker
     return tracker;
 }
@@ -825,12 +828,13 @@ PerformanceTracker* listQuickSort(DoublyLinkedList &list, const string &searchTy
 
     // Declare a variable to store the list to be sorted
     const DoublyLinkedList* sortingList = &list;
+    DoublyLinkedList* tempList = nullptr;
 
     // If sampling is required, create a new list
     if (sample) {
 
         // The temporary list created to store nodes
-        auto* tempList = new DoublyLinkedList();
+        tempList = new DoublyLinkedList();
 
         // Initializing variables
         int i = 0;
@@ -869,6 +873,10 @@ PerformanceTracker* listQuickSort(DoublyLinkedList &list, const string &searchTy
         list.insertAtEnd(&currentNode -> transactionObject);
         currentNode = currentNode -> nextNode;
     }
+
+    // Delete the temporary list
+    if (tempList != nullptr) tempList -> clear();
+    delete tempList;
 
     // Return the tracker
     return tracker;
