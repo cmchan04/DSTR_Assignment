@@ -102,8 +102,19 @@ void JsonExport::convertToJson(Transaction** array, const int arraySize, const s
                 // Dereference the transaction object
                 const Transaction &transaction = *array[i];
 
-                // Write to JSON file with 4 spaces as indent
-                file << setw(4) << json(transaction);
+                // Generate the JSON string for the transaction
+                string jsonString = json(transaction).dump(4);
+
+                // Proper indentation for each line
+                file << "    ";
+
+                // Loop through each line in the JSON string
+                for (size_t j = 0; j < jsonString.length(); j++) {
+                    file << jsonString[j];
+
+                    // Indentation is added when a new line starts (except for the final line where the final '}' is added)
+                    if (jsonString[j] == '\n' && j < jsonString.length() - 1) file << "    ";
+                }
 
                 // Check if it is the last object. If no, then add a comma and a new line
                 if (i != arraySize - 1) file << ",\n";
@@ -157,8 +168,19 @@ void JsonExport::convertToJson(Transaction* array, const int arraySize, const st
             // Retrieve the transaction object
             const Transaction& transaction = array[i];
 
-            // Write to JSON file with 4 spaces as indent
-            file << setw(4) << json(transaction);
+            // Generate the JSON string for the transaction
+            string jsonString = json(transaction).dump(4);
+
+            // Proper indentation for each line
+            file << "    ";
+
+            // Loop through each line in the JSON string
+            for (size_t j = 0; j < jsonString.length(); j++) {
+                file << jsonString[j];
+
+                // Indentation is added when a new line starts (except for the final line where the final '}' is added)
+                if (jsonString[j] == '\n' && j < jsonString.length() - 1) file << "    ";
+            }
 
             // Check if it is the last object. If no, then add a comma and a new line
             if (i != arraySize - 1) file << ",\n";
@@ -218,8 +240,19 @@ void JsonExport::convertToJson(const DoublyLinkedList* list, const string &filen
             // Retrieve transaction
             const Transaction &currentTransaction = currentNode -> transactionObject;
 
-            // Write the JSON into the file with 4 spaces as indent
-            file << json(currentTransaction).dump(4);
+            // Generate the JSON string for the transaction
+            string jsonString = json(currentTransaction).dump(4);
+
+            // Proper indentation for each line
+            file << "    ";
+
+            // Loop through each line in the JSON string
+            for (size_t j = 0; j < jsonString.length(); j++) {
+                file << jsonString[j];
+
+                // Indentation is added when a new line starts (except for the final line where the final '}' is added)
+                if (jsonString[j] == '\n' && j < jsonString.length() - 1) file << "    ";
+            }
 
             // Check if it is the last object. If no, then add a comma and a new line
             if (++count < totalSize) file << ",\n";
