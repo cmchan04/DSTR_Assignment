@@ -18,7 +18,7 @@ Node::Node(const Transaction* data, const int index) {
     if (data == nullptr) throw invalid_argument("Data cannot be null.");
 
     // Initialize variables
-    this -> transactionObject = *data;
+    this -> transactionObject = const_cast<Transaction*>(data);
     this -> previousNode = nullptr;
     this -> nextNode = nullptr;
     this -> indexInList = index;
@@ -56,8 +56,8 @@ DoublyLinkedList::DoublyLinkedList(const DoublyLinkedList& list): headNode(nullp
     while (current != nullptr) {
 
         // Add each transaction to the end of the list
-        this -> insertAtEnd(&current -> transactionObject);
-        current = current->nextNode;
+        this -> insertAtEnd(current -> transactionObject);
+        current = current -> nextNode;
     }
 }
 
@@ -113,7 +113,7 @@ void DoublyLinkedList::insertBefore(Node* node, const Transaction* data) {
 
     // Set up the new node
     newNode -> nextNode = node;
-    newNode -> previousNode = node -> previousNode;
+    newNode -> previousNode = node->previousNode;
 
     // Handle the node before the specified node. Special case if the node is head node
     if (node -> previousNode == nullptr) headNode = newNode;
@@ -184,11 +184,11 @@ void DoublyLinkedList::printContents() const {
 
         // Print details
         cout << "[Node at position " << currentNode -> indexInList << "]" << endl;
-        cout << "  ID        : " << currentNode -> transactionObject.transactionId << endl;
-        cout << "  Amount    : " << currentNode -> transactionObject.amount << endl;
-        cout << "  Type      : " << currentNode -> transactionObject.transactionType << endl;
-        cout << "  Channel   : " << currentNode -> transactionObject.paymentChannel << endl;
-        cout << "  Timestamp : " << currentNode -> transactionObject.timestamp << endl;
+        cout << "  ID        : " << currentNode -> transactionObject -> transactionId << endl;
+        cout << "  Amount    : " << currentNode -> transactionObject -> amount << endl;
+        cout << "  Type      : " << currentNode -> transactionObject -> transactionType << endl;
+        cout << "  Channel   : " << currentNode -> transactionObject -> paymentChannel << endl;
+        cout << "  Timestamp : " << currentNode -> transactionObject -> timestamp << endl;
         cout << "-----------------------------" << endl;
 
         // Move to the next node

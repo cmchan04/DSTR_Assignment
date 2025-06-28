@@ -78,14 +78,14 @@ Transaction** Searcher::linearSearchUsingList(const DoublyLinkedList &list, stri
     while (currentNode != nullptr) {
 
         // Get the lower case version of the transaction type for each node
-        string nodeTransactionType = currentNode -> transactionObject.transactionType;
+        string nodeTransactionType = currentNode -> transactionObject -> transactionType;
         nodeTransactionType = toLowerCase(nodeTransactionType);
 
         // Check if the current node matches condition
         if (nodeTransactionType == transactionType) {
 
             // Add the transaction object to the array
-            result[matchCount] = &currentNode -> transactionObject;
+            result[matchCount] = currentNode -> transactionObject;
 
             // Increment match count for the next iteration
             matchCount++;
@@ -231,13 +231,13 @@ Transaction** Searcher::binarySearchUsingList(const DoublyLinkedList &list, stri
         if (leftNode == rightNode || leftNode -> nextNode == rightNode) {
 
             // First retrieve the strings and convert them to lower case
-            string leftNodeTransactionType = leftNode -> transactionObject.transactionType;
+            string leftNodeTransactionType = leftNode -> transactionObject -> transactionType;
             string rightNodeTransactionType;
             toLowerCase(leftNodeTransactionType);
 
             // Don't repeat the same process if two nodes are the same
             if (leftNode != rightNode) {
-                rightNodeTransactionType = rightNode -> transactionObject.transactionType;
+                rightNodeTransactionType = rightNode -> transactionObject -> transactionType;
                 toLowerCase(rightNodeTransactionType);
             }
 
@@ -249,7 +249,7 @@ Transaction** Searcher::binarySearchUsingList(const DoublyLinkedList &list, stri
             if (leftNodeTransactionType == transactionType) {
 
                 // Add the result to the first index
-                result[0] = &leftNode -> transactionObject;
+                result[0] = leftNode -> transactionObject;
                 indexZeroTaken = true;
                 listSize++;
             }
@@ -259,7 +259,7 @@ Transaction** Searcher::binarySearchUsingList(const DoublyLinkedList &list, stri
 
                 // Get the index for the position to fill and insert the object if match
                 const int indexToFill = indexZeroTaken ? 1 : 0;
-                result[indexToFill] = &rightNode -> transactionObject;
+                result[indexToFill] = rightNode -> transactionObject;
                 listSize++;
             }
 
@@ -275,7 +275,7 @@ Transaction** Searcher::binarySearchUsingList(const DoublyLinkedList &list, stri
         if (middleNode == nullptr) return nullptr;
 
         // If not, we retrieve the transaction type for the middle node
-        string retrievedType = middleNode -> transactionObject.transactionType;
+        string retrievedType = middleNode -> transactionObject -> transactionType;
 
         // Now convert the associated transaction type to lower case
         toLowerCase(retrievedType);
@@ -296,7 +296,7 @@ Transaction** Searcher::binarySearchUsingList(const DoublyLinkedList &list, stri
         if (retrievedType == transactionType) {
 
             // First place the transaction object associated with the middle node into the list
-            result[0] = &middleNode -> transactionObject;
+            result[0] = middleNode -> transactionObject;
 
             // Create a counter to record the index
             int index = 1;
@@ -309,10 +309,10 @@ Transaction** Searcher::binarySearchUsingList(const DoublyLinkedList &list, stri
             while (traverseToFront != nullptr) {
 
                 // Since the linked list is already sorted, the loop ends once the transaction type does not match
-                if (traverseToFront -> transactionObject.transactionType != retrievedType) break;
+                if (traverseToFront -> transactionObject -> transactionType != retrievedType) break;
 
                 // If it matches, store the objects into the result list
-                result[index] = &traverseToFront -> transactionObject;
+                result[index] = traverseToFront -> transactionObject;
 
                 // Move to the previous one
                 traverseToFront = traverseToFront -> previousNode;
@@ -323,10 +323,10 @@ Transaction** Searcher::binarySearchUsingList(const DoublyLinkedList &list, stri
             while (traverseToBack != nullptr) {
 
                 // End once the transaction type does not tally
-                if (traverseToBack -> transactionObject.transactionType != retrievedType) break;
+                if (traverseToBack -> transactionObject -> transactionType != retrievedType) break;
 
                 // If it matches, store the objects into the result list
-                result[index] = &traverseToBack -> transactionObject;
+                result[index] = traverseToBack -> transactionObject;
 
                 // Move to the previous one
                 traverseToBack = traverseToBack -> nextNode;

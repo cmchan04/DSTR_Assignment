@@ -97,14 +97,14 @@ void ChannelSeparator::splitToChannelList(const DoublyLinkedList* list,
     while (currentNode != nullptr) {
 
         // Retrieve the payment channel
-        Transaction currentObject = currentNode -> transactionObject;
+        const Transaction* currentObject = currentNode -> transactionObject;
 
         // Check the transaction type and add to the new list
-        if (string currentPayment = toLowerCase(currentObject.paymentChannel);
-            currentPayment == "ach")                    achList  -> insertAtEnd(&currentObject);
-        else if (currentPayment == "card")              cardList -> insertAtEnd(&currentObject);
-        else if (currentPayment == "upi")               upiList  -> insertAtEnd(&currentObject);
-        else if (currentPayment == "wire_transfer")     wireList -> insertAtEnd(&currentObject);
+        if (string currentPayment = toLowerCase(currentObject -> paymentChannel);
+                currentPayment == "ach")                    achList -> insertAtEnd(currentObject);
+        else if (currentPayment == "card")                  cardList -> insertAtEnd(currentObject);
+        else if (currentPayment == "upi")                   upiList -> insertAtEnd(currentObject);
+        else if (currentPayment == "wire_transfer")          wireList -> insertAtEnd(currentObject);
 
         // Move on to the next node
         currentNode = currentNode -> nextNode;

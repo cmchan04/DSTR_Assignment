@@ -238,7 +238,7 @@ void JsonExport::convertToJson(const DoublyLinkedList* list, const string &filen
         while (currentNode != nullptr) {
 
             // Retrieve transaction
-            const Transaction &currentTransaction = currentNode -> transactionObject;
+            const Transaction &currentTransaction = *currentNode -> transactionObject;
 
             // Generate the JSON string for the transaction
             string jsonString = json(currentTransaction).dump(4);
