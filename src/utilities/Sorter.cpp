@@ -733,11 +733,8 @@ int Sorter::quickSortPartitionForArray(Transaction* transactions, const int star
         const string currentDetail = toLowerCase(column == "type" ? transactions[currentIndex].transactionType : transactions[currentIndex].location);
         const string currentKey = currentDetail + currentID;
 
-        // Check if the current element is larger or smaller than the pivot
-        bool condition = ascending ? (currentKey < pivotKey) : (currentKey > pivotKey);
-
         // Swap the smaller ones to the left. Less pivot is used to mark the location where the small shall be inserted
-        if (condition) {
+        if (ascending ? currentKey < pivotKey : currentKey > pivotKey) {
             ++lessPivot;
             Transaction::swap(transactions[lessPivot], transactions[currentIndex]);
         }
@@ -803,44 +800,68 @@ int Sorter::getMedianIndex(const Transaction* transactions, int leftIndex, int r
  * @param sortingVar The variable to be sorted based on
  * @return The sorted list based on the transaction type
  */
-DoublyLinkedList Sorter::quickSortInList(const DoublyLinkedList& list, const string &sortingVar) {
+DoublyLinkedList Sorter::quickSortInList(const DoublyLinkedList &list, const string &sortingVar) {
 
-    // Overall idea: Pick a pivot, partition based on pivot, and sort recursively
+    // Overall idea: Pick a pivot, partition based on pivot, and sort recursively. First clean the variable to sort on
     const string sortVar = toLowerCase(sortingVar);
 
-    // First retrieve the head and tail node of the list
-    Node* headNode = list.getHeadNode();
-    Node* tailNode = list.getTailNode();
+    // Return an empty list if the input list is empty
+    const Node* headNode = list.getHeadNode();
+    if (!headNode) return {};
 
-    // Perform recursive action on quick sort. This returns the head node of the sorted list.
-    Node* sortedNode = quickSortRecursiveForList(headNode, tailNode, sortVar);
+    // Additional variables to temporary record important outputs
+    Node* copiedHead = nullptr;
+    Node* copiedTail = nullptr;
+    Node* lastCopied = nullptr;
 
-    // Create a new linked list
-    DoublyLinkedList sortedList;
+    // Loop through the initial list to copy a new linked list
+    const Node* currentNode = headNode;
+    while (currentNode != nullptr) {
 
-    // Check if the sorted node is null. If no, sorting is successful
-    if (sortedNode != nullptr) {
+        // Create new nodes
+        auto* newNode = new Node(&currentNode -> transactionObject, currentNode -> indexInList);
 
-        // Set the index for the first node
-        int index = 1;
-        sortedNode -> indexInList = index++;
+        // Check if the node is a head node
+        if (copiedHead == nullptr || lastCopied == nullptr) copiedHead = newNode;
 
-        // Set the head node for the new linked list and increase size record
-        sortedList.setHeadNode(sortedNode);
-        sortedList.incrementSize();
-
-        // Find the tail node
-        Node* endingNode = sortedNode;
-        while (endingNode -> nextNode != nullptr) {
-
-            // Get the next node, set index and increase size
-            endingNode = endingNode -> nextNode;
-            endingNode -> indexInList = index++;
-            sortedList.incrementSize();
+        // If it's not the head node, establish connection with the previous node
+        else {
+            lastCopied -> nextNode = newNode;
+            newNode -> previousNode = lastCopied;
         }
 
-        // Set the tail node
-        sortedList.setTailNode(endingNode);
+        // The node becomes the last copied node
+        lastCopied = newNode;
+
+        // Move on to the next node
+        currentNode = currentNode->nextNode;
+    }
+
+    // The last copied node is the tail
+    copiedTail = lastCopied;
+
+    // Perform recursive quick sort
+    Node* sortedHead = quickSortRecursiveForList(copiedHead, copiedTail, sortVar);
+
+    // Create the result list and set the head node
+    DoublyLinkedList sortedList;
+    sortedList.setHeadNode(sortedHead);
+
+    // Traverse through the nodes in the sorted linked list
+    int index = 1;
+    Node* temp = sortedHead;
+
+    while (temp != nullptr) {
+
+        // Set the index for the node and increment the size of the list
+        temp -> indexInList = index++;
+        sortedList.incrementSize();
+
+        // If there is no next node (reaches the tail node), set it as the tail
+        if (temp -> nextNode == nullptr) sortedList.setTailNode(temp);
+
+        // Move on to the next node
+        temp = temp->nextNode;
     }
 
     // Lastly, return the sorted list
@@ -859,192 +880,189 @@ Node* Sorter::quickSortRecursiveForList(Node* head, Node* tail, const string &so
     // For empty inputs, or if the list cannot be partitioned anymore, return the node
     if (head == nullptr || head == tail) return head;
 
-    // Declare variables to represent the new head and tail nodes
-    Node* leftNodes = nullptr;
-    Node* rightNodes = nullptr;
+    // New variables to store the pointer for the new head and tail nodes
+    Node* leftHead = nullptr;
+    Node* rightHead = nullptr;
 
-    // Partition the list into two based on the last node, returning three information: pivot node, the head of the left and tail of the right
-    Node* pivot = quickSortPartitionForList(head, tail, &leftNodes, &rightNodes, sortingVar);
+    // Perform partition and get the pivot node
+    Node* pivot = quickSortPartitionForList(head, tail, &leftHead, &rightHead, sortingVar);
 
-    // We'll assume the pivot belongs to the right part
-    // If the left part exist
-    if (leftNodes != pivot) {
+    // If the left partition exists
+    if (leftHead != nullptr) {
 
-        // Retrieve the node before the pivot
-        Node* leftFinalNode = pivot -> previousNode;
+        // Find the associated left tail
+        Node* leftTail = leftHead;
+        while (leftTail -> nextNode != nullptr && leftTail -> nextNode != pivot) leftTail = leftTail -> nextNode;
 
-        // Temporarily break the connection of the left part
-        if (leftFinalNode != nullptr) leftFinalNode -> nextNode = nullptr;
-        pivot -> previousNode = nullptr;
+        // Sort the left partition
+        leftHead = quickSortRecursiveForList(leftHead, leftTail, sortingVar);
 
-        // Recursively continue the recursive sort
-        leftNodes = quickSortRecursiveForList(leftNodes, leftFinalNode, sortingVar);
+        // Once the partition process ends, reconnect the left partition to the pivot node
+        if (leftHead != nullptr) {
 
-        // Find the tail of the new sorted left part
-        Node* leftEndingNode = leftNodes;
-        while (leftEndingNode -> nextNode != nullptr) leftEndingNode = leftEndingNode -> nextNode;
+            // Retrieve the last node of the left partition
+            Node* tempNode = leftHead;
+            while (tempNode -> nextNode != nullptr) tempNode = tempNode -> nextNode;
 
-        // Reattach the ending node to the pivot
-        leftEndingNode -> nextNode = pivot;
-        pivot -> previousNode = leftEndingNode;
+            // Reestablish the connection
+            tempNode -> nextNode = pivot;
+            pivot -> previousNode = tempNode;
+        }
     }
 
-    // Taking care of the right part
-    pivot -> nextNode = quickSortRecursiveForList(pivot -> nextNode, rightNodes, sortingVar);
+    // If the right partition exists
+    if (rightHead != nullptr) {
 
-    // If the pivot has a next node, reestablish the connection
-    if (pivot -> nextNode) pivot -> nextNode -> previousNode = pivot;
+        // Find the right tail
+        Node* rightTail = rightHead;
+        while (rightTail->nextNode) rightTail = rightTail->nextNode;
 
-    // Return the first node in the sorted list at last
-    return leftNodes;
+        // Recursively sort the right partition
+        rightHead = quickSortRecursiveForList(rightHead, rightTail, sortingVar);
+
+        // After sorting, reconnect the pivot to the right partition
+        pivot -> nextNode = rightHead;
+        if (rightHead) rightHead -> previousNode = pivot;
+    }
+
+    // Return the new head
+    return leftHead != nullptr ? leftHead : pivot;
 }
 
 /**
- * This method arranges the nodes based on the pivot.
+ * This method partitions the list using median-of-three pivot selection and moving nodes.
  * @param head The initial head node of the linked list
  * @param tail The initial tail node of the linked list
  * @param leftNodes The new head node of the left portion
- * @param rightNodes The new tail node of the right portion
+ * @param rightNodes The new head node of the right portion
  * @param sortingVar The variable to be sorted based on
  * @return The pivot assigned throughout the sorting process.
  */
 Node* Sorter::quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes, Node** rightNodes, const string &sortingVar) {
 
-    // First, let the tail node be the pivot
-    Node* pivot = tail;
-
-    // We use median-of-three value strategy here. We first retrieve the middle node
-    Node* middleNode = getMiddleNodeForList(head);
-
-    // First retrieve the transaction data to compare
-    string headData, middleData, tailData;
-
-    // If sort is performed based on the location
-    if (sortingVar == "location") {
-        headData = toLowerCase(head -> transactionObject.location);
-        middleData = toLowerCase(middleNode -> transactionObject.location);
-        tailData = toLowerCase(tail -> transactionObject.location);
-
-    // If sort is performed based on the transaction type
-    } else if (sortingVar == "type") {
-        headData = toLowerCase(head -> transactionObject.transactionType);
-        middleData = toLowerCase(middleNode -> transactionObject.transactionType);
-        tailData = toLowerCase(tail -> transactionObject.transactionType);
-
-    // Other cases
-    } else {
-        throw invalid_argument("Sort variable can only be location or type.");
-    }
-
-    // We compare the values from the head, middle and tail nodes
-    string headID = head -> transactionObject.transactionId;
-    string middleID = middleNode -> transactionObject.transactionId;
-    string tailID = tail -> transactionObject.transactionId;
-
-    // Perform comparison between different nodes
-    bool headLessMiddle = (headData < middleData) || (headData == middleData && headID < middleID);
-    bool middleLessTail = (middleData < tailData) || (middleData == tailData && middleID < tailID);
-    bool headLessTail = (headData < tailData) || (headData == tailData && headID < tailID);
-
-    // Declare a median node
-    Node* medianNode;
-
-    // Based on comparison, determine the median node. We have six possible combinations here (3! = 6).
-    // Condition: head < middle
-    if (headLessMiddle) {
-
-        // head < middle < tail
-        if (middleLessTail) medianNode = middleNode;
-
-        // head < tail < middle
-        else if (headLessTail) medianNode = tail;
-
-        // tail < head < middle
-        else medianNode = head;
-
-    // Condition: middle < head
-    } else {
-
-        // middle < head < tail
-        if (headLessTail) medianNode = head;
-
-        // middle < tail < head
-        else if (middleLessTail) medianNode = tail;
-
-        // tail < middle < head
-        else medianNode = middleNode;
-    }
-
-    // Swap the data (not swapping pointers) from the median to the tail
-    if (medianNode != tail) {
-
-        // Retrieve the transaction object from the median node
-        Transaction tempTransaction = medianNode -> transactionObject;
-
-        // Perform swapping
-        medianNode -> transactionObject = tail -> transactionObject;
-        tail -> transactionObject = tempTransaction;
-    }
-
-    // Median-of-three done. Now, get values from the pivot / tail
-    const string pivotID = pivot -> transactionObject.transactionId;
-    const string pivotType = toLowerCase(pivot -> transactionObject.transactionType);
-
-    // Reset the variables to contain left and right nodes
+    // First reset the two nodes to be modified
     *leftNodes = nullptr;
     *rightNodes = nullptr;
 
-    // Keep track of the original tail for right partition
-    Node* rightTail = tail;
+    // When there is only one node, return the head as the pivot node
+    if (head == tail) {
+        head -> nextNode = nullptr;
+        head -> previousNode = nullptr;
+        return head;
+    }
 
-    // Starting with the leftmost and traverse to the pivot
+    // Find the middle node for median-of-three
+    Node* middle = getMiddleNodeForList(head);
+
+    // Retrieve the data from all three nodes
+    string headData = sortingVar == "location" ? toLowerCase(head -> transactionObject.location) :
+                                                 toLowerCase(head -> transactionObject.transactionType);
+    string headID = head -> transactionObject.transactionId;
+
+    string middleData = sortingVar == "location" ? toLowerCase(middle -> transactionObject.location) :
+                                                   toLowerCase(middle -> transactionObject.transactionType);
+    string middleID = middle -> transactionObject.transactionId;
+
+    string tailData = sortingVar == "location" ? toLowerCase(tail -> transactionObject.location) :
+                                                 toLowerCase(tail -> transactionObject.transactionType);
+    string tailID = tail -> transactionObject.transactionId;
+
+    // Choosing the median. We first assume the tail is the node
+    Node* pivot = tail;
+
+    // Perform comparison
+    bool headLessMiddle = headData < middleData || (headData == middleData && headID < middleID);
+    bool middleLessTail = middleData < tailData || (middleData == tailData && middleID < tailID);
+    bool headLessTail = headData < tailData || (headData == tailData && headID < tailID);
+
+    // Find the median
+    // First condition: head < middle < tail or tail < middle < head
+    if ((headLessMiddle && middleLessTail) || (!headLessMiddle && !middleLessTail)) {
+        pivot = middle;
+
+    // Second condition: middle < head < tail or tail < head < middle
+    } else if ((!headLessMiddle && headLessTail) || (headLessMiddle && !headLessTail)) {
+        pivot = head;
+    }
+
+    // Other conditions: Do nothing, the tail is already the pivot
+
+    // We can now get the pivot's data for later comparison
+    string pivotData = sortingVar == "location" ? toLowerCase(pivot -> transactionObject.location) :
+                                                  toLowerCase(pivot -> transactionObject.transactionType);
+    string pivotID = pivot -> transactionObject.transactionId;
+
+    // Initialize the nodes for left and right partitions
+    Node* leftHead = nullptr;
+    Node* leftTail = nullptr;
+    Node* rightHead = nullptr;
+    Node* rightTail = nullptr;
+
+    // Traverse through each node and perform relocation
     Node* currentNode = head;
-    while (currentNode != pivot) {
+    while (currentNode != nullptr) {
 
-        // Retrieve the next node before modifying the current node
-        Node* nextNode = currentNode -> nextNode;
+        // First retrieve the next node (to avoid errors after relocation)
+        Node* next = currentNode == tail ? nullptr : currentNode -> nextNode;
 
-        // Retrieve the information associated
-        const string currentID = currentNode -> transactionObject.transactionId;
-        const string currentType = toLowerCase(currentNode -> transactionObject.transactionType);
+        // Skip the pivot node
+        if (currentNode == pivot) {
+            currentNode = next;
+            continue;
+        }
 
-        // Make comparisons on the transaction type
-        if (currentType > pivotType ||
-            (currentType == pivotType && currentID > pivotID)) {
+        // Get the data for the current node
+        string currData = sortingVar == "location" ? toLowerCase(currentNode -> transactionObject.location) :
+                                                     toLowerCase(currentNode -> transactionObject.transactionType);
+        string currID = currentNode -> transactionObject.transactionId;
 
-            // Remove current node from its current position
-            if (currentNode -> previousNode) {
-                currentNode -> previousNode -> nextNode = currentNode -> nextNode;
+        // First, disconnect the current node
+        currentNode -> nextNode = nullptr;
+        currentNode -> previousNode = nullptr;
+
+        // If the value is smaller than the partition
+        if (currData < pivotData || (currData == pivotData && currID < pivotID)) {
+
+            // Add the node to the left partition. First check if head exists, if not, then the node is the new head.
+            if (leftHead == nullptr || leftTail == nullptr) leftHead = leftTail = currentNode;
+
+            // If head already exists
+            else {
+
+                // Establish connection with the tail
+                leftTail -> nextNode = currentNode;
+                currentNode -> previousNode = leftTail;
+
+                // The node becomes the new tail
+                leftTail = currentNode;
             }
-            if (currentNode -> nextNode) {
-                currentNode -> nextNode -> previousNode = currentNode -> previousNode;
-            }
 
-            // Add to the right partition (after pivot)
-            rightTail -> nextNode = currentNode;
-            currentNode -> previousNode = rightTail;
-            currentNode -> nextNode = nullptr;
-
-            // Update right tail pointer
-            rightTail = currentNode;
-
-        // If no switching takes place
+        // If the node should be located at the right
         } else {
 
-            // Node stays in left partition
-            if (*leftNodes == nullptr) {
-                *leftNodes = currentNode;
+            // Check if the list is empty
+            if (rightHead == nullptr || rightTail == nullptr) rightHead = rightTail = currentNode;
+
+            // Establish connection to the tail of the right partition if the list is not empty
+            else {
+                rightTail -> nextNode = currentNode;
+                currentNode -> previousNode = rightTail;
+                rightTail = currentNode;
             }
         }
 
-        // Move on to the next node
-        currentNode = nextNode;
+        // Proceed to the next node once done
+        currentNode = next;
     }
 
-    // If no left nodes, pivot becomes the first node
-    if (*leftNodes == nullptr) *leftNodes = pivot;
+    // Remove any connections with the pivot
+    pivot -> nextNode = nullptr;
+    pivot -> previousNode = nullptr;
 
-    // Set the right tail and return the pivot
-    *rightNodes = rightTail;
+    // Set the partitioned data into the variables
+    *leftNodes = leftHead;
+    *rightNodes = rightHead;
+
+    // Lastly, return the pivot node
     return pivot;
 }

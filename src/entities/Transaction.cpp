@@ -16,7 +16,7 @@ Transaction::Transaction(const string* dataArray) {
     string uncleanedID = dataArray[0];
 
     // Add data to the Transaction object
-    this -> transactionId = uncleanedID.length() == 7 ? uncleanedID.insert(1, 1, '0') : uncleanedID;
+    this -> transactionId = uncleanedID.length() == 7 ? uncleanedID.substr(0, 1) + "0" + uncleanedID.substr(1) : uncleanedID;
     this -> timestamp = dataArray[1];
     this -> senderAcc = dataArray[2];
     this -> receiverAcc = dataArray[3];

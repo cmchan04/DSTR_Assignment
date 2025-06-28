@@ -4,10 +4,14 @@
 
 #include "JsonExport.h"
 #include <fstream>
+#include <filesystem>
+#include <iostream>
+#include <stdexcept>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 using namespace std;
+using namespace filesystem;
 
 /**
  * A method to remove any invalid characters from a string (e.g. "\r")
@@ -70,25 +74,64 @@ void to_json(json &format, const Transaction &transaction) {
 void JsonExport::convertToJson(Transaction** array, const int arraySize, const string &filename) {
 
     // Check array size
-    if (array == nullptr || arraySize <= 0) {
+    if (array == nullptr || arraySize <= 0) throw invalid_argument("Array is null or empty.");
 
-        // Print error message if the array does not have data
-        cerr << "Error: Array is null or empty" << endl;
-        return;
+    // Start writing to file
+    try {
+
+        // Retrieve the output folder, and create the directory if needed
+        const path outputDir = current_path().parent_path() / "src" / "resources" / "exported_json";
+        create_directories(outputDir);
+
+        // Generate the full directory and create a file inside it
+        const path fullPath = outputDir / filename;
+        ofstream file(fullPath, ios::out | ios::trunc);
+
+        // Ensure the file is generated correctly
+        if (!file.is_open()) throw runtime_error("Error: Cannot create or open file: " + fullPath.string());
+
+        // Start writing JSON file (manually)
+        file << "[\n";
+
+        // Add transaction to JSON object
+        for (int i = 0; i < arraySize; i++) {
+
+            // Check if the element is null
+            if (array[i] != nullptr) {
+
+                // Dereference the transaction object
+                const Transaction &transaction = *array[i];
+
+                // Generate the JSON string for the transaction
+                string jsonString = json(transaction).dump(4);
+
+                // Proper indentation for each line
+                file << "    ";
+
+                // Loop through each line in the JSON string
+                for (size_t j = 0; j < jsonString.length(); j++) {
+                    file << jsonString[j];
+
+                    // Indentation is added when a new line starts (except for the final line where the final '}' is added)
+                    if (jsonString[j] == '\n' && j < jsonString.length() - 1) file << "    ";
+                }
+
+                // Check if it is the last object. If no, then add a comma and a new line
+                if (i != arraySize - 1) file << ",\n";
+            }
+        }
+
+        // Add an ending
+        file << "\n]\n";
+
+        // File written successfully and closed.
+        file.close();
+        cout << "File '" << filename << "' is exported to the \"exported_json\" folder successfully." << endl;
+
+    // If any error occurs, show the error message
+    } catch (const exception &e) {
+        throw runtime_error("Error generating JSON file '" + filename + "'.");
     }
-
-    // Declare a JSON object to store output
-    json jsonCollection = json::array();
-
-    // Add transaction to JSON object
-    for (int i = 0; i < arraySize; i++) {
-
-        // Ensure no null values are added
-        if (array[i] != nullptr) jsonCollection.push_back(*array[i]);
-    }
-
-    // Generate the corresponding JSON file
-    generateJsonFile(jsonCollection, filename);
 }
 
 /**
@@ -100,23 +143,60 @@ void JsonExport::convertToJson(Transaction** array, const int arraySize, const s
 void JsonExport::convertToJson(Transaction* array, const int arraySize, const string &filename) {
 
     // Check array size
-    if (array == nullptr || arraySize <= 0) {
+    if (array == nullptr || arraySize <= 0) throw invalid_argument("Array pointer cannot be null or empty.");
 
-        // Print error message if the array does not have data
-        cerr << "Error: Array is null or empty" << endl;
-        return;
+    // Start writing to file
+    try {
+
+        // Retrieve the output folder, and create the directory if needed
+        const path outputDir = current_path().parent_path() / "src" / "resources" / "exported_json";
+        create_directories(outputDir);
+
+        // Generate the full directory and create a file inside it
+        const path fullPath = outputDir / filename;
+        ofstream file(fullPath, ios::out | ios::trunc);
+
+        // Ensure the file is generated correctly
+        if (!file.is_open()) throw runtime_error("Error: Cannot create or open file: " + fullPath.string());
+
+        // Start writing JSON file (manually)
+        file << "[\n";
+
+        // Add output to object
+        for (int i = 0; i < arraySize; i++) {
+
+            // Retrieve the transaction object
+            const Transaction& transaction = array[i];
+
+            // Generate the JSON string for the transaction
+            string jsonString = json(transaction).dump(4);
+
+            // Proper indentation for each line
+            file << "    ";
+
+            // Loop through each line in the JSON string
+            for (size_t j = 0; j < jsonString.length(); j++) {
+                file << jsonString[j];
+
+                // Indentation is added when a new line starts (except for the final line where the final '}' is added)
+                if (jsonString[j] == '\n' && j < jsonString.length() - 1) file << "    ";
+            }
+
+            // Check if it is the last object. If no, then add a comma and a new line
+            if (i != arraySize - 1) file << ",\n";
+        }
+
+        // Add an ending
+        file << "\n]\n";
+
+        // File written successfully and closed.
+        file.close();
+        cout << "File '" << filename << "' is exported to the \"exported_json\" folder successfully." << endl;
+
+    // If any error occurs, show the error message
+    } catch (const exception &e) {
+        throw runtime_error("Error generating JSON file '" + filename + "'.");
     }
-
-    // Declare a JSON object to store output
-    json jsonCollection = json::array();
-
-    // Add output to object
-    for (int i = 0; i < arraySize; i++) {
-        jsonCollection.push_back(array[i]);
-    }
-
-    // Generate the corresponding JSON file
-    generateJsonFile(jsonCollection, filename);
 }
 
 /**
@@ -126,54 +206,70 @@ void JsonExport::convertToJson(Transaction* array, const int arraySize, const st
  */
 void JsonExport::convertToJson(const DoublyLinkedList* list, const string &filename) {
 
-    // Check array size
-    if (list == nullptr || list -> getSize() <= 0) {
+    // Check linked list size
+    if (list == nullptr || list -> getSize() <= 0) throw invalid_argument("Linked list cannot be empty or null.");
 
-        // Print error message when the list is empty
-        cerr << "Error: Linked list is null or empty" << endl;
-        return;
-    }
+    // Also, check for head node
+    const Node* headNode = list -> getHeadNode();
+    if (headNode == nullptr) throw invalid_argument("Linked list's head node is null despite non-zero size");
 
-    // Declare a JSON object to store output
-    json jsonCollection = json::array();
+    // Start writing to file
+    try {
 
-    // Add output to the object
-    for (const Node* currentNode = list -> getHeadNode(); currentNode != nullptr; currentNode = currentNode -> nextNode) {
-        const Transaction &currentTransaction = currentNode -> transactionObject;
-        jsonCollection.push_back(currentTransaction);
-    }
+        // Retrieve the output folder, and create the directory if needed
+        const path outputDir = current_path().parent_path() / "src" / "resources" / "exported_json";
+        create_directories(outputDir);
 
-    // Generate the corresponding JSON file
-    generateJsonFile(jsonCollection, filename);
-}
+        // Generate the full directory and create a file inside it
+        const path fullPath = outputDir / filename;
+        ofstream file(fullPath, ios::out | ios::trunc);
 
-/**
- * This method creates a new JSON file while checking through different errors that might arise during file creation.
- * @param jsonObject The JSON object consisting of Transaction data
- * @param filename The name to be given to the new file
- */
-void JsonExport::generateJsonFile(const json &jsonObject, const string &filename) {
+        // Ensure the file is generated correctly
+        if (!file.is_open()) throw runtime_error("Error: Cannot create or open file: " + fullPath.string());
 
-    // Create the JSON file
-    const string fullPath = filesystem::current_path().parent_path().string() + "/src/resources/exported_json/" + filename;
-    ofstream file(fullPath);
+        // Start writing JSON file (manually)
+        file << "[\n";
 
-    // Check if the file can be opened
-    if (!file.is_open()) {
-        cerr << "Error: Cannot create file " + filename << endl;
-    }
+        // Initialize variables and loop through each node
+        const Node* currentNode = headNode;
+        int count = 0;
+        const int totalSize = list -> getSize();
 
-    // Set the JSON with 4 spaces as index
-    file << jsonObject.dump(4);
+        while (currentNode != nullptr) {
 
-    // Check if the writing is successful
-    if (file.fail()) {
-        cerr << "Error: Cannot write file " << filename << endl;
+            // Retrieve transaction
+            const Transaction &currentTransaction = currentNode -> transactionObject;
+
+            // Generate the JSON string for the transaction
+            string jsonString = json(currentTransaction).dump(4);
+
+            // Proper indentation for each line
+            file << "    ";
+
+            // Loop through each line in the JSON string
+            for (size_t j = 0; j < jsonString.length(); j++) {
+                file << jsonString[j];
+
+                // Indentation is added when a new line starts (except for the final line where the final '}' is added)
+                if (jsonString[j] == '\n' && j < jsonString.length() - 1) file << "    ";
+            }
+
+            // Check if it is the last object. If no, then add a comma and a new line
+            if (++count < totalSize) file << ",\n";
+
+            // Traverse to the next node
+            currentNode = currentNode -> nextNode;
+        }
+
+        // Add an ending
+        file << "\n]\n";
+
+        // File written successfully and closed.
         file.close();
-        return;
-    }
+        cout << "File '" << filename << "' is exported to the \"exported_json\" folder successfully." << endl;
 
-    // File written successfully and closed.
-    file.close();
-    cout << "File " << filename << " is exported to the \"exported_json\" folder successfully." << endl;
+    // If any error occurs, show the error message
+    } catch (const exception &e) {
+        throw runtime_error("Error generating JSON file '" + filename + "'.");
+    }
 }

@@ -21,7 +21,7 @@ struct TransactionReader {
     static Transaction* readCSVToArray(const string &filename, int &outSize);
     static bool stringToBool(const string &input);
     static bool parseLineToTransaction(const string& line, Transaction& transactionObject);
-    static void readCSVToList(const string& filename, DoublyLinkedList* list);
+    static void readCSVToList(const string& filename, DoublyLinkedList* &list);
 };
 
 

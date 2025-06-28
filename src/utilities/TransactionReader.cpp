@@ -148,7 +148,10 @@ bool TransactionReader::parseLineToTransaction(const string& line, Transaction &
  * @param filename The name of the CSV file
  * @param list The doubly linked list that will be modified
  */
-void TransactionReader::readCSVToList(const string& filename, DoublyLinkedList* list) {
+void TransactionReader::readCSVToList(const string& filename, DoublyLinkedList* &list) {
+
+    // If the linked list is null, create one
+    if (list == nullptr) list = new DoublyLinkedList();
 
     // Get the file and declare an empty line to store unprocessed information from the file
     ifstream file(filename);
