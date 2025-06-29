@@ -94,7 +94,7 @@ void PerformanceTracker::updatePeakMemory() {
 
         // If memory information can be written, retrieve the peak memory
         if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
-            peakMemoryUsage = pmc.PeakWorkingSetSize;
+            peakMemoryUsage = pmc.PeakWorkingSetSize / 1024;
         }
 
     // Mac computers can't retrieve peak memory directly.
@@ -114,7 +114,7 @@ void PerformanceTracker::updatePeakMemory() {
             // If yes, retrieve the resident size (current memory usage) to get the peak memory
             size_t currentMemory = t_info.resident_size;
             if (currentMemory > peakMemoryUsage) {
-                peakMemoryUsage = currentMemory;
+                peakMemoryUsage = currentMemory / 1024;
             }
         }
 
@@ -136,12 +136,14 @@ void PerformanceTracker::report(const string &label) const {
 
     // Print performance information
     cout << "\n=== " << label << " ===\n";
-    cout << "Time Taken: " << duration << " ms" << endl;
-    cout << "Peak Memory Usage: " << peakMemoryUsage / 1024 << " KB" << endl;
-    cout << "Beginning memory: " << beginningMemory << " KB" << endl;
-    cout << "Final memory: " << finalMemory << " KB" << endl;
+    cout << "Time Taken: " << duration << " ms (" << duration / 1000 << " seconds)" << endl;
+    cout << "Beginning memory: " << beginningMemory << " KB (" << beginningMemory / 1024 << " MB)" << endl;
+    cout << "Final memory: " << finalMemory << " KB (" << finalMemory / 1024 << " MB)" << endl;
     cout << "Difference between Beginning and Final Memory Usage: " <<
         (finalMemory > beginningMemory ? finalMemory - beginningMemory : beginningMemory - finalMemory) <<
-            " KB" << endl;
+            " KB (" <<
+        (finalMemory > beginningMemory ? finalMemory - beginningMemory : beginningMemory - finalMemory) / 1024 <<
+            " MB)" << endl;
+    cout << "Peak Memory Usage: " << peakMemoryUsage << " KB (" << peakMemoryUsage / 1024 << " MB)" << endl;
     cout << endl;
 }
