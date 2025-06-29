@@ -173,7 +173,7 @@ void TransactionReader::readCSVToList(const string& filename, DoublyLinkedList* 
         if (Transaction transaction; parseLineToTransaction(line, transaction)) {
 
             // The transaction object is copied so that it can still remain for the later iterations
-            auto* transactionTemp = new Transaction(transaction);
+            const auto* transactionTemp = new Transaction(transaction);
             list -> insertAtEnd(transactionTemp);
 
         // Error message printed if unsuccessful

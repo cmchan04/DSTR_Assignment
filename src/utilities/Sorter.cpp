@@ -233,7 +233,7 @@ DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list, const
     while (currentNode != nullptr) {
 
         // Retrieve the transaction ID and type of the object for the current node
-        Transaction* currentObject = currentNode -> transactionObject;
+        const Transaction* currentObject = currentNode -> transactionObject;
         string currentID = currentObject -> transactionId;
         string currentData;
 
