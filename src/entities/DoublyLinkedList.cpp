@@ -18,7 +18,7 @@ Node::Node(const Transaction* data, const int index) {
     if (data == nullptr) throw invalid_argument("Data cannot be null.");
 
     // Initialize variables
-    this -> transactionObject = data;
+    this -> transactionObject = const_cast<Transaction*>(data);
     this -> previousNode = nullptr;
     this -> nextNode = nullptr;
     this -> indexInList = index;
