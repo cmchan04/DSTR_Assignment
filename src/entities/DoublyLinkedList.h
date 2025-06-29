@@ -12,7 +12,7 @@
 struct Node {
 
     // A doubly linked list has three elements: data, pointer of previous and next node
-    Transaction* transactionObject;
+    const Transaction* transactionObject;
     int indexInList;
     Node* previousNode;
     Node* nextNode;
