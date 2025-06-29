@@ -189,6 +189,7 @@ void DoublyLinkedList::printContents() const {
         cout << "  Type      : " << currentNode -> transactionObject -> transactionType << endl;
         cout << "  Channel   : " << currentNode -> transactionObject -> paymentChannel << endl;
         cout << "  Timestamp : " << currentNode -> transactionObject -> timestamp << endl;
+        cout << "  Location  : " << currentNode -> transactionObject -> location << endl;
         cout << "-----------------------------" << endl;
 
         // Move to the next node
