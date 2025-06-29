@@ -102,19 +102,19 @@ DoublyLinkedList Sorter::bubbleSortInList(const DoublyLinkedList &list, const st
             Node* rightNode = currentNode -> nextNode;
 
             // Get the information from the two nodes
-            const string leftID = leftNode -> transactionObject.transactionId;
-            const string rightID = rightNode -> transactionObject.transactionId;
+            const string leftID = leftNode -> transactionObject -> transactionId;
+            const string rightID = rightNode -> transactionObject -> transactionId;
             string leftData, rightData;
 
             // If sort is performed based on the location
             if (sortingVar == "location") {
-                leftData = toLowerCase(leftNode -> transactionObject.location);
-                rightData = toLowerCase(rightNode -> transactionObject.location);
+                leftData = toLowerCase(leftNode -> transactionObject -> location);
+                rightData = toLowerCase(rightNode -> transactionObject -> location);
 
             // If sort is performed based on the transaction type
             } else if (sortingVar == "type") {
-                leftData = toLowerCase(leftNode -> transactionObject.transactionType);
-                rightData = toLowerCase(rightNode -> transactionObject.transactionType);
+                leftData = toLowerCase(leftNode -> transactionObject -> transactionType);
+                rightData = toLowerCase(rightNode -> transactionObject -> transactionType);
 
             // Other cases
             } else {
@@ -233,17 +233,17 @@ DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list, const
     while (currentNode != nullptr) {
 
         // Retrieve the transaction ID and type of the object for the current node
-        Transaction currentObject = currentNode -> transactionObject;
-        string currentID = currentObject.transactionId;
+        Transaction* currentObject = currentNode -> transactionObject;
+        string currentID = currentObject -> transactionId;
         string currentData;
 
         // If sort is performed based on the location
         if (sortingVar == "location") {
-            currentData = toLowerCase(currentObject.location);
+            currentData = toLowerCase(currentObject -> location);
 
         // If sort is performed based on the transaction type
         } else if (sortingVar == "type") {
-            currentData = toLowerCase(currentObject.transactionType);
+            currentData = toLowerCase(currentObject -> transactionType);
 
         // Other cases
         } else {
@@ -254,7 +254,7 @@ DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list, const
         if (sortedList -> isEmpty()) {
 
             // Insert the transaction object to the node and go to the next iteration
-            sortedList -> insertAtEnd(&currentObject);
+            sortedList -> insertAtEnd(currentObject);
             currentNode = currentNode -> nextNode;
             continue;
         }
@@ -268,16 +268,16 @@ DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list, const
         while (currentSortedNode != nullptr) {
 
             // Retrieve the information of the current node in the sorted list
-            string currentSortedID = currentSortedNode -> transactionObject.transactionId;
+            string currentSortedID = currentSortedNode -> transactionObject -> transactionId;
             string currentSortedData;
 
             // If sort is performed based on the location
             if (sortingVar == "location") {
-                currentSortedData = toLowerCase(currentSortedNode -> transactionObject.location);
+                currentSortedData = toLowerCase(currentSortedNode -> transactionObject -> location);
 
             // If sort is performed based on the transaction type
             } else if (sortingVar == "type") {
-                currentSortedData = toLowerCase(currentSortedNode -> transactionObject.transactionType);
+                currentSortedData = toLowerCase(currentSortedNode -> transactionObject -> transactionType);
 
             // Other cases
             } else {
@@ -290,13 +290,13 @@ DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list, const
 
                 // Insert the node after this sorted node, i.e., before the next sorted node if there is a next
                 if (currentSortedNode -> nextNode != nullptr) {
-                    sortedList -> insertBefore(currentSortedNode -> nextNode, &currentObject);
+                    sortedList -> insertBefore(currentSortedNode -> nextNode, currentObject);
 
                 // If the sorted node is no next, the node is a tail
                 } else {
 
                     // Add the node as a tail
-                    sortedList -> insertAtEnd(&currentObject);
+                    sortedList -> insertAtEnd(currentObject);
                 }
 
                 // Mark that an insertion has taken place, hence loop exits
@@ -309,7 +309,7 @@ DoublyLinkedList Sorter::insertionSortInList(const DoublyLinkedList &list, const
         }
 
         // If the node is not inserted, insert at the beginning
-        if (!inserted) sortedList->insertBefore(sortedList -> getHeadNode(), &currentObject);
+        if (!inserted) sortedList->insertBefore(sortedList -> getHeadNode(), currentObject);
 
         // Move to the next node
         currentNode = currentNode -> nextNode;
@@ -566,8 +566,8 @@ Node* Sorter::mergeNodesForList(Node* nodeInLeft, Node* nodeInRight, const strin
     while (nodeInLeft != nullptr && nodeInRight != nullptr) {
 
         // Retrieve the objects in the first of both parts
-        Transaction &leftObject = nodeInLeft -> transactionObject;
-        Transaction &rightObject = nodeInRight -> transactionObject;
+        const Transaction* leftObject = nodeInLeft -> transactionObject;
+        const Transaction* rightObject = nodeInRight -> transactionObject;
 
         // Declare a boolean to mark our choice
         bool chooseLeft = false;
@@ -577,13 +577,13 @@ Node* Sorter::mergeNodesForList(Node* nodeInLeft, Node* nodeInRight, const strin
 
         // If sort is performed based on the location
         if (sortingVar == "location") {
-            leftData = toLowerCase(leftObject.location);
-            rightData = toLowerCase(rightObject.location);
+            leftData = toLowerCase(leftObject -> location);
+            rightData = toLowerCase(rightObject -> location);
 
         // If sort is performed based on the transaction type
         } else if (sortingVar == "type") {
-            leftData = toLowerCase(leftObject.transactionType);
-            rightData = toLowerCase(rightObject.transactionType);
+            leftData = toLowerCase(leftObject -> transactionType);
+            rightData = toLowerCase(rightObject -> transactionType);
 
         // Other cases
         } else {
@@ -598,7 +598,7 @@ Node* Sorter::mergeNodesForList(Node* nodeInLeft, Node* nodeInRight, const strin
         } else if (leftData == rightData) {
 
             // We compare ID. Choose left if the left ID is smaller
-            chooseLeft = leftObject.transactionId < rightObject.transactionId;
+            chooseLeft = leftObject -> transactionId < rightObject -> transactionId;
         }
 
         // Retrieve the selected node
@@ -819,7 +819,7 @@ DoublyLinkedList Sorter::quickSortInList(const DoublyLinkedList &list, const str
     while (currentNode != nullptr) {
 
         // Create new nodes
-        auto* newNode = new Node(&currentNode -> transactionObject, currentNode -> indexInList);
+        auto* newNode = new Node(currentNode -> transactionObject, currentNode -> indexInList);
 
         // Check if the node is a head node
         if (copiedHead == nullptr || lastCopied == nullptr) copiedHead = newNode;
@@ -955,17 +955,17 @@ Node* Sorter::quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes
     Node* middle = getMiddleNodeForList(head);
 
     // Retrieve the data from all three nodes
-    string headData = sortingVar == "location" ? toLowerCase(head -> transactionObject.location) :
-                                                 toLowerCase(head -> transactionObject.transactionType);
-    string headID = head -> transactionObject.transactionId;
+    string headData = sortingVar == "location" ? toLowerCase(head -> transactionObject -> location) :
+                                                 toLowerCase(head -> transactionObject -> transactionType);
+    string headID = head -> transactionObject -> transactionId;
 
-    string middleData = sortingVar == "location" ? toLowerCase(middle -> transactionObject.location) :
-                                                   toLowerCase(middle -> transactionObject.transactionType);
-    string middleID = middle -> transactionObject.transactionId;
+    string middleData = sortingVar == "location" ? toLowerCase(middle -> transactionObject -> location) :
+                                                   toLowerCase(middle -> transactionObject -> transactionType);
+    string middleID = middle -> transactionObject -> transactionId;
 
-    string tailData = sortingVar == "location" ? toLowerCase(tail -> transactionObject.location) :
-                                                 toLowerCase(tail -> transactionObject.transactionType);
-    string tailID = tail -> transactionObject.transactionId;
+    string tailData = sortingVar == "location" ? toLowerCase(tail -> transactionObject -> location) :
+                                                 toLowerCase(tail -> transactionObject -> transactionType);
+    string tailID = tail -> transactionObject -> transactionId;
 
     // Choosing the median. We first assume the tail is the node
     Node* pivot = tail;
@@ -988,9 +988,9 @@ Node* Sorter::quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes
     // Other conditions: Do nothing, the tail is already the pivot
 
     // We can now get the pivot's data for later comparison
-    string pivotData = sortingVar == "location" ? toLowerCase(pivot -> transactionObject.location) :
-                                                  toLowerCase(pivot -> transactionObject.transactionType);
-    string pivotID = pivot -> transactionObject.transactionId;
+    string pivotData = sortingVar == "location" ? toLowerCase(pivot -> transactionObject -> location) :
+                                                  toLowerCase(pivot -> transactionObject -> transactionType);
+    string pivotID = pivot -> transactionObject -> transactionId;
 
     // Initialize the nodes for left and right partitions
     Node* leftHead = nullptr;
@@ -1012,9 +1012,9 @@ Node* Sorter::quickSortPartitionForList(Node* head, Node* tail, Node** leftNodes
         }
 
         // Get the data for the current node
-        string currData = sortingVar == "location" ? toLowerCase(currentNode -> transactionObject.location) :
-                                                     toLowerCase(currentNode -> transactionObject.transactionType);
-        string currID = currentNode -> transactionObject.transactionId;
+        string currData = sortingVar == "location" ? toLowerCase(currentNode -> transactionObject -> location) :
+                                                     toLowerCase(currentNode -> transactionObject -> transactionType);
+        string currID = currentNode -> transactionObject -> transactionId;
 
         // First, disconnect the current node
         currentNode -> nextNode = nullptr;

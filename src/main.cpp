@@ -83,7 +83,7 @@ int main() {
     // Task 1: Separate data based on different channels.
     // Goal: Compare performance of the normal read and write between arrays and linked lists
     cout << "--------Task 1: Separate data into different channels--------" << endl;
-    cout << endl << "Separating data from the overall array ... " << endl;
+    cout << "\nSeparating data from the overall array ... " << endl;
 
     // Array
     Transaction *achArray = nullptr, *cardArray = nullptr, *upiArray = nullptr, *wireTransferArray = nullptr;
@@ -142,47 +142,58 @@ int main() {
     int mergeSortSize = totalArrayRow;
     int quickSortSize = totalArrayRow;
 
+    // Copy array for merge sort
     copyArray(overallTransactionArray, totalArrayRow, locationMergeSortArray);
-    copyArray(overallTransactionArray, totalArrayRow, locationQuickSortArray);
 
     cout << endl << "Sorting data from array using merge sort ... " << endl;
     tracker = arrayMergeSort(locationMergeSortArray, mergeSortSize, locationSortKey);
     tracker -> report("Performance for Merge Sort in Array");
     delete tracker;
 
+    cout << "Exporting result to JSON ... " << endl;
+    JsonExport::convertToJson(locationMergeSortArray, mergeSortSize,  "Merge_Sort_Full_Array.json");
+
+    // Release memory after use
+    delete[] locationMergeSortArray;
+
+    // Copy array for quick sort
+    copyArray(overallTransactionArray, totalArrayRow, locationQuickSortArray);
+
     cout << "Sorting data from array using quick sort ... " << endl;
     tracker = arrayQuickSort(locationQuickSortArray, quickSortSize, locationSortKey);
     tracker -> report("Performance for Quick Sort in Array");
     delete tracker;
 
-    cout << "Exporting results to JSON ... " << endl;
-    JsonExport::convertToJson(locationMergeSortArray, mergeSortSize,  "Merge_Sort_Full_Array.json");
+    cout << "Exporting result to JSON ... " << endl;
     JsonExport::convertToJson(locationQuickSortArray, quickSortSize,  "Quick_Sort_Full_Array.json");
 
     // Release memory after use
-    delete[] locationMergeSortArray;
     delete[] locationQuickSortArray;
 
-    // Linked list
+    // Linked list - Merge sort
     auto* mergeSortList = new DoublyLinkedList(*overallTransactionList);
-    auto* quickSortList = new DoublyLinkedList(*overallTransactionList);
-
     cout << endl << "Sorting data from linked list using merge sort ... " << endl;
     tracker = listMergeSort(*mergeSortList, locationSortKey);
     tracker -> report("Performance for Merge Sort in Linked List");
     delete tracker;
 
+    cout << "Exporting result to JSON ... " << endl;
+    JsonExport::convertToJson(mergeSortList, "Merge_Sort_Full_Linked_List.json");
+
+    // Release memory
+    delete mergeSortList;
+
+    // Linked list - Quick sort
+    auto* quickSortList = new DoublyLinkedList(*overallTransactionList);
     cout << "Sorting data from linked list using quick sort ... " << endl;
     tracker = listQuickSort(*quickSortList, locationSortKey);
     tracker -> report("Performance for Quick Sort in Linked List");
     delete tracker;
 
-    cout << "Exporting results to JSON ... " << endl;
-    JsonExport::convertToJson(mergeSortList, "Merge_Sort_Full_Linked_List.json");
+    cout << "Exporting result to JSON ... " << endl;
     JsonExport::convertToJson(quickSortList, "Quick_Sort_Full_Linked_List.json");
 
     // Release memory
-    delete mergeSortList;
     delete quickSortList;
 
     // To compare the performances for all sorting algorithms, the dataset is sampled down.
@@ -200,11 +211,6 @@ int main() {
     copyArray(overallTransactionArray, totalArrayRow, sampledInsertionSortArray);
     copyArray(overallTransactionArray, totalArrayRow, sampledMergeSortArray);
     copyArray(overallTransactionArray, totalArrayRow, sampledQuickSortArray);
-
-    auto* sampledBubbleSortList = new DoublyLinkedList(*overallTransactionList);
-    auto* sampledInsertionSortList = new DoublyLinkedList(*overallTransactionList);
-    auto* sampledMergeSortList = new DoublyLinkedList(*overallTransactionList);
-    auto* sampledQuickSortList = new DoublyLinkedList(*overallTransactionList);
 
     // Sampled-down array
     cout << endl << "Sorting sampled data from array using bubble sort ... " << endl;
@@ -238,6 +244,11 @@ int main() {
     delete[] sampledInsertionSortArray;
     delete[] sampledMergeSortArray;
     delete[] sampledQuickSortArray;
+
+    auto* sampledBubbleSortList = new DoublyLinkedList(*overallTransactionList);
+    auto* sampledInsertionSortList = new DoublyLinkedList(*overallTransactionList);
+    auto* sampledMergeSortList = new DoublyLinkedList(*overallTransactionList);
+    auto* sampledQuickSortList = new DoublyLinkedList(*overallTransactionList);
 
     // Sampled down linked list
     cout << endl << "Sorting sampled data from linked list using bubble sort ... " << endl;
@@ -470,7 +481,7 @@ PerformanceTracker* arrayBubbleSort(Transaction* &array, int &size, const string
     bool shouldCopyBack = false;
 
     // If sampling is needed, we sample for 100 records
-    if (sample) {
+    if (sample && SAMPLING_SIZE < size) {
 
         // Create a new array and copy the first 100 data into it
         workingArray = new Transaction[SAMPLING_SIZE];
@@ -517,7 +528,7 @@ PerformanceTracker* arrayInsertionSort(Transaction* &array, int &size, const str
     bool shouldCopyBack = false;
 
     // If sampling is needed, we sample for 100 records
-    if (sample) {
+    if (sample && SAMPLING_SIZE < size) {
 
         // Create a new array and copy the first 100 data into it
         workingArray = new Transaction[SAMPLING_SIZE];
@@ -564,7 +575,7 @@ PerformanceTracker* arrayMergeSort(Transaction* &array, int &size, const string 
     bool shouldCopyBack = false;
 
     // If sampling is needed, we sample for 100 records
-    if (sample) {
+    if (sample && SAMPLING_SIZE < size) {
 
         // Create a new array and copy the first 100 data into it
         workingArray = new Transaction[SAMPLING_SIZE];
@@ -611,7 +622,7 @@ PerformanceTracker* arrayQuickSort(Transaction* &array, int &size, const string 
     bool shouldCopyBack = false;
 
     // If sampling is needed, we sample for 100 records
-    if (sample) {
+    if (sample && SAMPLING_SIZE < size) {
 
         // Create a new array and copy the first 100 data into it
         workingArray = new Transaction[SAMPLING_SIZE];
@@ -657,7 +668,7 @@ PerformanceTracker* listBubbleSort(DoublyLinkedList &list, const string &searchT
     DoublyLinkedList* tempList = nullptr;
 
     // If sampling is required, create a new list
-    if (sample) {
+    if (sample && SAMPLING_SIZE < list.getSize()) {
 
         // The temporary list created to store nodes
         tempList = new DoublyLinkedList();
@@ -670,8 +681,8 @@ PerformanceTracker* listBubbleSort(DoublyLinkedList &list, const string &searchT
         while (node != nullptr && i < SAMPLING_SIZE) {
 
             // Create a copy of the transaction object and insert to the list
-            Transaction transactionObject = node -> transactionObject;
-            tempList -> insertAtEnd(&transactionObject);
+            Transaction* transactionObject = node -> transactionObject;
+            tempList -> insertAtEnd(transactionObject);
 
             // Traverse to the next node
             node = node -> nextNode;
@@ -696,7 +707,7 @@ PerformanceTracker* listBubbleSort(DoublyLinkedList &list, const string &searchT
     list.clear();
     const Node* currentNode = swappedList.getHeadNode();
     while (currentNode != nullptr) {
-        list.insertAtEnd(&currentNode -> transactionObject);
+        list.insertAtEnd(currentNode -> transactionObject);
         currentNode = currentNode -> nextNode;
     }
 
@@ -715,7 +726,7 @@ PerformanceTracker* listInsertionSort(DoublyLinkedList &list, const string &sear
     DoublyLinkedList* tempList = nullptr;
 
     // If sampling is required, create a new list
-    if (sample) {
+    if (sample && SAMPLING_SIZE < list.getSize()) {
 
         // The temporary list created to store nodes
         tempList = new DoublyLinkedList();
@@ -728,8 +739,8 @@ PerformanceTracker* listInsertionSort(DoublyLinkedList &list, const string &sear
         while (node != nullptr && i < SAMPLING_SIZE) {
 
             // Create a copy of the transaction object and insert to the list
-            Transaction transactionObject = node -> transactionObject;
-            tempList -> insertAtEnd(&transactionObject);
+            Transaction* transactionObject = node -> transactionObject;
+            tempList -> insertAtEnd(transactionObject);
 
             // Traverse to the next node
             node = node -> nextNode;
@@ -754,7 +765,7 @@ PerformanceTracker* listInsertionSort(DoublyLinkedList &list, const string &sear
     list.clear();
     const Node* currentNode = swappedList.getHeadNode();
     while (currentNode != nullptr) {
-        list.insertAtEnd(&currentNode -> transactionObject);
+        list.insertAtEnd(currentNode -> transactionObject);
         currentNode = currentNode -> nextNode;
     }
 
@@ -773,7 +784,7 @@ PerformanceTracker* listMergeSort(DoublyLinkedList &list, const string &searchTy
     DoublyLinkedList* tempList = nullptr;
 
     // If sampling is required, create a new list
-    if (sample) {
+    if (sample && SAMPLING_SIZE < list.getSize()) {
 
         // The temporary list created to store nodes
         tempList = new DoublyLinkedList();
@@ -786,8 +797,8 @@ PerformanceTracker* listMergeSort(DoublyLinkedList &list, const string &searchTy
         while (node != nullptr && i < SAMPLING_SIZE) {
 
             // Create a copy of the transaction object and insert to the list
-            Transaction transactionObject = node -> transactionObject;
-            tempList -> insertAtEnd(&transactionObject);
+            Transaction* transactionObject = node -> transactionObject;
+            tempList -> insertAtEnd(transactionObject);
 
             // Traverse to the next node
             node = node -> nextNode;
@@ -812,7 +823,7 @@ PerformanceTracker* listMergeSort(DoublyLinkedList &list, const string &searchTy
     list.clear();
     const Node* currentNode = swappedList.getHeadNode();
     while (currentNode != nullptr) {
-        list.insertAtEnd(&currentNode -> transactionObject);
+        list.insertAtEnd(currentNode -> transactionObject);
         currentNode = currentNode -> nextNode;
     }
 
@@ -831,7 +842,7 @@ PerformanceTracker* listQuickSort(DoublyLinkedList &list, const string &searchTy
     DoublyLinkedList* tempList = nullptr;
 
     // If sampling is required, create a new list
-    if (sample) {
+    if (sample && SAMPLING_SIZE < list.getSize()) {
 
         // The temporary list created to store nodes
         tempList = new DoublyLinkedList();
@@ -844,8 +855,8 @@ PerformanceTracker* listQuickSort(DoublyLinkedList &list, const string &searchTy
         while (node != nullptr && i < SAMPLING_SIZE) {
 
             // Create a copy of the transaction object and insert to the list
-            Transaction transactionObject = node -> transactionObject;
-            tempList -> insertAtEnd(&transactionObject);
+            Transaction* transactionObject = node -> transactionObject;
+            tempList -> insertAtEnd(transactionObject);
 
             // Traverse to the next node
             node = node -> nextNode;
@@ -870,7 +881,7 @@ PerformanceTracker* listQuickSort(DoublyLinkedList &list, const string &searchTy
     list.clear();
     const Node* currentNode = swappedList.getHeadNode();
     while (currentNode != nullptr) {
-        list.insertAtEnd(&currentNode -> transactionObject);
+        list.insertAtEnd(currentNode -> transactionObject);
         currentNode = currentNode -> nextNode;
     }
 

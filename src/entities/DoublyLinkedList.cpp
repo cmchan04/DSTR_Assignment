@@ -12,13 +12,13 @@ using namespace std;
  * @param data The pointer to the Transaction object
  * @param index The current size of the linked list. This acts as the index for the node (since no deletion is involved).
  */
-Node::Node(const Transaction* data, const int index) {
+Node::Node(Transaction* data, const int index) {
 
     // First check if a valid object is passed into the method
     if (data == nullptr) throw invalid_argument("Data cannot be null.");
 
     // Initialize variables
-    this -> transactionObject = *data;
+    this -> transactionObject = data;
     this -> previousNode = nullptr;
     this -> nextNode = nullptr;
     this -> indexInList = index;
@@ -56,8 +56,8 @@ DoublyLinkedList::DoublyLinkedList(const DoublyLinkedList& list): headNode(nullp
     while (current != nullptr) {
 
         // Add each transaction to the end of the list
-        this -> insertAtEnd(&current -> transactionObject);
-        current = current->nextNode;
+        this -> insertAtEnd(current -> transactionObject);
+        current = current -> nextNode;
     }
 }
 
@@ -98,7 +98,7 @@ void DoublyLinkedList::setTailNode(Node* tailNode) {
  * @param node The node that will be placed after the new node
  * @param data The Transaction object
  */
-void DoublyLinkedList::insertBefore(Node* node, const Transaction* data) {
+void DoublyLinkedList::insertBefore(Node* node, Transaction* data) {
 
     // Overall idea: Three nodes have to be set up. The specified node, the previous node of the specified node, and the new node.
 
@@ -113,7 +113,7 @@ void DoublyLinkedList::insertBefore(Node* node, const Transaction* data) {
 
     // Set up the new node
     newNode -> nextNode = node;
-    newNode -> previousNode = node -> previousNode;
+    newNode -> previousNode = node->previousNode;
 
     // Handle the node before the specified node. Special case if the node is head node
     if (node -> previousNode == nullptr) headNode = newNode;
@@ -137,7 +137,7 @@ void DoublyLinkedList::insertBefore(Node* node, const Transaction* data) {
  * The method to insert the Transaction object into the end of linked list.
  * @param data The Transaction object to be added.
  */
-void DoublyLinkedList::insertAtEnd(const Transaction* data) {
+void DoublyLinkedList::insertAtEnd(Transaction* data) {
 
     // First create a node for the data
     const auto newNode = new Node(data, ++size);
@@ -184,11 +184,12 @@ void DoublyLinkedList::printContents() const {
 
         // Print details
         cout << "[Node at position " << currentNode -> indexInList << "]" << endl;
-        cout << "  ID        : " << currentNode -> transactionObject.transactionId << endl;
-        cout << "  Amount    : " << currentNode -> transactionObject.amount << endl;
-        cout << "  Type      : " << currentNode -> transactionObject.transactionType << endl;
-        cout << "  Channel   : " << currentNode -> transactionObject.paymentChannel << endl;
-        cout << "  Timestamp : " << currentNode -> transactionObject.timestamp << endl;
+        cout << "  ID        : " << currentNode -> transactionObject -> transactionId << endl;
+        cout << "  Amount    : " << currentNode -> transactionObject -> amount << endl;
+        cout << "  Type      : " << currentNode -> transactionObject -> transactionType << endl;
+        cout << "  Channel   : " << currentNode -> transactionObject -> paymentChannel << endl;
+        cout << "  Timestamp : " << currentNode -> transactionObject -> timestamp << endl;
+        cout << "  Location  : " << currentNode -> transactionObject -> location << endl;
         cout << "-----------------------------" << endl;
 
         // Move to the next node

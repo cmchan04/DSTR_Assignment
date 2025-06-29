@@ -12,13 +12,13 @@
 struct Node {
 
     // A doubly linked list has three elements: data, pointer of previous and next node
-    Transaction transactionObject;
+    Transaction* transactionObject;
     int indexInList;
     Node* previousNode;
     Node* nextNode;
 
     // Constructor: Explicit to ensure no implicit conversions take place
-    explicit Node(const Transaction* data, int index);
+    explicit Node(Transaction* data, int index);
 };
 
 /**
@@ -47,8 +47,8 @@ public:
     void setTailNode(Node* tailNode);
 
     // Insertion methods
-    void insertBefore(Node* node, const Transaction* data);
-    void insertAtEnd(const Transaction* data);
+    void insertBefore(Node* node, Transaction* data);
+    void insertAtEnd(Transaction* data);
 
     // Print contents
     void printContents() const;
