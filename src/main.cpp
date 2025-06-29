@@ -681,7 +681,7 @@ PerformanceTracker* listBubbleSort(DoublyLinkedList &list, const string &searchT
         while (node != nullptr && i < SAMPLING_SIZE) {
 
             // Create a copy of the transaction object and insert to the list
-            const Transaction* transactionObject = node -> transactionObject;
+            Transaction* transactionObject = node -> transactionObject;
             tempList -> insertAtEnd(transactionObject);
 
             // Traverse to the next node
@@ -739,7 +739,7 @@ PerformanceTracker* listInsertionSort(DoublyLinkedList &list, const string &sear
         while (node != nullptr && i < SAMPLING_SIZE) {
 
             // Create a copy of the transaction object and insert to the list
-            const Transaction* transactionObject = node -> transactionObject;
+            Transaction* transactionObject = node -> transactionObject;
             tempList -> insertAtEnd(transactionObject);
 
             // Traverse to the next node
@@ -797,7 +797,7 @@ PerformanceTracker* listMergeSort(DoublyLinkedList &list, const string &searchTy
         while (node != nullptr && i < SAMPLING_SIZE) {
 
             // Create a copy of the transaction object and insert to the list
-            const Transaction* transactionObject = node -> transactionObject;
+            Transaction* transactionObject = node -> transactionObject;
             tempList -> insertAtEnd(transactionObject);
 
             // Traverse to the next node
@@ -855,7 +855,7 @@ PerformanceTracker* listQuickSort(DoublyLinkedList &list, const string &searchTy
         while (node != nullptr && i < SAMPLING_SIZE) {
 
             // Create a copy of the transaction object and insert to the list
-            const Transaction* transactionObject = node -> transactionObject;
+            Transaction* transactionObject = node -> transactionObject;
             tempList -> insertAtEnd(transactionObject);
 
             // Traverse to the next node

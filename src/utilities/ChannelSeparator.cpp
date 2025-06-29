@@ -97,7 +97,7 @@ void ChannelSeparator::splitToChannelList(const DoublyLinkedList* list,
     while (currentNode != nullptr) {
 
         // Retrieve the payment channel
-        const Transaction* currentObject = currentNode -> transactionObject;
+        Transaction* currentObject = currentNode -> transactionObject;
 
         // Check the transaction type and add to the new list
         if (string currentPayment = toLowerCase(currentObject -> paymentChannel);
