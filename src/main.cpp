@@ -481,7 +481,7 @@ PerformanceTracker* arrayBubbleSort(Transaction* &array, int &size, const string
     bool shouldCopyBack = false;
 
     // If sampling is needed, we sample for 100 records
-    if (sample) {
+    if (sample && SAMPLING_SIZE < size) {
 
         // Create a new array and copy the first 100 data into it
         workingArray = new Transaction[SAMPLING_SIZE];
@@ -528,7 +528,7 @@ PerformanceTracker* arrayInsertionSort(Transaction* &array, int &size, const str
     bool shouldCopyBack = false;
 
     // If sampling is needed, we sample for 100 records
-    if (sample) {
+    if (sample && SAMPLING_SIZE < size) {
 
         // Create a new array and copy the first 100 data into it
         workingArray = new Transaction[SAMPLING_SIZE];
@@ -575,7 +575,7 @@ PerformanceTracker* arrayMergeSort(Transaction* &array, int &size, const string 
     bool shouldCopyBack = false;
 
     // If sampling is needed, we sample for 100 records
-    if (sample) {
+    if (sample && SAMPLING_SIZE < size) {
 
         // Create a new array and copy the first 100 data into it
         workingArray = new Transaction[SAMPLING_SIZE];
@@ -622,7 +622,7 @@ PerformanceTracker* arrayQuickSort(Transaction* &array, int &size, const string 
     bool shouldCopyBack = false;
 
     // If sampling is needed, we sample for 100 records
-    if (sample) {
+    if (sample && SAMPLING_SIZE < size) {
 
         // Create a new array and copy the first 100 data into it
         workingArray = new Transaction[SAMPLING_SIZE];
@@ -668,7 +668,7 @@ PerformanceTracker* listBubbleSort(DoublyLinkedList &list, const string &searchT
     DoublyLinkedList* tempList = nullptr;
 
     // If sampling is required, create a new list
-    if (sample) {
+    if (sample && SAMPLING_SIZE < list.getSize()) {
 
         // The temporary list created to store nodes
         tempList = new DoublyLinkedList();
@@ -726,7 +726,7 @@ PerformanceTracker* listInsertionSort(DoublyLinkedList &list, const string &sear
     DoublyLinkedList* tempList = nullptr;
 
     // If sampling is required, create a new list
-    if (sample) {
+    if (sample && SAMPLING_SIZE < list.getSize()) {
 
         // The temporary list created to store nodes
         tempList = new DoublyLinkedList();
@@ -784,7 +784,7 @@ PerformanceTracker* listMergeSort(DoublyLinkedList &list, const string &searchTy
     DoublyLinkedList* tempList = nullptr;
 
     // If sampling is required, create a new list
-    if (sample) {
+    if (sample && SAMPLING_SIZE < list.getSize()) {
 
         // The temporary list created to store nodes
         tempList = new DoublyLinkedList();
@@ -842,7 +842,7 @@ PerformanceTracker* listQuickSort(DoublyLinkedList &list, const string &searchTy
     DoublyLinkedList* tempList = nullptr;
 
     // If sampling is required, create a new list
-    if (sample) {
+    if (sample && SAMPLING_SIZE < list.getSize()) {
 
         // The temporary list created to store nodes
         tempList = new DoublyLinkedList();
