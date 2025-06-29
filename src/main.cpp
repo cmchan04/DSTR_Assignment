@@ -480,10 +480,10 @@ PerformanceTracker* arrayBubbleSort(Transaction* &array, int &size, const string
     int workingSize;
     bool shouldCopyBack = false;
 
-    // If sampling is needed, we sample for 100 records
+    // If sampling is needed, we sample for records
     if (sample && SAMPLING_SIZE < size) {
 
-        // Create a new array and copy the first 100 data into it
+        // Create a new array and copy data into it
         workingArray = new Transaction[SAMPLING_SIZE];
         for (int i = 0; i < SAMPLING_SIZE; i++) workingArray[i] = array[i];
 
@@ -527,10 +527,10 @@ PerformanceTracker* arrayInsertionSort(Transaction* &array, int &size, const str
     int workingSize;
     bool shouldCopyBack = false;
 
-    // If sampling is needed, we sample for 100 records
+    // If sampling is needed, we sample for records
     if (sample && SAMPLING_SIZE < size) {
 
-        // Create a new array and copy the first 100 data into it
+        // Create a new array and copy data into it
         workingArray = new Transaction[SAMPLING_SIZE];
         for (int i = 0; i < SAMPLING_SIZE; i++) workingArray[i] = array[i];
 
@@ -574,10 +574,10 @@ PerformanceTracker* arrayMergeSort(Transaction* &array, int &size, const string 
     int workingSize;
     bool shouldCopyBack = false;
 
-    // If sampling is needed, we sample for 100 records
+    // If sampling is needed, we sample for records
     if (sample && SAMPLING_SIZE < size) {
 
-        // Create a new array and copy the first 100 data into it
+        // Create a new array and copy data into it
         workingArray = new Transaction[SAMPLING_SIZE];
         for (int i = 0; i < SAMPLING_SIZE; i++) workingArray[i] = array[i];
 
@@ -621,10 +621,10 @@ PerformanceTracker* arrayQuickSort(Transaction* &array, int &size, const string 
     int workingSize;
     bool shouldCopyBack = false;
 
-    // If sampling is needed, we sample for 100 records
+    // If sampling is needed, we sample for records
     if (sample && SAMPLING_SIZE < size) {
 
-        // Create a new array and copy the first 100 data into it
+        // Create a new array and copy data into it
         workingArray = new Transaction[SAMPLING_SIZE];
         for (int i = 0; i < SAMPLING_SIZE; i++) workingArray[i] = array[i];
 
