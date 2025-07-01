@@ -132,7 +132,7 @@ void PerformanceTracker::updatePeakMemory() {
 void PerformanceTracker::report(const string &label) const {
 
     // Calculate duration taken
-    const auto duration = duration_cast<milliseconds>(endTime - startTime).count();
+    const double duration = duration_cast<milliseconds>(endTime - startTime).count();
 
     // Print performance information
     cout << "\n=== " << label << " ===\n";
