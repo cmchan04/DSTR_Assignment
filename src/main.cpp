@@ -291,7 +291,7 @@ int main() {
     quickSortSize = totalArrayRow;
 
     // First perform the fastest sort to sort based on the transaction type
-    cout << endl << "First sort the data based on location (for binary search) ... " << endl;
+    cout << endl << "First sort the data based on transaction type (for binary search) ... " << endl;
     Transaction* typeSortedArray = nullptr;
     copyArray(overallTransactionArray, totalArrayRow, typeSortedArray);
 
